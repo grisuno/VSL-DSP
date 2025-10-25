@@ -1,1 +1,13 @@
+# VSL-DSP PoC Dependencies
 
+# === CORE (Obligatorio) ===
+# Python 3.8+ (no requiere paquetes externos para PoC matemática)
+
+# === OPCIONAL: Para I/O HID Real ===
+# Descomentar si tienes los valores de VID/PID/Report ID y quieres enviar paquetes reales
+# hidapi>=0.14.0
+
+# === DESARROLLO ===
+# pytest>=7.0.0        # Para tests unitarios adicionales
+# black>=22.0.0        # Formateo de código
+# mypy>=0.990          # Type checking
