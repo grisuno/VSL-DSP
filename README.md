@@ -1,5 +1,8 @@
 # 🎯 VSL-DSP Open Source Driver
+![1_NFRogTqj0gCKMQEIMw19Pg](https://github.com/user-attachments/assets/29cea052-00c0-4ef6-88cb-bb293f254959)
+
 Desarrollar un Cliente Open Source (Driver/Library) funcional para dispositivos de audio VSL-DSP
+<img width="5652" height="12737" alt="NotebookLM Mind Map" src="https://github.com/user-attachments/assets/97e82732-83f0-4fb8-98e5-85ba5df3851d" />
 
 ## 🧬 BASE DE CONOCIMIENTO INMUTABLE
 Estado del Proyecto: 90% Completo - 3 Bloqueadores Críticos
@@ -12,6 +15,7 @@ Componente	Estado	Evidencia Técnica
 - Protocolo USB-HID	✅ PARCIALMENTE CONFIRMADO	Tipo: HID Feature/Output Report<br>Tamaño: 64 bytes (0x40)<br>Payload mínimo: 6 bytes
 - Implementación I/O	✅ FUNCIONAL	HIDAPI userspace, compilación exitosa: gcc -lhidapi-libusb
 
+![unnamed](https://github.com/user-attachments/assets/92ac8607-e7ed-4a88-a872-03578ed3e100)
 
 
 ## 📍 BLOQUEADORES CRÍTICOS (Valores Pendientes)
@@ -22,6 +26,7 @@ Componente	Estado	Evidencia Técnica
 #define VSL_PRODUCT_ID  0x????  // ⚠️ CRÍTICO - Buscar en strings o constantes hexadecimales  
 #define VSL_REPORT_ID   0x??    // ⚠️ CRÍTICO - Buscar en buf[0] antes de FUN_00412345
 ```
+<img width="1140" height="859" alt="image" src="https://github.com/user-attachments/assets/09007847-271c-4a0b-a8e2-765b9aa74556" />
 
 ## 📐 CONOCIMIENTO CONFIRMADO DE LA ESCUCHA WIRESHARK
 
@@ -62,6 +67,7 @@ void FUN_00412345(int param_1, VSL_DSP_Packet *packet_data) {
 │ Freq @ 1kHz     │ ~0.5f        │ 0x????        │ ⚠️ TBD  │
 └─────────────────┴──────────────┴───────────────┴─────────┘
 */
+<img width="658" height="911" alt="image" src="https://github.com/user-attachments/assets/d66aea1c-7fe7-4e60-bdf0-fb90cf9fe7cc" />
 
 ```
 
@@ -114,6 +120,9 @@ int main(void) {
     return 0;
 }
 ```
+<img width="1727" height="724" alt="image" src="https://github.com/user-attachments/assets/7f23fbfe-bc5e-4e10-80a7-54b325fc3938" />
+
+
 Compilar:
 
 ```bash
@@ -163,6 +172,9 @@ hid_device* VSL_Get_Device_Handle(void) {
     return vsl_device_handle;
 }
 ```
+<img width="800" height="943" alt="image" src="https://github.com/user-attachments/assets/b018fafa-013a-48c5-8a74-b18feaa13102" />
+
+
 C) Construcción de Paquete (Template Final - Pendiente de 3 valores)
 ```c
 void FUN_Send_Packet(const VSL_DSP_Packet *packet, size_t packet_length) {
@@ -203,6 +215,7 @@ void FUN_Send_Packet(const VSL_DSP_Packet *packet, size_t packet_length) {
     }
 }
 ```
+<img width="807" height="858" alt="image" src="https://github.com/user-attachments/assets/2ede9d70-ae80-4936-89b3-b0e4292dec81" />
 
 ---
 
@@ -222,6 +235,8 @@ void FUN_Send_Packet(const VSL_DSP_Packet *packet, size_t packet_length) {
 | **Endianness verificado** | ⚠️ **BLOQUEADOR #3** | Verificar orden de bytes en desensamblado |
 | **Test con hardware real** | ⏳ **PENDIENTE** | Requiere bloqueadores #1, #2, #3 resueltos |
 | **Documentación API** | ⏳ **PENDIENTE** | Post-validación con hardware |
+
+<img width="709" height="873" alt="image" src="https://github.com/user-attachments/assets/123af69c-3f1a-4661-98fe-ba340dc4d373" />
 
 ---
 # VSL-DSP Open Source Driver - Python PoC
