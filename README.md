@@ -1,31 +1,86 @@
-# 🎯 VSL-DSP Open Source Driver
+# 🎯 🎯 VSL-DSP Open Source Driver - ✅ PROYECTO COMPLETADO
 ![1_NFRogTqj0gCKMQEIMw19Pg](https://github.com/user-attachments/assets/29cea052-00c0-4ef6-88cb-bb293f254959)
 
 Desarrollar un Cliente Open Source (Driver/Library) funcional para dispositivos de audio VSL-DSP
 <img width="5652" height="12737" alt="NotebookLM Mind Map" src="https://github.com/user-attachments/assets/97e82732-83f0-4fb8-98e5-85ba5df3851d" />
+## 🎉 ESTADO DEL PROYECTO: 100% COMPLETADO
+¡Protocolo completamente descifrado e implementado con éxito!
 
-## 🧬 BASE DE CONOCIMIENTO INMUTABLE
-Estado del Proyecto: 90% Completo - 3 Bloqueadores Críticos
-Componente	Estado	Evidencia Técnica
-- Arquitectura	✅ CONFIRMADA	C puro, separación modular (vsl_dsp_logic.c + vsl_dsp_transport.c), preparado para wrappers C++ via extern "C"
-- Codificación de Ganancia	✅ IMPLEMENTADA	VSL_Encode_Gain() - Curva exponencial: coeff_offset_A + coeff_C1 * exp(norm_factor * log_factor)
-- Codificación de Frecuencia	✅ IMPLEMENTADA	VSL_Map_Frequency() / VSL_Decode_Frequency() - Mapeo logarítmico base 2: exp2f(log2_min + pos * (log2_max - log2_min))
-- Conversión Float→Int	✅ VALIDADA	Escala: 1000.0f → 65535 <br> Test confirmado: 0.75 → 40793
-- Estructura de Parámetros	✅ CONFIRMADA	VSL_Parameter con 8 campos: {coeff_offset_A, coeff_C1, log_factor, curve_min_map, curve_max_map, freq_min_hz, freq_max_hz, dsp_param_id, max_encoded_int}
-- Protocolo USB-HID	✅ PARCIALMENTE CONFIRMADO	Tipo: HID Feature/Output Report<br>Tamaño: 64 bytes (0x40)<br>Payload mínimo: 6 bytes
-- Implementación I/O	✅ FUNCIONAL	HIDAPI userspace, compilación exitosa: gcc -lhidapi-libusb
+## 🔓 Descubrimiento Crítico
+A través de análisis exhaustivo con Wireshark y captura de tráfico USB, se descubrió que el AudioBox 22 VSL NO usa Bulk Transfers como se asumía inicialmente, sino USB Audio Class 2.0 Control Transfers estándar.
+
+## 🧬 ARQUITECTURA FINAL CONFIRMADA
+Protocolo Identificado: USB Audio Class 2.0 (UAC2)
+
+Componente             |  Estado             |  Evidencia Técnica                                 
+-----------------------+---------------------+----------------------------------------------------
+Tipo de Protocolo      |  ✅IDENTIFICADO      |  USB Audio Class 2.0 Control Requests (NO HID/Bulk)
+Tipo de Transferencia  |  ✅CONFIRMADO        |  Control Transfers (0x02) en endpoint 0x80         
+Feature Units          |  ✅MAPEADOS          |  Unit 10 (Playback), Unit 11 (Capture)             
+Control Requests       |  ✅IMPLEMENTADOS     |  SET_CUR (0x01), GET_CUR (0x01), GET_RANGE (0x02)  
+Encoding de Volumen    |  ✅VALIDADO          |  16-bit Little-Endian, 1/256 dB steps              
+VID/PID                |  ✅CONFIRMADOS       |  0x194F:0x0101                                     
+Test con Hardware      |  ✅EXITOSO           |  Control de volumen y mute funcionando             
+Driver Python          |  ✅PRODUCTION-READY  |  API completa y documentada                        
+```python
+# ID
+VENDOR_ID = 0x194F
+PRODUCT_ID = 0x0101
+
+# USB Audio Class Control Requests
+UAC2_REQUEST_CUR = 0x01      # GET_CUR / SET_CUR
+UAC2_REQUEST_RANGE = 0x02    # GET_RANGE
+UAC2_REQUEST_MEM = 0x03      # GET_MEM / SET_MEM
+
+# Control Selectors
+FU_MUTE_CONTROL = 0x01
+FU_VOLUME_CONTROL = 0x02
+FU_BASS_CONTROL = 0x03
+FU_MID_CONTROL = 0x04
+FU_TREBLE_CONTROL = 0x05
+FU_GRAPHIC_EQUALIZER_CONTROL = 0x06
+FU_AUTOMATIC_GAIN_CONTROL = 0x07
+FU_DELAY_CONTROL = 0x08
+FU_BASS_BOOST_CONTROL = 0x09
+FU_LOUDNESS_CONTROL = 0x0A
+```
 
 ![unnamed](https://github.com/user-attachments/assets/92ac8607-e7ed-4a88-a872-03578ed3e100)
 
 
-## 📍 BLOQUEADORES CRÍTICOS (Valores Pendientes)
+## 📍 🚀 Implementación Funcional
+Driver Python Production-Ready
+```python
+from vsl_dsp_driver import (
+    VSL_DSP_Driver,
+    UNIT_PLAYBACK,
+    UNIT_CAPTURE,
+    CHANNEL_LEFT,
+    CHANNEL_RIGHT
+)
 
-```c
-// ESTOS 3 VALORES DEBEN SER EXTRAÍDOS DEL DESENSAMBLADO:
-#define VSL_VENDOR_ID   0x????  // ⚠️ CRÍTICO - Buscar en strings o constantes hexadecimales
-#define VSL_PRODUCT_ID  0x????  // ⚠️ CRÍTICO - Buscar en strings o constantes hexadecimales  
-#define VSL_REPORT_ID   0x??    // ⚠️ CRÍTICO - Buscar en buf[0] antes de FUN_00412345
+# Inicializar driver
+driver = VSL_DSP_Driver()
+driver.initialize()
+
+# Control de volumen (funciona en hardware real)
+driver.set_volume(UNIT_PLAYBACK, CHANNEL_LEFT, -6.0)   # ✅ Verificado
+driver.set_volume(UNIT_PLAYBACK, CHANNEL_RIGHT, -6.0)  # ✅ Verificado
+
+# Leer volumen actual
+vol = driver.get_volume(UNIT_PLAYBACK, CHANNEL_LEFT)   # ✅ Verificado
+print(f"Volumen: {vol:.2f} dB")
+
+# Control de mute
+driver.set_mute(UNIT_PLAYBACK, CHANNEL_LEFT, True)     # ✅ Verificado
+
+# Obtener rangos soportados
+min_db, max_db, step = driver.get_volume_range(UNIT_PLAYBACK, CHANNEL_LEFT)
+
+# Liberar recursos
+driver.cleanup()
 ```
+
 <img width="1140" height="859" alt="image" src="https://github.com/user-attachments/assets/09007847-271c-4a0b-a8e2-765b9aa74556" />
 
 ## 📐 CONOCIMIENTO CONFIRMADO DE LA ESCUCHA WIRESHARK
@@ -47,11 +102,178 @@ void FUN_00412345(int param_1, VSL_DSP_Packet *packet_data) {
     return;
 }
 ```
-**Implicaciones Confirmadas:**
-- ✅ Tamaño del paquete HID: **64 bytes (0x40 hex)** - Estándar HID
-- ✅ Tipo de transferencia: **Control Transfer** o **Feature Report**
-- ⚠️ **Pendiente**: Construcción de `buf[]` en la función padre 
+## 📊 Especificación Técnica del Protocolo
+Control Transfers UAC2
+Estructura de Request:
+```c
+bmRequestType: 0x21  // Class, Interface, OUT
+bRequest: 0x01       // SET_CUR / GET_CUR
+wValue: (Control_Selector << 8) | Channel
+wIndex: (Unit_ID << 8) | Interface
+data: [value_low, value_high]  // Little-Endian
+```
 ---
+
+## Control Selectors Implementados:
+
+- FU_MUTE_CONTROL = 0x01: Control de silencio
+
+- FU_VOLUME_CONTROL = 0x02: Control de volumen
+
+### Feature Units del AudioBox 22 VSL:
+
+- Unit 10: Playback (USB → Speakers)
+
+2 canales + Master
+
+- Rango típico: -60 dB a +12 dB
+
+- Unit 11: Capture (Microphone → USB)
+
+2 canales + Master
+
+- Rango típico: 0 dB a +35 dB
+
+## Encoding de Volumen:
+```text
+Valor dB → Valor UAC2 = dB * 256
+Ejemplo: -6.0 dB → -1536 (0xFA00 en Little-Endian)
+```
+
+## 🔬 Proceso de Ingeniería Inversa
+Metodología Aplicada
+Análisis inicial con Ghidra → Funciones matemáticas DSP identificadas
+
+- Captura USB con Wireshark → Protocolo real descubierto (UAC2, no Bulk)
+
+- Análisis de descriptores USB → Feature Units y endpoints mapeados
+
+- Implementación Python → Driver funcional con pyusb
+
+- Validación con hardware → Tests exitosos confirmados
+
+## Herramientas Utilizadas
+- Ghidra: Desensamblado del driver Android
+
+- Wireshark + usbmon: Captura de tráfico USB
+
+- pyusb: Implementación del driver Python
+
+- lsusb: Análisis de descriptores USB
+
+## 📦 Instalación y Uso
+Requisitos
+```bash
+# Python 3.8+
+sudo apt install python3 python3-pip
+```
+# Dependencias USB
+```bash
+sudo pip3 install pyusb
+```
+## Instalación
+```bash
+# Clonar repositorio
+git clone https://github.com/grisuno/vsl-dsp-driver
+cd vsl-dsp-driver
+```
+```bash
+# Ejecutar aplicación de ejemplo
+sudo python3 app.py
+```
+
+## ✅ CHECKLIST DE PROYECTO COMPLETADO
+
+Tarea                   |  Estado      |  Notas                                
+------------------------+--------------+---------------------------------------
+Protocolo identificado  |  ✅COMPLETO   |  USB Audio Class 2.0 Control Transfers
+Feature Units mapeados  |  ✅COMPLETO   |  Unit 10 (Playback), Unit 11 (Capture)
+VID/PID confirmados     |  ✅COMPLETO   |  0x194F:0x0101                        
+Encoding implementado   |  ✅COMPLETO   |  16-bit LE, 1/256 dB steps            
+Driver Python           |  ✅COMPLETO   |  Production-ready con API documentada 
+Test con hardware real  |  ✅COMPLETO   |  Validado con AudioBox 22 VSL         
+Control de volumen      |  ✅FUNCIONAL  |  SET_CUR/GET_CUR implementados        
+Control de mute         |  ✅FUNCIONAL  |  Probado con hardware                 
+Lectura de rangos       |  ✅FUNCIONAL  |  GET_RANGE implementado               
+Documentación           |  ✅COMPLETA   |  README, API docs, ejemplos           
+
+Progreso: ██████████████████████ 100% COMPLETO 🎉
+
+## 🔧 Troubleshooting
+Error: "Resource busy"
+```bash
+# Descargar driver del kernel
+sudo rmmod snd_usb_audio
+
+# Ejecutar aplicación
+sudo python3 app.py
+
+# Recargar driver
+sudo modprobe snd_usb_audio
+Error: "Cannot import VSL_DSP_Driver"
+Asegúrate de tener los archivos separados correctamente:
+
+vsl_dsp_driver.py - Solo la clase del driver
+
+app.py - Tu aplicación que importa el driver
+```
+
+### Sin permisos USB
+```bash
+# Ejecutar con sudo
+sudo python3 app.py
+
+# O configurar udev rules (permanente)
+echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="194f", ATTR{idProduct}=="0101", MODE="0666"' | sudo tee /etc/udev/rules.d/99-audiobox.rules
+sudo udevadm control --reload-rules
+```
+
+## 🎓 Lecciones Aprendidas
+- No asumir el protocolo: La suposición inicial de Bulk Transfers era incorrecta
+
+- Wireshark es esencial: La captura USB reveló el protocolo real (UAC2)
+
+- Los descriptores USB contienen la verdad: Los Feature Units estaban documentados en los descriptores
+
+- UAC2 es estándar: No requiere protocolos propietarios complejos
+
+- Python + pyusb es suficiente: No se necesitó C/C++ para el PoC funcional
+
+## 🚀 Próximos Pasos
+ - GUI con PyQt/GTK para control visual
+
+ - Integración con PulseAudio/PipeWire
+
+- Soporte para más controles DSP (EQ, compressor)
+
+- Port a C/C++ para mejor rendimiento
+
+- Daemon de sistema para control persistente
+
+- Soporte para otros modelos AudioBox VSL
+
+## 📚 Referencias Técnicas
+- USB Audio Class 2.0 Specification: Protocolo estándar implementado
+
+- AudioBox 22 VSL: Dispositivo de prueba​
+
+- Descriptor USB: 6 interfaces, Feature Units 10 y 11 confirmados
+
+- pyusb Documentation: Biblioteca de comunicación USB
+
+## 🤝 Contribuciones
+Este proyecto demuestra que la ingeniería inversa de protocolos USB puede revelar que muchos dispositivos "propietarios" en realidad usan estándares abiertos (UAC2 en este caso).​
+
+## Contribuciones bienvenidas:
+
+Tests con otros modelos AudioBox VSL
+
+Implementaciones en otros lenguajes (C)
+
+Descubrimiento de controles DSP adicionales
+
+
+## Documentación antigua a continuación.
 
 ```c
 // Tabla de validación (llenar con datos reales):
@@ -219,22 +441,6 @@ void FUN_Send_Packet(const VSL_DSP_Packet *packet, size_t packet_length) {
 
 ---
 
-## ✅ CHECKLIST DE FINALIZACIÓN DEL PROYECTO
-
-### **Fase Actual: 90% - Bloqueadores Críticos**
-
-| Tarea | Estado | Notas |
-|-------|--------|-------|
-| **Lógica matemática DSP** | ✅ **COMPLETA** | Gain, Frequency encoding/decoding |
-| **Conversión Float→Int** | ✅ **VALIDADA** | Test: 0.75 → 40793 |
-| **Estructura de parámetros** | ✅ **CONFIRMADA** | `VSL_Parameter` con 8 campos |
-| **HIDAPI integrado** | ✅ **COMPILABLE** | `gcc -lhidapi-libusb` exitoso |
-| **Tamaño de paquete** | ✅ **CONFIRMADO** | 64 bytes (0x40) del desensamblado |
-| **VID/PID del dispositivo** | ⚠️ **BLOQUEADOR #1** | Ejecutar `vsl_discover` o buscar en desensamblado |
-| **Report ID** | ⚠️ **BLOQUEADOR #2** | Buscar `buf[0]` antes de `FUN_00412345` |
-| **Endianness verificado** | ⚠️ **BLOQUEADOR #3** | Verificar orden de bytes en desensamblado |
-| **Test con hardware real** | ⏳ **PENDIENTE** | Requiere bloqueadores #1, #2, #3 resueltos |
-| **Documentación API** | ⏳ **PENDIENTE** | Post-validación con hardware |
 
 <img width="709" height="873" alt="image" src="https://github.com/user-attachments/assets/123af69c-3f1a-4661-98fe-ba340dc4d373" />
 
@@ -244,22 +450,6 @@ void FUN_Send_Packet(const VSL_DSP_Packet *packet, size_t packet_length) {
 ## 🎯 Descripción
 
 Prueba de Concepto (PoC) production-ready del protocolo VSL-DSP para dispositivos de audio USB-HID, desarrollado mediante ingeniería inversa del driver Android.
-
-## 📊 Estado del Proyecto
-
-**Progreso: 90% Completo**
-
-✅ **Completado:**
-- Lógica matemática DSP (encoding/decoding)
-- Conversión Float→Int validada (0.75 → 40793)
-- Construcción de paquetes HID (64 bytes, Little-Endian)
-- Validación de rangos y casos extremos
-- Tests exhaustivos
-
-⚠️ **Bloqueadores (3 valores pendientes):**
-- `VSL_VENDOR_ID`: Extraer del hardware o desensamblado
-- `VSL_PRODUCT_ID`: Extraer del hardware o desensamblado
-- `VSL_REPORT_ID`: Extraer del desensamblado (buf[0] antes de FUN_00412345)
 
 ## 🚀 Instalación
 
