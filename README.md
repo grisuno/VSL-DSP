@@ -11,7 +11,7 @@ A través de análisis exhaustivo con Wireshark y captura de tráfico USB, se de
 
 ## 🧬 ARQUITECTURA FINAL CONFIRMADA
 Protocolo Identificado: USB Audio Class 2.0 (UAC2)
-
+```text
 Componente             |  Estado             |  Evidencia Técnica                                 
 -----------------------+---------------------+----------------------------------------------------
 Tipo de Protocolo      |  ✅IDENTIFICADO      |  USB Audio Class 2.0 Control Requests (NO HID/Bulk)
@@ -21,7 +21,9 @@ Control Requests       |  ✅IMPLEMENTADOS     |  SET_CUR (0x01), GET_CUR (0x01)
 Encoding de Volumen    |  ✅VALIDADO          |  16-bit Little-Endian, 1/256 dB steps              
 VID/PID                |  ✅CONFIRMADOS       |  0x194F:0x0101                                     
 Test con Hardware      |  ✅EXITOSO           |  Control de volumen y mute funcionando             
-Driver Python          |  ✅PRODUCTION-READY  |  API completa y documentada                        
+Driver Python          |  ✅PRODUCTION-READY  |  API completa y documentada
+```
+                
 ```python
 # ID
 VENDOR_ID = 0x194F
@@ -184,6 +186,7 @@ sudo python3 app.py
 
 ## ✅ CHECKLIST DE PROYECTO COMPLETADO
 
+```text
 Tarea                   |  Estado      |  Notas                                
 ------------------------+--------------+---------------------------------------
 Protocolo identificado  |  ✅COMPLETO   |  USB Audio Class 2.0 Control Transfers
@@ -198,7 +201,7 @@ Lectura de rangos       |  ✅FUNCIONAL  |  GET_RANGE implementado
 Documentación           |  ✅COMPLETA   |  README, API docs, ejemplos           
 
 Progreso: ██████████████████████ 100% COMPLETO 🎉
-
+```
 ## 🔧 Troubleshooting
 Error: "Resource busy"
 ```bash
