@@ -1,0 +1,17 @@
+VSL-DSP Protocol Analysis - lun 27 oct 2025 16:02:18 -03
+========================================
+
+--- ANÁLISIS 1: Resumen General ---
+
+--- ANÁLISIS 2: Control Transfers (bRequest 0x41) ---
+
+--- ANÁLISIS 3: TODOS los Control Transfers (Setup) ---
+
+--- ANÁLISIS 4: Data Transfers (Interfaz 4) ---
+frame.number|usb.endpoint_address|usb.data_len|usb.capdata
+
+--- ANÁLISIS 5: HEX DUMP (Primeros 10 paquetes relevantes) ---
+
+--- ANÁLISIS 6: Búsqueda de Report ID 0x06 (Versión) ---
+frame.number|usb.endpoint_address|usb.capdata
+

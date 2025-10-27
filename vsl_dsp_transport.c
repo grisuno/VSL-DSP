@@ -1,16 +1,95 @@
-// vsl_dsp_transport.c
+// vsl_dsp_transport.c (Añadir la Plantilla B completa aquí)
 
-#include "vsl_dsp_transport.h"
 #include <stdio.h>
-#include <math.h> 
-#include <hidapi/hidapi.h>
 #include <string.h>
+#include <math.h>
+#include <hidapi/hidapi.h>
+#include <stdlib.h>
+#include "vsl_config.h" 
+#include "vsl_dsp_transport.h" 
 
-// Reemplazar con los IDs de tu dispositivo
-#define VSL_VENDOR_ID 0x1234 // Ejemplo: 0x1234
-#define VSL_PRODUCT_ID 0x5678 // Ejemplo: 0x5678
-#define VSL_REPORT_ID 0x01 // Usualmente 0x00 o 0x01 para un Output Report
+// Handle de Singleton (Regla #5: Diseño Escalable)
+static hid_device *vsl_device_handle = NULL;
 
+
+// =======================================================
+// IMPLEMENTACIÓN DE TRANSPORTE FALTANTE
+// =======================================================
+
+// vsl_dsp_transport.c (Refactorización de VSL_Init_Device)
+
+// ... (las inclusiones y el singleton handle) ...
+
+int VSL_Init_Device(uint16_t vendor_id, uint16_t product_id) {
+    if (vsl_device_handle) return 0;
+    
+    // 1. Inicializar HIDAPI
+    if (hid_init() != 0) {
+        fprintf(stderr, "Error: HIDAPI init failed\n");
+        return -1;
+    }
+    
+    // 2. Enumerar todos los dispositivos PreSonus (194f)
+    struct hid_device_info *devs, *cur_dev;
+    // Usamos 0:0 para listar todos los dispositivos HID y encontrar la ruta correcta
+    devs = hid_enumerate(0x0, 0x0); 
+    cur_dev = devs;
+    
+    char *target_path = NULL;
+    
+    // 3. Buscar la interfaz de control (la que coincida con nuestro VID/PID)
+    while (cur_dev) {
+        if (cur_dev->vendor_id == vendor_id && cur_dev->product_id == product_id) {
+            // Encontrado! Tomar la ruta (path) y salir
+            target_path = strdup(cur_dev->path);
+            break; 
+        }
+        cur_dev = cur_dev->next;
+    }
+    
+    hid_free_enumeration(devs);
+    
+    if (target_path) {
+        // 4. Intentar abrir el dispositivo por la ruta exacta
+        vsl_device_handle = hid_open_path(target_path);
+        free(target_path);
+    }
+
+    if (!vsl_device_handle) {
+        // Si sigue fallando, es definitivamente un problema de permisos/kernel.
+        fprintf(stderr, "Error: Cannot open VSL device %04X:%04X via path.\n",
+                vendor_id, product_id);
+        hid_exit();
+        return -2;
+    }
+    
+    printf("VSL Device handle opened successfully via path: %04X:%04X\n", vendor_id, product_id);
+    return 0;
+}
+
+void VSL_Close_Device(void) {
+    if (vsl_device_handle) {
+        hid_close(vsl_device_handle);
+        vsl_device_handle = NULL;
+        printf("VSL Device handle closed\n");
+    }
+    hid_exit();
+}
+
+hid_device* VSL_Get_Device_Handle(void) {
+    return vsl_device_handle;
+}
+
+// ... (El resto de tus funciones FUN_Send_Packet y VSL_Build_And_Send_Packet)
+
+// NOTA: En VSL_Build_And_Send_Packet, ¡quita la línea del header!
+/*
+    VSL_DSP_Packet packet = {
+        //.header = 0x0000, // << QUITAR ESTA LINEA
+        .param_id = dsp_param_id,
+        .encoded_value = final_int
+    };
+*/
 /**
  * @brief Función de I/O real usando HIDAPI.
  * @note DEBE SER REEMPLAZADA con la lógica específica de tu dispositivo (Report ID, longitud, etc.)
@@ -18,9 +97,9 @@
 void FUN_Send_Packet(const VSL_DSP_Packet *packet, size_t packet_length) {
     
     // 1. Abrir el dispositivo
-    hid_device *handle = hid_open(VSL_VENDOR_ID, VSL_PRODUCT_ID, NULL);
+    hid_device *handle = VSL_Get_Device_Handle(); // O usar el handle estático vsl_device_handle
     if (!handle) {
-        fprintf(stderr, "Error: No se pudo abrir el dispositivo VSL.\n");
+        fprintf(stderr, "Error: Dispositivo VSL no inicializado.\n");
         return;
     }
     
@@ -43,7 +122,7 @@ void FUN_Send_Packet(const VSL_DSP_Packet *packet, size_t packet_length) {
     memcpy(&buf[3], &net_value, sizeof(uint16_t)); 
     
     // 4. Enviar el paquete (el Output Report)
-    int res = hid_send_feature_report(handle, buf, sizeof(buf)); // O hid_write()
+    int res = hid_write(handle, buf, sizeof(buf));
     
     if (res < 0) {
         fprintf(stderr, "Error al enviar el paquete HID: %ls\n", hid_error(handle));
@@ -69,7 +148,6 @@ void VSL_Build_And_Send_Packet(uint16_t dsp_param_id, float encoded_float) {
 
     // 2. Construcción del Paquete
     VSL_DSP_Packet packet = {
-        .header = 0x0000, // Reemplazar si el protocolo usa un header diferente
         .param_id = dsp_param_id,
         .encoded_value = final_int
     };
