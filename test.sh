@@ -121,3 +121,41 @@ echo "========================================================================"
 
 # Cambiar permisos para análisis
 sudo chmod 644 ${CAPTURE_FILE}
+
+
+# test-audiobox-vsl.sh
+# Quick test script for AudioBox 22 VSL Driver
+
+cat << 'EOF'
+╔═══════════════════════════════════════════════════════════╗
+║   AudioBox 22 VSL Driver - Quick Test                    ║
+╚═══════════════════════════════════════════════════════════╝
+
+EOF
+
+echo "🔍 Checking module status..."
+if lsmod | grep -q audiobox_vsl; then
+    echo "✅ Module is loaded"
+    lsmod | grep audiobox
+else
+    echo "❌ Module is NOT loaded"
+    echo "   Run: sudo insmod audiobox_vsl.ko"
+    exit 1
+fi
+
+echo ""
+echo "🔍 Checking for AudioBox device..."
+if lsusb | grep -q "194f:0101"; then
+    echo "✅ AudioBox 22 VSL detected"
+    lsusb | grep "194f:0101"
+else
+    echo "⚠️  AudioBox 22 VSL not detected"
+    echo "   Please connect your AudioBox"
+fi
+
+echo ""
+echo "📋 Recent kernel messages:"
+dmesg | grep -i "audiobox\|vsl" | tail -n 10
+
+echo ""
+echo "✅ Test complete!"
