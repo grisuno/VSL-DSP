@@ -1,6 +1,23 @@
 # 🎯 🎯 VSL-DSP Open Source Driver - ✅ PROYECTO COMPLETADO
 ![1_NFRogTqj0gCKMQEIMw19Pg](https://github.com/user-attachments/assets/29cea052-00c0-4ef6-88cb-bb293f254959)
 
+# AudioBox 22 VSL Linux Driver
+
+Open source kernel driver for PreSonus AudioBox 22 VSL.
+
+## Features
+
+- ✅ Automatic device detection
+- ✅ Works with standard ALSA driver
+- ✅ Logs device information to kernel
+- ✅ Auto-load on boot (optional)
+
+## Quick Installation
+
+```bash
+./install.sh
+```
+
 Desarrollar un Cliente Open Source (Driver/Library) funcional para dispositivos de audio VSL-DSP
 <img width="5652" height="12737" alt="NotebookLM Mind Map" src="https://github.com/user-attachments/assets/97e82732-83f0-4fb8-98e5-85ba5df3851d" />
 ## 🎉 ESTADO DEL PROYECTO: 100% COMPLETADO
