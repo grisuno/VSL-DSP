@@ -12,18 +12,17 @@ Open source kernel driver for PreSonus AudioBox 22 VSL.
 - ✅ Logs device information to kernel
 - ✅ Auto-load on boot (optional)
 
-## ⚠️ NOTA IMPORTANTE SOBRE EL CONTENIDO DEL REPO
+## ⚠️ IMPORTANT NOTICE ABOUT REPO CONTENTS
 
-Este repositorio contiene el proceso completo de investigación y desarrollo del driver para el AudioBox 22 VSL. Muchos de los archivos aquí presentes (como install.sh, vsl_dsp_poc.py, audiobox_vsl_standalone.c, etc.) son parte del proceso creativo y de aprendizaje, y no representan la versión final del driver.
+This repository contains the complete research and development process for the AudioBox 22 VSL driver. Many files here (install.sh, vsl_dsp_poc.py, audiobox_vsl_standalone.c, etc.) are part of the creative and learning process—they do not represent the final driver.
 
-## ✅ La implementación definitiva está en:
-
-src/linux/sound/usb/audiobox_vsl.c → Driver ALSA completo
-src/linux/sound/usb/audiobox_vsl.h → Cabeceras del driver
-src/linux/sound/usb/mixer_quirks.c → Integración con snd-usb-audio
-### 🔧 Archivos de apuntes y PoCs serán eliminados en una futura versión limpia del repositorio. Por ahora, se mantienen como documentación del proceso y evidencia de la evolución del proyecto.
-## 🧠 Este proyecto fue desarrollado integramente por mi, sin experiencia previa en desarrollo de drivers de kernel, como parte de un proceso de aprendizaje profundo en ingeniería inversa, protocolos USB y arquitectura de audio en Linux.
-así que puede contener muchos errores. cualquier corrección no solo es bienvenida sino que ampliamente agradecida con el reconocimiento merecido en este README.md
+## ✅ The definitive implementation is in:
+src/linux/sound/usb/audiobox_vsl.c → Full ALSA driver
+src/linux/sound/usb/audiobox_vsl.h → Driver headers
+src/linux/sound/usb/mixer_quirks.c → Integration with snd-usb-audio
+### 🔧 Scratch files and PoCs will be removed in a future clean-up release. For now they are kept as process documentation and evidence of the project’s evolution.
+## 🧠 I built this entire project myself, with no prior kernel-driver experience, as a deep-learning journey into reverse-engineering, USB protocols, and Linux audio architecture.
+Expect bugs — any correction is not only welcome but will be credited right here in the README.
 
 ## Quick Installation
 
