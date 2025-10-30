@@ -33,6 +33,20 @@ cat << 'EOF'
 ╚═══════════════════════════════════════════════════════════╝
 
 EOF
+install_alsa_controls() {
+    echo -e "${BLUE}🔧 Installing ALSA controls...${NC}"
+    
+    # Crear el módulo ALSA como archivo separado
+    cat > audiobox_vsl_alsa.c << 'EOF'
+#include "audiobox_vsl.h"
+// Tu implementación completa del quirk ALSA aquí
+EOF
+    
+    # Instrucciones para integrar con snd-usb-audio
+    echo -e "${YELLOW}⚠️  To enable ALSA controls:${NC}"
+    echo -e "1. Add to mixer_quirks.c: case USB_ID(0x194f, 0x0101): err = snd_audiobox_vsl_init(mixer); break;"
+    echo -e "2. Rebuild kernel module: sudo dkms build -m snd-usb-audio -v $(uname -r)"
+}
 
 echo -e "${BLUE}🔍 Checking system requirements...${NC}"
 
@@ -265,5 +279,22 @@ cat << 'EOFFINAL3'
 Thank you for using AudioBox VSL Driver!
 
 EOFFINAL3
+
+
+
+# Agrega al menú final
+echo -e "${BLUE}Select installation mode:${NC}"
+echo "1) VSL button support only (default)"
+echo "2) Full controls (ALSA + VSL button) - requires DKMS"
+read -p "Choice [1-2]: " choice
+
+case $choice in
+    2)
+        install_alsa_controls
+        ;;
+    *)
+        echo -e "${GREEN}✅ VSL button support installed${NC}"
+        ;;
+esac
 
 echo -e "${GREEN}✅ Installation complete!${NC}"
