@@ -12,6 +12,19 @@ Open source kernel driver for PreSonus AudioBox 22 VSL.
 - ✅ Logs device information to kernel
 - ✅ Auto-load on boot (optional)
 
+## ⚠️ NOTA IMPORTANTE SOBRE EL CONTENIDO DEL REPO
+
+Este repositorio contiene el proceso completo de investigación y desarrollo del driver para el AudioBox 22 VSL. Muchos de los archivos aquí presentes (como install.sh, vsl_dsp_poc.py, audiobox_vsl_standalone.c, etc.) son parte del proceso creativo y de aprendizaje, y no representan la versión final del driver.
+
+## ✅ La implementación definitiva está en:
+
+src/linux/sound/usb/audiobox_vsl.c → Driver ALSA completo
+src/linux/sound/usb/audiobox_vsl.h → Cabeceras del driver
+src/linux/sound/usb/mixer_quirks.c → Integración con snd-usb-audio
+### 🔧 Archivos de apuntes y PoCs serán eliminados en una futura versión limpia del repositorio. Por ahora, se mantienen como documentación del proceso y evidencia de la evolución del proyecto.
+## 🧠 Este proyecto fue desarrollado integramente por mi, sin experiencia previa en desarrollo de drivers de kernel, como parte de un proceso de aprendizaje profundo en ingeniería inversa, protocolos USB y arquitectura de audio en Linux.
+así que puede contener muchos errores. cualquier corrección no solo es bienvenida sino que ampliamente agradecida con el reconocimiento merecido en este README.md
+
 ## Quick Installation
 
 ```bash
