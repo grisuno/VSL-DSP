@@ -2,7 +2,7 @@
 /*
  * PreSonus AudioBox 22 VSL - Enhanced ALSA Control Implementation
  * 
- * Copyright (c) 2025 by grisun0 (LazyOwn RedTeam Framework Project)
+ * Copyright (c) 2025 by grisuno (LazyOwn Project)
  * 
  * ARCHITECTURAL OVERVIEW:
  * This driver implements a quirk for the PreSonus AudioBox 22 VSL,
@@ -514,7 +514,17 @@ static int audiobox_vsl_create_control(struct usb_mixer_interface *mixer,
     struct snd_kcontrol *kctl;
     int err;
     
-    /* Allocate mixer element info */
+    /* === PILAR 1: Evidencia > Intuición ===
+     * La interfaz 3 (0x03) maneja el botón VSL - NO la reclamamos
+     * Confirmado por captura USB del botón VSL
+     */
+    if (mixer->hostif->desc.bInterfaceNumber == 3) {
+        dev_info(&mixer->chip->dev->dev,
+                 "audiobox_vsl: Skipping interface 3 (VSL button handler)\n");
+        return 0;  // Éxito sin reclamar
+    }
+    
+    /* Resto de la función igual... */
     elem = kzalloc(sizeof(*elem), GFP_KERNEL);
     if (!elem) {
         dev_err(&mixer->chip->dev->dev,
@@ -522,15 +532,13 @@ static int audiobox_vsl_create_control(struct usb_mixer_interface *mixer,
         return -ENOMEM;
     }
     
-    /* Initialize element info */
     elem->head.mixer = mixer;
     elem->head.id = 0;
     elem->control = unit_id;
     elem->idx_off = 0;
-    elem->channels = 2;  /* Stereo */
+    elem->channels = 2;
     elem->val_type = USB_MIXER_S16;
     
-    /* Create ALSA control */
     kctl = snd_ctl_new1(template, elem);
     if (!kctl) {
         dev_err(&mixer->chip->dev->dev,
@@ -539,7 +547,6 @@ static int audiobox_vsl_create_control(struct usb_mixer_interface *mixer,
         return -ENOMEM;
     }
     
-    /* Register control with ALSA */
     err = snd_usb_mixer_add_list(&elem->head, kctl, false);
     if (err < 0) {
         dev_err(&mixer->chip->dev->dev,
