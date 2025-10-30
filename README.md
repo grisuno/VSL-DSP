@@ -29,7 +29,15 @@ Expect bugs — any correction is not only welcome but will be credited right he
 ```bash
 ./install.sh
 ```
+## Quick build with dkms
 
+```bash
+sudo dkms remove snd-usb-audio-audiobox/1.0 --all
+sudo dkms add -m snd-usb-audio-audiobox -v 1.0
+sudo dkms build -m snd-usb-audio-audiobox -v 1.0
+sudo dkms install -m snd-usb-audio-audiobox -v 1.0 -k $(uname -r) --force
+
+```
 Desarrollar un Cliente Open Source (Driver/Library) funcional para dispositivos de audio VSL-DSP
 <img width="5652" height="12737" alt="NotebookLM Mind Map" src="https://github.com/user-attachments/assets/97e82732-83f0-4fb8-98e5-85ba5df3851d" />
 ## 🎉 ESTADO DEL PROYECTO: 100% COMPLETADO
