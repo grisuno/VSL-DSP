@@ -1,4 +1,4 @@
-# 🎯 🎯 VSL-DSP Open Source Driver - ✅ PROYECTO COMPLETADO
+# 🎯 🎯 VSL-DSP Open Source Driver
 ![1_NFRogTqj0gCKMQEIMw19Pg](https://github.com/user-attachments/assets/29cea052-00c0-4ef6-88cb-bb293f254959)
 
 # AudioBox 22 VSL Linux Driver
