@@ -26,4 +26,8 @@ uninstall:
 	/sbin/depmod -a $(shell uname -r) || true
 	@echo "Module uninstalled."
 
-.PHONY: all clean install uninstall
+# Load the module into the kernel
+modprobe:
+	sudo modprobe audiobox_vsl
+
+.PHONY: all clean install uninstall modprobe
