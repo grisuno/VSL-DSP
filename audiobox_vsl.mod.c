@@ -18,5 +18,7 @@ __section(".gnu.linkonce.this_module") = {
 MODULE_INFO(depends, "usbcore");
 
 MODULE_ALIAS("usb:v194Fp0101d*dc*dsc*dp*ic*isc*ip*in*");
+MODULE_ALIAS("usb:v194Fp0102d*dc*dsc*dp*ic*isc*ip*in*");
+MODULE_ALIAS("usb:v194Fp0103d*dc*dsc*dp*ic*isc*ip*in*");
 
-MODULE_INFO(srcversion, "5C6D6F396B17212EA8CFB73");
+MODULE_INFO(srcversion, "0CA3D1691480A9541F2DEC9");

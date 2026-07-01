@@ -1,140 +1,203 @@
-# 🎯 🎯 VSL-DSP Open Source Driver
-![1_NFRogTqj0gCKMQEIMw19Pg](https://github.com/user-attachments/assets/29cea052-00c0-4ef6-88cb-bb293f254959)
-
 # VSL-DSP Open Source Driver
 
-Open source Linux kernel driver for the PreSonus AudioBox 22 VSL audio interface.
+Open source Linux kernel module for the PreSonus AudioBox VSL family
+of USB audio interfaces.
 
-This driver is a simple USB device detector that logs when the AudioBox 22 VSL is connected or disconnected. It does **not** interfere with the standard `snd-usb-audio` driver, allowing full audio functionality while providing kernel-level device detection.
+The module detects any member of the AudioBox VSL family that is
+plugged into the USB bus and logs the connection and disconnection to
+the kernel ring buffer. It is a passive detector: it never claims the
+audio interface, so the standard `snd-usb-audio` driver keeps owning
+the device and ALSA playback, capture, and mixer continue to work
+without re-plug. The driver is licensed under GPL-2.0-or-later.
+
+## Supported hardware
+
+| Model             | USB ID (vendor:product) | Bus       |
+| ----------------- | ----------------------- | --------- |
+| AudioBox 22 VSL   | `194f:0101`             | USB 2.0   |
+| AudioBox 44 VSL   | `194f:0102`             | USB 2.0   |
+| AudioBox 1818 VSL | `194f:0103`             | USB 2.0   |
+
+The three models share the same UAC2 audio interface and the same HID
+control plane. Adding support for a new product ID is a one-line
+change in `audiobox_vsl.h`.
 
 ## Features
 
-- ✅ Automatic device detection via USB vendor/product ID (0x194f:0x0101)
-- ✅ Works alongside the standard ALSA `snd-usb-audio` driver (no conflict)
-- ✅ Logs device connection/disconnection and basic info to the kernel ring buffer
-- ✅ Optional automatic loading at boot via `/etc/modules-load.d/`
-- ✅ Simple build and install with `make` and `sudo make install`
-- ✅ GPL-2.0-or-later licensed
+- Automatic detection of every AudioBox VSL model via USB VID/PID.
+- Coexists with `snd-usb-audio` (no interface claim, no audio loss).
+- Connection and disconnection logged to the kernel ring buffer.
+- Optional auto-load at boot via `/etc/modules-load.d/`.
+- Single source of truth in `audiobox_vsl.h` for every supported PID.
+- CMocka unit test suite for the model lookup table and accessor.
+- Hardening flags on every userspace test compile (`-Wall -Wextra
+  -Werror -fstack-protector-strong -D_FORTIFY_SOURCE=2`).
+- AddressSanitizer + UndefinedBehaviorSanitizer target (`make asan`).
+- GPL-2.0-or-later.
 
-## Quick Start
+## Requirements
 
-### 1. Install build dependencies (run once as root)
+- Linux kernel headers for the running kernel.
+- GCC and GNU make.
+- For the test suite: `libcmocka-dev` (Debian/Ubuntu/Kali).
+- Root access to install and load the module.
 
-```bash
+## Quick start
+
+### 1. Install build dependencies (one time, as root)
+
+```sh
 sudo ./install.sh
 ```
 
-This script installs the necessary build tools (`build-essential`, `perl`) and the kernel headers for your running kernel.
+This installs `build-essential`, `perl`, `linux-headers-$(uname -r)`,
+and (if available) `libcmocka-dev`.
 
-### 2. Build the driver
+### 2. Verify the build environment
 
-```bash
+```sh
+./configure
+```
+
+### 3. Build the module and run the test suite
+
+```sh
 make
 ```
 
-This produces `audiobox_vsl.ko` in the current directory.
+This produces `audiobox_vsl.ko` in the project directory and runs the
+CMocka unit tests for the model lookup table.
 
-### 3. Install the driver
+### 4. Install the module
 
-```bash
+```sh
 sudo make install
 ```
 
-This copies the kernel module to `/lib/modules/$(uname -r)/extra/`, runs `depmod`, and creates `/etc/modules-load.d/audiobox-vsl.conf` so the module loads automatically on boot.
+This copies the module to `/lib/modules/$(uname -r)/extra/`, runs
+`depmod`, and (in a follow-up step you choose to enable) can register
+it in `/etc/modules-load.d/` for automatic loading at boot.
 
-### 4. Verify it works
+### 5. Load the module
 
-Plug in or unplug your AudioBox 22 VSL and check the kernel log:
-
-```bash
-dmesg | grep -i audiobox
+```sh
+sudo make modprobe
 ```
 
-You should see messages like:
+or:
 
-```
-[  ...] 🎉 AudioBox 22 VSL detected! Vendor: 194f, Product: 0101
-[  ...] Manufacturer: PreSonus Audio Electronics
-[  ...] Product: AudioBox 22 VSL
-[  ...] Serial: <serial-number>
-[  ...] 🔌 AudioBox 22 VSL disconnected
-```
-
-### 5. Manual loading/unloading (optional)
-
-```bash
-# Load the module
+```sh
 sudo modprobe audiobox_vsl
-
-# Unload the module
-sudo rmmod audiobox_vsl
 ```
 
-### 6. Uninstall the driver
+### 6. Verify detection
 
-```bash
+Plug in any AudioBox VSL device and watch the kernel log:
+
+```sh
+dmesg --follow | grep audiobox_vsl
+```
+
+Expected output:
+
+```
+audiobox_vsl: detected 'AudioBox 22 VSL' (194f:0101)
+audiobox_vsl:   manufacturer=PreSonus Audio Electronics product=AudioBox 22 VSL serial=...
+audiobox_vsl: disconnected 'AudioBox 22 VSL' (194f:0101)
+```
+
+The model name reflects the actual product ID of the plugged-in
+device.
+
+### 7. Uninstall
+
+```sh
 sudo make uninstall
 ```
 
-This removes the module file, the mods-load.d entry, and runs `depmod`.
+## Test targets
 
-## How It Works
+```sh
+make test    # build and run the CMocka unit test suite
+make asan    # build and run the test suite under ASan+UBSan
+make info    # print resolved build variables
+make help    # list every available target
+```
 
-The driver registers a USB driver for the AudioBox 22 VSL's vendor and product ID. When the device is connected, the `probe` function prints device information to the kernel log. Importantly, the probe function returns `-ENODEV`, which tells the USB core **not** to bind this driver to the device. This allows the standard `snd-usb-audio` driver to claim the interface and provide full audio functionality (playback, capture, mixer controls) via ALSA.
+The test suite covers the model lookup table and accessor:
+`audiobox_lookup_model(pid)` returns a pointer to the matching model
+entry for every supported PID and `NULL` otherwise. The suite also
+asserts that the model table is well formed: PIDs are unique, product
+names are non-empty, and the count matches the array size.
 
-Thus, this driver serves only as a detector and logger; it does not interfere with audio operation.
+## Adding a new product ID
 
-## Source Files
+To support another model that uses the same UAC2 control plane:
 
-- `audiobox_vsl.c` – Main driver source (USB detection and logging)
-- `Makefile` – Build rules (`make`, `make install`, `make uninstall`, `make clean`)
-- `install.sh` – Installs build dependencies (run as root)
-- `configure` – Simple script to verify build environment (optional)
-- `audiobox_vsl.h` – Header (kept for compatibility with existing tree)
+1. Add an enumerator to `audiobox_model_pid_t` in `audiobox_vsl.h`
+   (for example `AUDIOBOX_MODEL_XX_VSL = 0x0104U`).
+2. Append a matching entry to `audiobox_models[]` in the same file
+   with the canonical product name.
+3. The kernel device table in `audiobox_vsl.c` is generated from
+   that single array; no other source change is required.
+4. Add a unit test in `tests/test_audiobox_vsl.c` that asserts the
+   new PID resolves to the new product name.
 
-## About the Python PoC
+## Repository layout
 
-This repository also contains a Python proof-of-concept (`vsl_dsp_poc/`) that reverse-engineers the AudioBox 22 VSL's USB-HID protocol for direct DSP control (volume, mute, EQ, etc.). That project is separate from this kernel driver and is provided for reference and experimentation. See the `vsl_dsp_poc/` directory for its own README.
+```
+.
+├── audiobox_vsl.c                 kernel detector module
+├── audiobox_vsl.h                 public interface and configuration
+├── Makefile                       single source of truth for build, test, install
+├── install.sh                     installs build dependencies (root only)
+├── configure                      verifies the build environment
+├── README.md                      this file
+├── CLAUDE.md                      working contract for AI agents and maintainers
+├── LICENSE                        GPL-2.0-or-later
+├── spec/
+│   └── audiobox_vsl.md            BDD specification for the detector
+├── src/
+│   ├── vsl_dsp_logic.c            userspace DSP math library
+│   ├── vsl_dsp_logic.h
+│   ├── vsl_dsp_transport.c        userspace HID transport
+│   └── vsl_dsp_transport.h
+├── tests/
+│   └── test_audiobox_vsl.c        CMocka unit test suite
+├── docs/                          auxiliary documentation
+├── .github/                       issue and pull request templates
+└── legacy/                        historical artefacts (Python PoC, DKMS
+                                   installer, packet captures); see
+                                   legacy/README.md
+```
+
+## How it works
+
+`audiobox_vsl.c` registers a `struct usb_driver` whose device table
+contains one entry per supported product ID. The table is built from
+`audiobox_models[]` in `audiobox_vsl.h`, which is the only place
+where the product IDs are listed.
+
+When the USB core matches a device, `probe` is called. The handler:
+
+1. Looks up the product ID with `audiobox_lookup_model()`.
+2. Logs the model name, the raw VID/PID, and the USB string
+   descriptors (manufacturer, product, serial) to the kernel ring
+   buffer via `dev_info`.
+3. Returns `-ENODEV` so the USB core does not bind the driver to the
+   interface. The standard `snd-usb-audio` driver therefore remains
+   the owner and ALSA continues to provide full audio functionality
+   (playback, capture, mixer) without any re-plug.
+
+When the device is unplugged, `disconnect` logs the model name and
+the VID/PID and returns.
+
+The detector never touches the HID control endpoint, never allocates
+memory in the hot path, and never formats untrusted input. The
+canonical product name comes from a `static const` table; the USB
+string descriptors are logged verbatim by the kernel `dev_info` API
+using `%s` with a NULL guard.
 
 ## License
 
-This software is licensed under the **GPL-2.0-or-later** license. See the `LICENSE` file for details.
-
-## Contributions
-
-Contributions are welcome! If you have improvements to the driver, packaging, or documentation, please open an issue or submit a pull request.
-
-## Acknowledgments
-
-- Thanks to the PreSonus AudioBox 22 VSL community for their interest in open-source drivers.
-- Inspired by reverse‑engineering efforts to understand USB audio devices.
-
----
-**Version:** 1.0.0  
-**Last updated:** 2026-06-26
-
-<img width="807" height="858" alt="image" src="https://github.com/user-attachments/assets/2ede9d70-ae80-4936-89b3-b0e4292dec81" />
-
----
-
-<img width="709" height="873" alt="image" src="https://github.com/user-attachments/assets/123af69c-3f1a-4661-98fe-ba340dc4d373" />
-
-## 🔗 Links (Because Sharing Is Power)
-- 📓 Wiki: [https://deepwiki.com/grisuno/blacksandbeacon](https://deepwiki.com/grisuno/blacksandbeacon)
-- 📰 Blog: [https://medium.com/@lazyown.redteam/black-sand-beacon-when-your-linux-box-starts-whispering-to-c2-in-aes-256-cfb-and-no-one-notices-105ca5ed9547](https://medium.com/@lazyown.redteam/black-sand-beacon-when-your-linux-box-starts-whispering-to-c2-in-aes-256-cfb-and-no-one-notices-105ca5ed9547)
-- 🎤 Podcast: [https://www.podbean.com/eas/pb-qe42t-198ee9d](https://www.podbean.com/eas/pb-qe42t-198ee9d)
-- 🐙 GitHub: [https://github.com/grisuno/beacon](https://github.com/grisuno/beacon)
-- 🐙 GitHub: [https://github.com/grisuno/LazyOwn](https://github.com/grisuno/LazyOwn)
-- 🩸 Patreon: [https://www.patreon.com/c/LazyOwn](https://www.patreon.com/c/LazyOwn)
-- 🐙 GitHub: [https://github.com/grisuno/CVE-2022-22077](https://github.com/grisuno/CVE-2022-22077)
-- 🧠 LazyOwn Framework: [https://github.com/grisuno/LazyOwn](https://github.com/grisuno/LazyOwn)
-- 🌐 Web: [https://grisuno.github.io/LazyOwn/](https://grisuno.github.io/LazyOwn/)
-- 📰 Blog: [https://medium.com/@lazyown.redteam](https://medium.com/@lazyown.redteam)
-- 🎥 Videolog: [https://youtu.be/spgLpv3XkiA](https://youtu.be/spgLpv3XkiA)
-- 🧪 QuantumVault: [https://quantumvault.pro/landing](https://quantumvault.pro/landing)
-- 🧑‍💻 HTB: [https://app.hackthebox.com/users/1998024](https://app.hackthebox.com/users/1998024)
-- ☕ Ko-fi: [https://ko-fi.com/grisuno](https://ko-fi.com/grisuno) (Buy me a yerba mate for the next all-nighter)
-
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Shell Script](https://img.shields.io/badge/shell_script-%23121011.svg?style=for-the-badge&logo=gnu-bash&logoColor=white) ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y2Z73AV)
+GPL-2.0-or-later. See the `LICENSE` file for the full text.

@@ -1,322 +1,403 @@
-# VSL-DSP — Driver & Cliente Open Source para PreSonus AudioBox 22 VSL
+# CLAUDE.md
 
-> **Misión:** desarrollar un cliente open source (driver de kernel + librería
-> userspace) funcional para el dispositivo de audio PreSonus AudioBox 22 VSL,
-> mediante ingeniería inversa del driver Android desensamblado y comunicación
-> USB-HID en Linux. Cada constante debe ser trazable al desensamblado original;
-> la suposición es el enemigo de la ingeniería inversa.
+> **Mission:** build a free software open source driver (kernel module
+> plus userspace library) for the PreSonus AudioBox VSL family of USB
+> audio interfaces, by reverse engineering the disassembled Android
+> driver and exposing a USB-HID control plane to Linux. Every constant
+> must be traceable to a source of evidence; assumption is the enemy
+> of reverse engineering.
 
-Este archivo es el contrato de trabajo para cualquier agente (humano o IA) que
-tenga este repositorio. **Estas reglas anulan comportamientos por defecto.**
-
----
-
-## 1. Los seis principios inquebrantables
-
-1. **Zero Assumption (No Suposición Absoluta)** — Ningún valor se asume. No se
-   inventan VID/PID, Report ID ni endianness. Si falta un valor del desensamblado,
-   se deja como `/* FIXME: extraer del desensamblado */` y se documenta el
-   bloqueador; **nunca** se rellena con un placeholder plausible. Toda constante
-   debe tener una fuente comprobable (Ghidra/IDA, `lsusb`, captura USB, o el
-   binario `.so`).
-2. **Evidence over Intuition** — Cada constante, offset o máscara del código
-   userspace debe poderse enlazar a una función del desensamblado
-   (`FUN_00412345`, `FUN_00132c90`, etc.) o a una captura del hardware real.
-   "Probablemente es Little-Endian" no es evidencia.
-3. **Safe by Default** — La configuración insegura **no debe ser representable**
-   en la API. Validación de punteros, límites de buffer (`sizeof`), manejo de
-   errores de retorno, sin `strcpy`/overflow. Fallar cerrado: si una garantía no
-   se puede verificar, se rechaza la operación. Los 64 bytes del paquete HID son
-   un límite duro, no un sugerencia.
-4. **Non-Interference (el detector no rompe el audio)** — El driver de kernel
-   **no reclama** la interfaz USB: `probe` retorna `-ENODEV` para que
-   `snd-usb-audio` (ALSA) siga gestionando playback/capture/mixer. El módulo es
-   detector y logger; **jamás** debe competir con el driver de audio estándar. Si
-   una carga del módulo silencia o captura el dispositivo, es un bug crítico.
-5. **Traceability (Nomenclatura Inmutable)** — Los nombres extraídos del
-   desensamblado se mantienen 1:1: `VSL_Encode_Gain`, `VSL_Map_Frequency`,
-   `VSL_Decode_Frequency`, `VSL_Parameter`, `FUN_00412345`, `FUN_Send_Packet`.
-   No se renombran a `_v2`/`_New`/`_Fixed`. La trazabilidad al binario original
-   es un requerimiento, no un capricho estético.
-6. **Extensible by Design** — Todo código userspace debe anticipar 100+
-   parámetros DSP futuros sin refactoring: enum centralizado de IDs
-   (`VSL_ParamID`), base de datos indexable (`VSL_Params_Database[]`), API
-   genérica `VSL_Set_Parameter(id, value)`. Acceso O(1) por ID.
-
-**Doctrina de separación (kernel vs userspace):** el módulo `.ko` y la librería
-HIDAPI son componentes distintos con contratos distintos. El kernel detecta y
-loguea; el userspace controla el DSP. No se mezclan responsabilidades ni se
-introduce lógica DSP dentro del módulo de kernel.
+This file is the working contract for any agent (human or AI) that
+works on this repository. **These rules override default behaviour.**
 
 ---
 
-## 2. Restricciones de lenguaje y estilo
+## 1. The six unbreakable principles
 
-- **Kernel: C puro (kernel Linux, C11 GCC).** Nada de C++, Rust ni dependencias
-  userspace dentro del módulo. Headers estándar del kernel (`<linux/module.h>`,
-  `<linux/usb.h>`, `<linux/printk.h>`); **nunca** libc.
-- **Userspace (PoC/librería): C puro (C11)** con HIDAPI
-  (`-lhidapi-libusb`). Preparado para wrappers C++ vía `extern "C"`.
-- **Identificadores y strings en inglés.** La documentación (`spec/`, este
-  archivo, `README.md`) puede estar en español; el código, no. Excepción: los
-  nombres inmutables del desensamblado (`FUN_*`) se mantienen tal cual.
-- Sin emojis en el código fuente del kernel/userspace (los `🎉`/`🔌` del log
-  del detector son herencia del README/demo y se toleran en `dev_info`; en nueva
-  lógica userspace se evitan). Comentarios solo cuando explican un *porqué* no
-  evidente; los headers llevan documentación de contrato.
-- Nombres con prefijo de módulo (`audiobox_` para el detector kernel, `VSL_` para
-  la librería DSP userspace). Sin estado global mutable innecesario; el handle
-  HID es singleton explícito (`vsl_device_handle`) con ciclo de vida claro
-  (`VSL_Init_Device`/`VSL_Close_Device`). Cada `malloc`/`hid_open` tiene su
-  liberador idempotente.
+1. **Zero Assumption.** No value is invented. No VID, PID, Report ID,
+   or endianness is guessed. If a value is missing from the
+   disassembly, it is left as `/* FIXME: extract from the
+   disassembly */` and the blocker is documented; it is **never**
+   filled with a plausible placeholder. Every constant has a
+   verifiable source (Ghidra/IDA, `lsusb`, USB capture, the binary
+   `.so`, or, for the kernel detector, the published `lsusb` table).
+2. **Evidence over Intuition.** Every constant, offset, or mask in
+   userspace code is linked to a function from the disassembly
+   (`FUN_00412345`, `FUN_00132c90`, ...) or to a real-hardware
+   capture. "Probably little-endian" is not evidence.
+3. **Safe by Default.** The insecure configuration must not be
+   representable. Pointer validation, `sizeof` buffer bounds, return
+   code handling, no `strcpy`, no overflow. Fail closed: if a
+   guarantee cannot be verified, the operation is rejected. The 64
+   byte HID packet is a hard limit, not a suggestion.
+4. **Non-Interference (the detector must not break audio).** The
+   kernel module does **not** claim the USB interface: `probe`
+   returns `-ENODEV` so `snd-usb-audio` (ALSA) keeps owning
+   playback, capture, and mixer. The module is a detector and
+   logger; it must never compete with the standard audio driver. If
+   a module load silences or captures the device, that is a
+   critical bug.
+5. **Traceability (immutable naming).** Names extracted from the
+   disassembly are kept verbatim: `VSL_Encode_Gain`,
+   `VSL_Map_Frequency`, `VSL_Decode_Frequency`, `VSL_Parameter`,
+   `FUN_00412345`, `FUN_Send_Packet`. They are not renamed to
+   `_v2`, `_New`, or `_Fixed`. Traceability to the original binary
+   is a requirement, not a stylistic preference.
+6. **Extensible by Design.** Every contract anticipates growth
+   without refactoring. For the detector: a single
+   `audiobox_models[]` array in `audiobox_vsl.h` is the source of
+   truth for the USB device table, the model enum, and the lookup
+   function. Adding a new product ID is a one-line change in that
+   array plus a unit test.
 
----
-
-## 3. Metodología: SDD + TDD estricto + BDD Given-When-Then
-
-Para cada módulo, el ciclo es inviolable y **en este orden**, modo boyscout
-extintor de deuda técnica:
-
-1. **Spec** — `spec/<modulo>.md`: entradas, salidas, tabla de errores, garantías
-   de seguridad, qué queda fuera de alcance, y —crítico para este proyecto— la
-   **fuente de cada constante** (función del desensamblado o captura USB). Usando
-   Dado-Cuando-Entonces (BDD).
-2. **Test (rojo)** — `tests/test_<modulo>.c` (userspace: CMocka; kernel: KUnit o
-   framework de módulo test). Debe **fallar** porque no hay implementación todavía.
-   Para la lógica DSP pura (encode/decode gain, mapeo de frecuencia, conversión
-   float→int) los tests son unitarios sobre funciones puras sin I/O — son la
-   superficie verificable directamente. Para el detector kernel, test de carga/
-   descarga del módulo y verificación de logs vía `dmesg`.
-3. **Code (verde)** — `src/<modulo>.c` (o raíz para el `.ko`) con el código mínimo
-   para pasar. Las llamadas USB-HID userspace usan HIDAPI; el módulo kernel usa la
-   API USB del kernel. **Sin placeholders compilables**: un valor desconocido se
-   marca como bloqueador y el test se adapta (skip condicional), nunca se finge.
-4. **Refactor** — endurecer punteros, límites, legibilidad, sin romper pruebas.
-   Si ves código duplicado lo unificas — esto es imperativo: busca código
-   duplicado y extínguelo sin perder funcionalidad. Nunca está fuera de scope.
-   Modo boyscout: si ves deuda técnica la extingues sin romper funcionalidades;
-   lo mismo con fallos de seguridad o vulnerabilidades — su extinción nunca está
-   fuera de scope. Si puedes hacer lo mismo que haces en 40 líneas en 10 o 1,
-   bienvenido, siempre y cuando respete DRY/SOLID y no pierda funcionalidad ni
-   agregue más deuda técnica.
-5. **Validación** —
-   - Userspace: `make test` (CMocka), `make asan` (ASan+UBSan), `valgrind`,
-     `cppcheck` limpios. El test confirmado del proyecto (conversión float→int:
-     `0.75 → 40793`) debe pasar siempre.
-   - Kernel: `make` compila el `.ko` sin warnings; `make modprobe` carga el módulo;
-     conectar/desconectar el AudioBox produce logs en `dmesg` y **no interfiere**
-     con `snd-usb-audio` (playback/capture siguen funcionando — esto se verifica
-     con `aplay`/`arecord` o `alsamixer` tras la carga).
-   - Validación cruzada DSP: tabla
-     `Control GUI → Valor User → Código Output → Match?`. Cada celda "TBD" debe
-     resolverse con evidencia del hardware/desensamblado antes de cerrar.
-6. **Fuzzing** — los paths que toman input externo se fuzzean: el parser de
-   reportes HID y el path de paquetes DSP recibidos del dispositivo (libFuzzer
-   sobre `VSL_Decode_*` y el parser de feature reports; AFL++ sobre el binario
-   userspace). Cero crashes/leaks/UB antes de cerrar.
-7. **Documentación** — **recién después de validar y fuzzear** se documenta: se
-   actualiza la spec, este `CLAUDE.md` (bloqueador → resuelto, doctrina nueva), la
-   memoria y el `README.md`. Documentar antes de validar es documentar lo que
-   todavía no es verdad.
-
-**No escribas la implementación antes que la spec y el test.** No avances de
-fase sin que la anterior esté verde, validada y fuzzeada (donde aplique).
-
-**Diseño orientado a prueba:** la lógica DSP matemática (curvas de ganancia,
-mapeo logarítmico de frecuencia, conversión float→int) va en **funciones puras
-sin I/O** (la superficie verificable directamente); los orquestadores con
-HIDAPI/USB solo cablean y llaman a esas funciones puras. La función de envío USB
-(`FUN_Send_Packet`) solo arma el buffer y escribe; la matemática ya está hecha y
-testada arriba.
+**Doctrine of separation (kernel vs userspace):** the `.ko` module
+and the HIDAPI library are distinct contracts with distinct
+responsibilities. The kernel detects and logs; the userspace
+controls the DSP. Responsibilities are never mixed, and DSP logic
+is never introduced inside the kernel module.
 
 ---
 
-## 4. Stack tecnológico (decisiones vigentes)
+## 2. Language and style constraints
 
-| Componente | Tecnología | Nota |
-| :-- | :-- | :-- |
-| Detector kernel | Linux USB core (`module_usb_driver`, `usb_driver`) | C puro, GPL-2.0-or-later. `probe` retorna `-ENODEV` (no reclama la interfaz). VID `0x194f`, PID `0x0101`. |
-| Librería DSP userspace | C puro + **HIDAPI** (`hidapi-libusb`) | Comunicación USB-HID: Feature/Output Report, 64 bytes (`0x40`), payload mínimo 6 bytes. |
-| Origen del código | Ingeniería inversa driver Android | `FUN_00132c90` (Encode Gain), `FUN_00132d00` (Map Frequency), `FUN_00132da8` (Decode Frequency), `FUN_00412345` (USB Send). Nombres inmutables. |
-| Pruebas userspace | CMocka | TDD. `sudo apt install libcmocka-dev`. |
-| Pruebas kernel | KUnit / carga+`dmesg` | Verificación de no-interferencia con ALSA. |
-| Wrappers | `extern "C"` | Preparado para bindings C++ futuros sin romper la API C. |
-| Protocolo | USB-HID, paquete 64 bytes | Confirmado del desensamblado (`0x40` en `FUN_00412345`). |
+- **Kernel:** pure C, Linux kernel headers, C11 GCC. No C++, no
+  Rust, no userspace dependencies inside the module. Standard
+  kernel headers (`<linux/module.h>`, `<linux/usb.h>`,
+  `<linux/printk.h>`); never libc.
+- **Userspace (PoC and library):** pure C, C11, with HIDAPI
+  (`-lhidapi-libusb`). C++ wrappers via `extern "C"`.
+- **Identifiers and strings are English.** Documentation
+  (`spec/`, this file, `README.md`) may also be English; the
+  source code itself is always English. The exception: the
+  immutable names from the disassembly (`FUN_*`) are preserved
+  as-is.
+- **No emojis in kernel or userspace source.** No emojis in
+  `README.md`, `CLAUDE.md`, or `spec/`. Comments in source are
+  allowed only to explain a non-obvious *why*; headers carry
+  contract documentation as Doxygen-style `@brief` / `@param`
+  docstrings.
+- **Prefix by module.** `audiobox_` for the kernel detector,
+  `VSL_` for the userspace DSP library. No unnecessary mutable
+  global state. The HID handle is an explicit singleton
+  (`vsl_device_handle`) with a clear lifecycle
+  (`VSL_Init_Device` / `VSL_Close_Device`). Every `malloc` /
+  `hid_open` has an idempotent releaser.
+- **No hardcoded values, no magic numbers, no absolute system
+  paths in scripts.** Every configurable value lives in the
+  `Makefile` (kernel module build) or in the central configuration
+  file for the relevant contract. Scripts (`install.sh`,
+  `configure`) are thin wrappers that delegate to the Makefile.
 
-### Modelo matemático confirmado (DSP)
+---
 
-- **Codificación de ganancia** (`VSL_Encode_Gain`): curva exponencial
+## 3. Methodology: SDD + strict TDD + BDD Given-When-Then
+
+For every module, the cycle is inviolable and **in this order**:
+
+1. **Spec** — `spec/<module>.md`: inputs, outputs, error table,
+   security guarantees, non-goals, and (critical for this project)
+   the source of every constant. Given-When-Then BDD scenarios.
+2. **Test (red)** — `tests/test_<module>.c` (userspace: CMocka;
+   kernel: KUnit or load+`dmesg`). Must fail because the
+   implementation does not exist yet. For pure DSP logic
+   (encode/decode gain, frequency mapping, float to int) the
+   tests are unit tests on pure functions without I/O; they are
+   the directly verifiable surface. For the kernel detector, the
+   tests are load/unload of the module and log inspection.
+3. **Code (green)** — `src/<module>.c` (or root for the `.ko`)
+   with the minimum code to pass. USB-HID calls in userspace use
+   HIDAPI; the kernel module uses the kernel USB API. **No
+   compilable placeholders:** an unknown value is a blocker and
+   the test is adapted (conditional skip), never faked.
+4. **Refactor** — harden pointers, bounds, readability, without
+   breaking tests. If duplicate code is seen, unify it; this is
+   imperative. Boy-scout mode: if technical debt is seen, retire
+   it without losing functionality. The same applies to security
+   flaws: their retirement is never out of scope. If 40 lines
+   can become 10, welcome, as long as DRY/SOLID is respected and
+   no functionality is lost and no more debt is added.
+5. **Validation** —
+   - Userspace: `make test` (CMocka), `make asan` (ASan+UBSan),
+     `valgrind`, `cppcheck` clean. The validated project test
+     (float to int: `0.75 -> 40793`) must always pass.
+   - Kernel: `make` compiles the `.ko` with no warnings; `make
+     modprobe` loads the module; connecting or disconnecting an
+     AudioBox produces log lines in `dmesg` and **does not
+     interfere** with `snd-usb-audio` (playback/capture still
+     work, verified with `aplay` / `arecord` / `alsamixer` after
+     load).
+   - DSP cross validation: table
+     `Control GUI -> User value -> Code output -> Match?`. Every
+     "TBD" cell must be resolved with hardware or disassembly
+     evidence before the contract is closed.
+6. **Fuzzing** — every path that takes external input is fuzzed:
+   the HID report parser and the DSP packet path received from
+   the device (libFuzzer on `VSL_Decode_*` and the feature
+   report parser; AFL++ on the userspace binary). Zero crashes,
+   zero leaks, zero undefined behaviour before closure.
+7. **Documentation** — **only after validation and fuzzing** is
+   the spec, this file, the memory, and `README.md` updated.
+   Documenting before validating is documenting what is not yet
+   true.
+
+**Do not write the implementation before the spec and the test.**
+Do not advance phases until the previous one is green, validated,
+and fuzzed (where applicable).
+
+**Test-oriented design:** the DSP math (gain curves, logarithmic
+frequency mapping, float to int conversion) lives in **pure
+functions without I/O** (the directly verifiable surface); the
+HIDAPI/USB orchestrators only wire things up and call those pure
+functions. The USB send function (`FUN_Send_Packet`) only builds
+the buffer and writes; the math is already done and tested above.
+
+---
+
+## 4. Technology stack (current decisions)
+
+| Component                | Technology                                                | Note                                                                                                |
+| ------------------------ | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Kernel detector          | Linux USB core (`module_usb_driver`, `usb_driver`)         | Pure C, GPL-2.0-or-later. `probe` returns `-ENODEV` (does not claim the interface). Supports three product IDs: 0x0101, 0x0102, 0x0103. Single source of truth in `audiobox_vsl.h`. |
+| Userspace DSP library    | Pure C + **HIDAPI** (`hidapi-libusb`)                     | USB-HID communication: Feature/Output Report, 64 bytes (`0x40`), minimum 6 byte payload.            |
+| Source of the code       | Reverse engineering of the Android driver                 | `FUN_00132c90` (Encode Gain), `FUN_00132d00` (Map Frequency), `FUN_00132da8` (Decode Frequency), `FUN_00412345` (USB Send). Immutable names. |
+| Userspace tests          | CMocka                                                    | TDD. `sudo apt install libcmocka-dev`.                                                              |
+| Kernel tests             | KUnit / load+`dmesg`                                      | Verifies non-interference with ALSA.                                                                |
+| Wrappers                 | `extern "C"`                                              | Prepared for future C++ bindings without breaking the C API.                                       |
+| Protocol                 | USB-HID, 64 byte packet                                   | Confirmed from the disassembly (`0x40` in `FUN_00412345`).                                          |
+
+### Confirmed math model (DSP)
+
+- **Gain encoding** (`VSL_Encode_Gain`): exponential curve
   `coeff_offset_A + coeff_C1 * exp(norm_factor * log_factor)`.
-- **Mapeo de frecuencia** (`VSL_Map_Frequency`/`VSL_Decode_Frequency`): logarítmico
-  base 2, `exp2f(log2_min + pos * (log2_max - log2_min))`.
-- **Conversión float→int** (`VSL_Final_Encode_To_Int`): escala `1000.0f → 65535`.
-  Test validado: `0.75 → 40793`.
-- **Estructura de parámetro** (`VSL_Parameter`, 8 campos):
-  `{coeff_offset_A, coeff_C1, log_factor, curve_min_map, curve_max_map, freq_min_hz, freq_max_hz, dsp_param_id, max_encoded_int}`.
+- **Frequency mapping** (`VSL_Map_Frequency` /
+  `VSL_Decode_Frequency`): base 2 logarithm,
+  `exp2f(log2_min + pos * (log2_max - log2_min))`.
+- **Float to int conversion** (`VSL_Final_Encode_To_Int`): scale
+  `1000.0f -> 65535`. Validated test: `0.75 -> 40793`.
+- **Parameter struct** (`VSL_Parameter`, 8 fields):
+  `{coeff_offset_A, coeff_C1, log_factor, curve_min_map,
+  curve_max_map, freq_min_hz, freq_max_hz, dsp_param_id,
+  max_encoded_int}`.
 
-### Bloqueadores críticos (valores pendientes de extraer del desensamblado)
+### Active blockers (values pending extraction from the disassembly)
 
-Estos tres valores **no se asumen**. Deben extraerse con evidencia antes de
-considerar el proyecto completo:
+These three values **are not assumed**. They must be extracted with
+evidence before the userspace I/O path is considered complete:
 
 ```c
-#define VSL_VENDOR_ID   0x????  /* FIXME: del desensamblado o lsusb */
-#define VSL_PRODUCT_ID  0x????  /* FIXME: del desensamblado o lsusb */
-#define VSL_REPORT_ID   0x??    /* FIXME: buf[0] antes de FUN_00412345 */
+#define VSL_VENDOR_ID   0x????  /* FIXME: from the disassembly or lsusb */
+#define VSL_PRODUCT_ID  0x????  /* FIXME: from the disassembly or lsusb */
+#define VSL_REPORT_ID   0x??    /* FIXME: buf[0] before FUN_00412345 */
 ```
 
-5. Compilación, hardening y verificación
-Kernel (detector)
-make usa el build system del kernel (KDIR), que ya aplica sus flags de
-hardening. El módulo se compila con la cadena del kernel en uso.
+The kernel detector does not depend on any of these: it only needs
+the VID and the list of supported PIDs, both of which are public.
 
-Targets del Makefile (única fuente de verdad de los comandos):
+---
 
-make / make all — compila audiobox_vsl.ko.
-make install — copia a /lib/modules/$(uname -r)/extra/, depmod.
-make uninstall — elimina el .ko y depmod.
-make modprobe — carga el módulo (sudo modprobe audiobox_vsl).
-make clean — limpia artefactos de build.
-El Makefile es la única fuente de verdad de los comandos. Los scripts
-(install.sh, configure) son wrappers delgados que delegan al sistema; si
-duplican lógica de compilación se desincronizan y se convierten en deuda técnica
-— unificar.
+## 5. Build, hardening, and verification
 
-Userspace (librería DSP)
-Compilación: gcc -Wall -Wextra -Werror -std=c11 -O2 -fstack-protector-strong -D_FORTIFY_SOURCE=3 src/*.c -o vsl_dsp -lhidapi-libusb.
+### Kernel (detector)
 
-Targets propuestos (a centralizar en el Makefile):
+The Makefile is the single source of truth. The kernel build
+delegates to the in-tree kbuild system which already applies its
+hardening flags.
 
-make lib — compila la librería/CLI userspace.
-make test — suite CMocka.
-make asan — la misma suite bajo ASan+UBSan.
-make fuzz / make fuzz-afl — libFuzzer / AFL++ sobre parser HID y DSP.
-make discover — compila vsl_discover.c (enumeración HID para hardware real).
-Todo PR debe pasar make (kernel) y make test + make asan (userspace, donde
-aplique) limpios antes de integrarse.
+Makefile targets (single source of truth for commands):
 
-6. Estructura del repositorio
-Plaintext
+| Target       | Effect                                                            |
+| ------------ | ----------------------------------------------------------------- |
+| `make`       | Build `audiobox_vsl.ko` and run the CMocka test suite (default).  |
+| `make modules` | Build the kernel module only.                                   |
+| `make test`  | Build and run the CMocka unit test suite.                         |
+| `make asan`  | Build and run the test suite under AddressSanitizer + UBSan.      |
+| `make clean` | Remove build artefacts.                                           |
+| `sudo make install` | Copy the module to `/lib/modules/$(uname -r)/extra/` and run `depmod`. |
+| `sudo make uninstall` | Remove the module from the extra dir and run `depmod`.    |
+| `sudo make modprobe` | Load the module into the running kernel.                     |
+| `sudo make rmmod`    | Unload the module from the running kernel.                  |
+| `make info`   | Print resolved build variables.                                  |
+| `make help`   | List every available target.                                     |
 
+`install.sh` and `configure` are thin wrappers that delegate to
+the system. If they duplicate build logic, they desynchronise and
+become technical debt; unified, they remain one-liners.
 
+### Userspace (DSP library)
 
+Compilation flags:
+
+```
+gcc -std=c11 -O2 -g -Wall -Wextra -Werror -Wshadow -Wpedantic \
+    -Wstrict-prototypes -Wmissing-prototypes -Wconversion \
+    -Wsign-conversion -Wold-style-definition \
+    -fstack-protector-strong -D_FORTIFY_SOURCE=2
+```
+
+`make asan` adds `-fsanitize=address,undefined -fno-omit-frame-pointer`
+to the flags. Every PR must pass `make` (kernel) and `make test` +
+`make asan` (userspace, where applicable) cleanly before merge.
+
+### `.DEFAULT_GOAL` is intentionally omitted from the Makefile
+
+Setting `.DEFAULT_GOAL` in the project's Makefile triggers a kbuild
+sub-make recursion bug in 6.x kernels that requires write access to
+the kernel source directory. Leaving the default goal implicit
+(first target wins) keeps the build portable across kernel
+configurations.
+
+---
+
+## 6. Repository layout
+
+```
 VSL-DSP/
-├── CLAUDE.md                          # este archivo
-├── Makefile                           # build kernel + (futuro) userspace
-├── audiobox_vsl.c                     # fuente del módulo detector kernel
-├── audiobox_vsl.h                     # header (compatibilidad del árbol)
-├── install.sh                         # wrapper: dependencias de build
-├── configure                          # wrapper: verifica entorno de build
-├── 🎯 VSL-DSP Open Source Driver - System P.md  # system prompt / plan maestro
-├── vsl_dsp_poc/                       # PoC Python de ingeniería inversa USB-HID
-│   └── README.md
-├── vsl_protocol_analysis.txt          # análisis de protocolo (referencia)
-├── docs/                              # documentación adicional
-├── spec/                              # especificaciones SDD (a crear)
-│   └── &lt;modulo&gt;.md
-├── src/                               # implementaciones userspace (a crear)
-│   └── &lt;modulo&gt;.c                     # vsl_dsp_logic.c, vsl_dsp_transport.c
-└── tests/                             # suites CMocka / KUnit (a crear)
-    └── test_&lt;modulo&gt;.c
-La estructura spec/, src/, tests/ es el objetivo SDD/TDD. Hoy el
-repositorio vive en la raíz (driver kernel) + vsl_dsp_poc/ (PoC). Al migrar
-la librería DSP a C userspace, se adopta el layout modular de Freedom.
+├── CLAUDE.md                      # this file (working contract)
+├── Makefile                       # build, test, install (single source of truth)
+├── audiobox_vsl.c                 # kernel detector module
+├── audiobox_vsl.h                 # public interface and configuration
+├── install.sh                     # wrapper: installs build dependencies
+├── configure                      # wrapper: verifies build environment
+├── README.md                      # user-facing documentation
+├── LICENSE                        # GPL-2.0-or-later
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── pull_request_template.md
+├── docs/                          # additional documentation
+├── spec/                          # BDD specifications (SDD)
+│   └── audiobox_vsl.md
+├── src/                           # userspace DSP library (active)
+│   ├── vsl_dsp_logic.c
+│   ├── vsl_dsp_logic.h
+│   ├── vsl_dsp_transport.c
+│   └── vsl_dsp_transport.h
+├── tests/                         # CMocka unit test suite
+│   └── test_audiobox_vsl.c
+├── .github/                       # issue and pull request templates
+└── legacy/                        # historical artefacts (see legacy/README.md)
+    ├── README.md
+    ├── ... (Python PoC, DKMS installer, packet captures, ...)
+```
 
-7. Hoja de ruta por fases
-Convención de estado: cerrado = spec + test verde + ASan/UBSan limpio
-(y, donde aplique, fuzzing y prueba con hardware real). Lo que solo compila
-pero no se pudo ejercitar aquí se marca pendiente de prueba con hardware,
-nunca como verificado.
+The `src/`, `tests/`, and `spec/` layout is the SDD/TDD target. The
+kernel detector lives at the repository root because it is the
+entry point of the project.
 
-7.1 Estado actual
-Componente	Estado	Evidencia
-Detector kernel (USB)	✅ CERRADO	audiobox_vsl.c: probe→-ENODEV, logs dev_info, no interfiere con snd-usb-audio. Compila y carga.
-VID/PID detector	✅ Confirmado	0x194f:0x0101 del hardware real.
-Arquitectura librería	✅ Confirmada	C puro, separación modular vsl_dsp_logic.c + vsl_dsp_transport.c, wrappers extern "C".
-Codificación ganancia	✅ Implementada	VSL_Encode_Gain — curva exponencial confirmada del desensamblado.
-Mapeo frecuencia	✅ Implementada	VSL_Map_Frequency/VSL_Decode_Frequency — log base 2.
-Conversión float→int	✅ Validada	0.75 → 40793 (test confirmado).
-Estructura parámetros	✅ Confirmada	VSL_Parameter (8 campos).
-Paquete HID	✅ Confirmado	64 bytes (0x40) del desensamblado.
-VID/PID librería	⚠️ BLOQUEADOR #1	Extraer del desensamblado o vsl_discover.
-Report ID librería	⚠️ BLOQUEADOR #2	buf[0] antes de FUN_00412345.
-Endianness	⚠️ BLOQUEADOR #3	Verificar bit-shifts en desensamblado.
-Test con hardware	⏳ Pendiente	Requiere bloqueadores #1–#3.
-Docs API	⏳ Pendiente	Post-validación con hardware.
-Decisiones de doctrina vigentes (no evidentes en el código; no re-litigar):
+---
 
-probe retorna -ENODEV por diseño: el detector no reclama la interfaz.
-Cambiar esto rompería el audio ALSA. Es la invariant más importante del módulo
-kernel. Ver [[vsl-dsp-non-interference]].
-Zero Assumption sobre los 3 bloqueadores: mientras no haya evidencia, los
-valores quedan como FIXME y el path de envío real se marca pendiente. No se
-"adelanta" con valores plausibles. Ver [[vsl-dsp-zero-assumption]].
-Singleton HID explícito: vsl_device_handle con VSL_Init_Device/
-VSL_Close_Device. Reentrante en init (devuelve 0 si ya abierto). No hay
-segundo handle. Ver [[vsl-dsp-hid-singleton]].
-Separación lógica/transporte: la matemática DSP es pura y testeable sin
-hardware; el transporte HIDAPI es el orquestador que cablea. No se mezclan.
-Ver [[vsl-dsp-logic-transport-split]].
-7.2 Hitos cerrados (resumen)
-Fase 1 — Detector kernel USB. Módulo audiobox_vsl.c con
-module_usb_driver, tabla {USB_DEVICE(0x194f, 0x0101)}, probe que loguea
-vendor/product/manufacturer/product/serial y retorna -ENODEV, disconnect
-que loguea. Makefile con all/install/uninstall/modprobe/clean.
-install.sh (dependencias) + configure (verificación de entorno).
-(Compila y carga; verificación con hardware real pendiente al dueño.)
-Fase 2 — Ingeniería inversa del driver Android. Identificadas
-FUN_00132c90 (Encode Gain), FUN_00132d00 (Map Frequency),
-FUN_00132da8 (Decode Frequency), FUN_00412345 (USB Send, 64 bytes 0x40).
-PoC Python en vsl_dsp_poc/ para protocolo USB-HID. Documento de análisis en
-vsl_protocol_analysis.txt.
-Fase 3 — Lógica DSP userspace (C puro). VSL_Encode_Gain,
-VSL_Map_Frequency/VSL_Decode_Frequency, VSL_Final_Encode_To_Int,
-VSL_Parameter (8 campos). Test validado 0.75 → 40793. Arquitectura modular
-vsl_dsp_logic.c + vsl_dsp_transport.c. Compila con -lhidapi-libusb.
-7.3 Roadmap — por cruzar
-Fase 4 — Resolver bloqueadores críticos. Extraer VID/PID (librería),
-Report ID y endianness del desensamblado o hardware. Opciones: (A) análisis
-Ghidra/IDA de FUN_00412345 y su llamador; (B) vsl_discover +
-usbhid-dump con hardware real; (C) strings/objdump del .so Android.
-Fase 5 — Integración I/O real. FUN_Send_Packet con los 3 valores
-resueltos. Test end-to-end con hardware: tabla de validación cruzada
-Control GUI → Valor → Output → Match?. Verificar mute, volumen, EQ.
-Fase 6 — Base de datos de parámetros (100+). VSL_ParamID enum +
-VSL_Params_Database[] + API genérica VSL_Set_Parameter(id, value).
-Extracción masiva del desensamblado, un parámetro por spec+test.
-Fase 7 — Wrappers C++ y bindings. extern "C" + cabecera de fachada.
-Mantener la API C estable.
-Fase 8 — Empaquetado y distribución. .deb/dkms para el módulo kernel;
-paquete para la librería userspace. Integración con el build system.
-Pendiente de fondo: fuzzing del parser HID/DSP; tests KUnit del detector;
-documentación API post-validación; modo boyscout continuo sobre deuda técnica.
-8. Reglas para el asistente (IA)
-Aplica el ciclo completo de §3 en orden: spec → test rojo → código verde →
-refactor → validación (ASan / dmesg+ALSA) → fuzzing → documentación. No te
-saltes pasos ni adelantes implementación sin spec+test, y no documentes antes
-de validar y fuzzear.
-Zero Assumption. Ante la duda sobre una constante del desensamblado,
-pregunta con evidencia dirigida (método socrático inverso: "en Ghidra, ve a
-FUN_00412345, presiona X, entra al llamador, copia buf[0]"). Nunca inventes
-VID/PID/Report ID/endianness.
-Falla cerrado. Ante la duda de seguridad (buffer, puntero, I/O), rechaza;
-nunca degrades una garantía por conveniencia. Validación de punteros, límites
-de buffer con sizeof, manejo de errores de retorno, sin strcpy.
-No rompas el audio. El detector kernel siempre retorna -ENODEV en
-probe. Nunca reclames la interfaz USB. Si una carga del módulo silencia o
-captura el dispositivo, es un bug crítico.
-Nomenclatura inmutable. Mantén VSL_Encode_Gain, FUN_00412345, etc. No
-renombres "para mejorar". La trazabilidad al desensamblado es un requerimiento.
-Sé honesto sobre lo no verificado: el código que no se pueda ejercitar aquí (I/O
-con hardware real, carga del módulo sin el dispositivo) se marca como pendiente
-de prueba con hardware, no como verificado.
-Verifica que cada símbolo/flag/constante existe antes de recomendarlo
-(lsusb, hid_enumerate, dmesg, modprobe).
-Comandos nuevos van al Makefile (única fuente de verdad), no a scripts
-sueltos que se desincronizan (ver §5).
-Modo boyscout: resolver deuda técnica y fallos de seguridad nunca está
-fuera de scope, siempre sin perder funcionalidad. Busca y extingue código
-duplicado.
-Pensamiento lateral cuando el entorno lo exija (ej: HIDAPI ausente en
-repositorios → compilar desde source; Kali sin paquete → ruta alternativa).
-Documenta la solución no obvia en la spec.
+## 7. Roadmap by phase
+
+Closed = spec + green test + ASan/UBSan clean (and, where
+applicable, fuzzing and proof with real hardware). What only
+compiles but cannot be exercised here is marked pending real-hardware
+test, never as verified.
+
+### 7.1 Current state
+
+| Component                            | Status        | Evidence                                                                                                                                                       |
+| ------------------------------------ | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kernel detector (USB)                | Closed        | `audiobox_vsl.c`: probe returns `-ENODEV`, logs via `dev_info`, does not interfere with `snd-usb-audio`. Compiles and loads.                                  |
+| VID/PID detector                     | Confirmed     | `0x194f:0x0101`, `0x194f:0x0102`, `0x194f:0x0103` from the public `lsusb` table. Single source of truth in `audiobox_vsl.h`.                                 |
+| Detector unit test suite             | Closed        | `tests/test_audiobox_vsl.c` with CMocka: 10 tests covering the model table, the lookup function, and edge cases. All passing under `-Wall -Wextra -Werror`.   |
+| Architecture of the library          | Confirmed     | Pure C, modular `vsl_dsp_logic.c` + `vsl_dsp_transport.c`, `extern "C"` wrappers.                                                                              |
+| Gain encoding                        | Implemented   | `VSL_Encode_Gain`, exponential curve confirmed from the disassembly.                                                                                          |
+| Frequency mapping                    | Implemented   | `VSL_Map_Frequency` / `VSL_Decode_Frequency`, base 2 logarithm.                                                                                                |
+| Float to int conversion              | Validated     | `0.75 -> 40793` (test confirmed).                                                                                                                              |
+| Parameter struct                     | Confirmed     | `VSL_Parameter` (8 fields).                                                                                                                                    |
+| HID packet                           | Confirmed     | 64 bytes (`0x40`) from the disassembly.                                                                                                                        |
+| VID/PID library                      | Blocker #1    | Extract from the disassembly or `vsl_discover`.                                                                                                                |
+| Report ID library                    | Blocker #2    | `buf[0]` before `FUN_00412345`.                                                                                                                                |
+| Endianness                           | Blocker #3    | Verify bit shifts in the disassembly.                                                                                                                          |
+| Test with real hardware              | Pending       | Requires blockers #1-#3 for the userspace I/O path.                                                                                                            |
+| Public API documentation             | Pending       | Post validation with real hardware.                                                                                                                            |
+
+### 7.2 Closed milestones (summary)
+
+- **Phase 1** — Kernel USB detector. `audiobox_vsl.c` with
+  `module_usb_driver`, table `{USB_DEVICE(0x194f, 0x0101),
+  USB_DEVICE(0x194f, 0x0102), USB_DEVICE(0x194f, 0x0103)}`, probe
+  that logs vendor/product/manufacturer/product/serial and returns
+  `-ENODEV`, disconnect that logs the model name. Makefile with
+  `all/modules/test/asan/clean/install/uninstall/modprobe/rmmod/info/help`.
+  `install.sh` (dependencies) and `configure` (environment
+  verification). Compiles and loads; real-hardware verification
+  pending on the owner's machine.
+- **Phase 2** — Reverse engineering of the Android driver.
+  Identified `FUN_00132c90` (Encode Gain), `FUN_00132d00` (Map
+  Frequency), `FUN_00132da8` (Decode Frequency), `FUN_00412345`
+  (USB Send, 64 bytes 0x40). Python PoC in `legacy/` for the
+  USB-HID protocol. Protocol analysis document in
+  `legacy/vsl_protocol_analysis.txt`.
+- **Phase 3** — DSP logic in pure C. `VSL_Encode_Gain`,
+  `VSL_Map_Frequency` / `VSL_Decode_Frequency`,
+  `VSL_Final_Encode_To_Int`, `VSL_Parameter` (8 fields). Validated
+  test `0.75 -> 40793`. Modular architecture
+  `vsl_dsp_logic.c` + `vsl_dsp_transport.c`. Compiles with
+  `-lhidapi-libusb`.
+
+### 7.3 Roadmap to cross
+
+- **Phase 4** — Resolve the critical blockers. Extract VID/PID
+  (library), Report ID, and endianness from the disassembly or
+  hardware. Options: (A) Ghidra/IDA analysis of `FUN_00412345` and
+  its caller; (B) `vsl_discover` + `usbhid-dump` with real
+  hardware; (C) `strings` / `objdump` of the Android `.so`.
+- **Phase 5** — Real I/O integration. `FUN_Send_Packet` with the
+  three resolved values. End to end test with hardware: cross
+  validation table Control GUI -> Value -> Output -> Match?.
+  Verify mute, volume, EQ.
+- **Phase 6** — Parameter database (100+). `VSL_ParamID` enum +
+  `VSL_Params_Database[]` + generic `VSL_Set_Parameter(id, value)`
+  API. Mass extraction from the disassembly, one parameter per
+  spec+test.
+- **Phase 7** — C++ wrappers and bindings. `extern "C"` + facade
+  header. Keep the C API stable.
+- **Phase 8** — Packaging and distribution. `.deb` / DKMS for the
+  kernel module; package for the userspace library. Integration
+  with the build system.
+
+Background tasks: fuzzing the HID/DSP parser; KUnit tests of the
+detector; public API documentation post validation; continuous
+boy-scout mode on technical debt.
+
+---
+
+## 8. Rules for the AI assistant
+
+- Apply the complete cycle of section 3 in order: spec -> red test
+  -> green code -> refactor -> validation (ASan / dmesg+ALSA) ->
+  fuzzing -> documentation. Do not skip steps and do not write
+  code without spec+test, and do not document before validating
+  and fuzzing.
+- **Zero Assumption.** When in doubt about a constant from the
+  disassembly, ask with directed evidence (Socratic method: "in
+  Ghidra, go to `FUN_00412345`, press X, enter the caller, copy
+  `buf[0]`"). Never invent VID/PID/Report ID/endianness.
+- **Fail closed.** When in doubt about safety (buffer, pointer,
+  I/O), reject; never degrade a guarantee for convenience. Pointer
+  validation, `sizeof` buffer bounds, return code handling, no
+  `strcpy`.
+- **Do not break audio.** The kernel detector always returns
+  `-ENODEV` in `probe`. Never claim the USB interface. If a
+  module load silences or captures the device, that is a critical
+  bug.
+- **Immutable naming.** Keep `VSL_Encode_Gain`, `FUN_00412345`,
+  etc. Do not rename "to improve". Traceability to the
+  disassembly is a requirement.
+- Be honest about what is not verified: code that cannot be
+  exercised here (I/O with real hardware, module load without the
+  device) is marked pending real-hardware test, never as verified.
+- Verify that every symbol, flag, or constant exists before
+  recommending it (`lsusb`, `hid_enumerate`, `dmesg`, `modprobe`).
+- New commands go in the `Makefile` (single source of truth), not
+  in loose scripts that desynchronise (see section 5).
+- Boy-scout mode: retiring technical debt and security flaws is
+  never out of scope, always without losing functionality. Look
+  for and extinguish duplicate code.
+- Lateral thinking when the environment demands it (e.g. HIDAPI
+  absent from repositories -> compile from source; Kali without
+  the package -> alternate route). Document the non-obvious
+  solution in the spec.
+- After every change: re-run `make` and `make test` from a clean
+  state. If either fails, the change is not done.

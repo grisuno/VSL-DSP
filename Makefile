@@ -1,33 +1,93 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-# Makefile for AudioBox 22 VSL driver
+# Single source of truth for all build, test, install, and clean
+# commands. install.sh and configure delegate here and add no logic
+# of their own; any build flag, path, or tool invocation belongs in
+# this file.
+#
+# The kernel module is built by delegating to the in-tree kbuild
+# system. Targets for the userspace CMocka test suite are defined
+# alongside and do not interfere with the kernel build.
+#
+# Note: .DEFAULT_GOAL is intentionally omitted. Setting it triggers
+# a kbuild sub-make recursion bug in 6.x kernels that requires
+# write access to the kernel source directory. Leaving the default
+# goal implicit (first target wins) keeps the build portable.
+
 obj-m += audiobox_vsl.o
 
-# Kernel build directory - can be overridden via environment or command line
-KDIR ?= /lib/modules/$(shell uname -r)/build
-PWD := $(shell pwd)
+KDIR     ?= /lib/modules/$(shell uname -r)/build
+PWD      := $(shell pwd)
+KVER     := $(shell uname -r)
+DEPMOD   ?= depmod
+MODPROBE ?= modprobe
+RMMOD    ?= rmmod
+INSTALL  ?= /lib/modules/$(KVER)/extra
 
-all:
+CC       ?= gcc
+CSTD     ?= -std=c11
+CFLAGS_T ?= $(CSTD) -O2 -g -Wall -Wextra -Werror -Wshadow -Wpedantic \
+            -Wstrict-prototypes -Wmissing-prototypes -Wconversion \
+            -Wsign-conversion -Wold-style-definition \
+            -fstack-protector-strong -D_FORTIFY_SOURCE=2
+CFLAGS_A ?= $(CFLAGS_T) -fsanitize=address,undefined -fno-omit-frame-pointer -O1
+LDLIBS_T ?= -lcmocka
+LDLIBS_A ?= -lcmocka -lasan -lubsan
+
+TEST_BIN := tests/audiobox_vsl_test
+
+.PHONY: all test asan clean install uninstall modprobe rmmod info help
+
+all: modules test
+
+modules:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules
+
+$(TEST_BIN): tests/test_audiobox_vsl.c audiobox_vsl.h | tests
+	$(CC) $(CFLAGS_T) -I. $< -o $@ $(LDLIBS_T)
+
+tests:
+	@mkdir -p tests
+
+test: $(TEST_BIN)
+	$(TEST_BIN)
+
+asan: tests/test_audiobox_vsl.c audiobox_vsl.h | tests
+	$(CC) $(CFLAGS_A) -I. $< -o $(TEST_BIN) $(LDLIBS_A)
+	$(TEST_BIN)
 
 clean:
 	$(MAKE) -C $(KDIR) M=$(PWD) clean
+	rm -f $(TEST_BIN)
 
-# Install the module to the standard location and update module dependencies
-install:
+install: modules
 	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
-	@echo "Updating module dependencies..."
-	/sbin/depmod -a $(shell uname -r) || true
-	@echo "Module installed successfully."
+	$(DEPMOD) -a $(KVER) || true
 
-# Remove the installed module
 uninstall:
-	rm -f /lib/modules/$(shell uname -r)/extra/audiobox_vsl.ko
-	rm -f /lib/modules/$(shell uname -r)/kernel/extra/audiobox_vsl.ko
-	/sbin/depmod -a $(shell uname -r) || true
-	@echo "Module uninstalled."
+	rm -f $(INSTALL)/audiobox_vsl.ko
+	$(DEPMOD) -a $(KVER) || true
 
-# Load the module into the kernel
 modprobe:
-	sudo modprobe audiobox_vsl
+	$(MODPROBE) audiobox_vsl
 
-.PHONY: all clean install uninstall modprobe
+rmmod:
+	$(RMMOD) audiobox_vsl || true
+
+info:
+	@echo "kernel  : $(KVER)"
+	@echo "kdir    : $(KDIR)"
+	@echo "cc      : $(CC)"
+	@echo "install : $(INSTALL)"
+
+help:
+	@echo "Targets:"
+	@echo "  all         build kernel module and run test suite (default)"
+	@echo "  modules     build the kernel module only"
+	@echo "  test        build and run the CMocka test suite"
+	@echo "  asan        build and run the test suite under ASan+UBSan"
+	@echo "  clean       remove build artefacts"
+	@echo "  install     copy the module to $(INSTALL) and run depmod"
+	@echo "  uninstall   remove the module from $(INSTALL)"
+	@echo "  modprobe    load the module into the running kernel"
+	@echo "  rmmod       unload the module from the running kernel"
+	@echo "  info        print resolved build variables"
