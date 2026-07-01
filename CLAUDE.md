@@ -218,6 +218,8 @@ Makefile targets (single source of truth for commands):
 | `sudo make rmmod`    | Unload the module from the running kernel.                  |
 | `make info`   | Print resolved build variables.                                  |
 | `make help`   | List every available target.                                     |
+| `make deb`    | Build Debian package (.deb) for the kernel module                 |
+| `make deb`    | Build Debian package (.deb) for the kernel module.               |
 
 `install.sh` and `configure` are thin wrappers that delegate to
 the system. If they duplicate build logic, they desynchronise and

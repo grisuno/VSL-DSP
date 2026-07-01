@@ -12,6 +12,17 @@
 # a kbuild sub-make recursion bug in 6.x kernels that requires
 # write access to the kernel source directory. Leaving the default
 # goal implicit (first target wins) keeps the build portable.
+#
+VERSION ?= 1.0
+MAINTAINER ?= Unknown
+DEB_ARCH ?= $(shell dpkg --print-architecture)
+DEB_NAME ?= audiobox-vsl-dkms
+DEB_VERSION ?= $(VERSION)
+DEB_DESCRIPTION ?= Open source Linux kernel module for the PreSonus AudioBox VSL family
+DEB_SECTION ?= kernel
+DEB_PRIORITY ?= optional
+DEB_MAINTAINER ?= $(MAINTAINER)
+DEB_HOMEPAGE ?= https://github.com/grisuno/VSL-DSP
 
 obj-m += audiobox_vsl.o
 
@@ -35,7 +46,7 @@ LDLIBS_A ?= -lcmocka -lasan -lubsan
 
 TEST_BIN := tests/audiobox_vsl_test
 
-.PHONY: all test asan clean install uninstall modprobe rmmod info help
+.PHONY: all test asan clean install uninstall modprobe rmmod info help deb
 
 all: modules test
 
@@ -79,6 +90,21 @@ info:
 	@echo "cc      : $(CC)"
 	@echo "install : $(INSTALL)"
 
+deb: modules
+	@mkdir -p debian/lib/modules/$(KVER)/extra
+	@mkdir -p debian/DEBIAN
+	@cp audiobox_vsl.ko debian/lib/modules/$(KVER)/extra/
+	@echo "Package: $(DEB_NAME)" > debian/DEBIAN/control
+	@echo "Version: $(DEB_VERSION)" >> debian/DEBIAN/control
+	@echo "Section: $(DEB_SECTION)" >> debian/DEBIAN/control
+	@echo "Priority: $(DEB_PRIORITY)" >> debian/DEBIAN/control
+	@echo "Architecture: $(DEB_ARCH)" >> debian/DEBIAN/control
+	@echo "Maintainer: $(DEB_MAINTAINER)" >> debian/DEBIAN/control
+	@echo "Homepage: $(DEB_HOMEPAGE)" >> debian/DEBIAN/control
+	@echo "Description: $(DEB_DESCRIPTION)" >> debian/DEBIAN/control
+	@fakeroot dpkg-deb --build debian $(DEB_NAME)_$(DEB_VERSION)_$(DEB_ARCH).deb
+	@rm -rf debian
+
 help:
 	@echo "Targets:"
 	@echo "  all         build kernel module and run test suite (default)"
@@ -91,3 +117,5 @@ help:
 	@echo "  modprobe    load the module into the running kernel"
 	@echo "  rmmod       unload the module from the running kernel"
 	@echo "  info        print resolved build variables"
+	@echo "  deb         build Debian package (.deb) for the kernel module"
+	@echo "  help        list every available target"

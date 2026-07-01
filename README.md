@@ -121,6 +121,7 @@ sudo make uninstall
 make test    # build and run the CMocka unit test suite
 make asan    # build and run the test suite under ASan+UBSan
 make info    # print resolved build variables
+make deb     # build Debian package (.deb) for the kernel module
 make help    # list every available target
 ```
 
