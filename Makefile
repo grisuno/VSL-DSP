@@ -44,11 +44,22 @@ CFLAGS_A ?= $(CFLAGS_T) -fsanitize=address,undefined -fno-omit-frame-pointer -O1
 LDLIBS_T ?= -lcmocka
 LDLIBS_A ?= -lcmocka -lasan -lubsan
 
+# Userspace DSP library and CLI flags
+CFLAGS_H ?= $(CSTD) -O2 -g -Wall -Wextra -Werror -Wshadow -Wpedantic \
+            -Wstrict-prototypes -Wmissing-prototypes -Wconversion \
+            -Wsign-conversion -Wold-style-definition \
+            -fstack-protector-strong -D_FORTIFY_SOURCE=2 \
+            -Isrc
+LDLIBS_H ?= -lusb-1.0 -lm
+
 TEST_BIN := tests/audiobox_vsl_test
+TEST_DSP_BIN := tests/test_vsl_dsp_logic
+VSL_CLI_BIN := src/vsl_cli
 
-.PHONY: all test asan clean install uninstall modprobe rmmod info help deb
+.PHONY: all test asan clean install uninstall modprobe rmmod info help deb \
+        vsl-cli test-dsp
 
-all: modules test
+all: modules test vsl-cli test-dsp
 
 modules:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules
@@ -66,9 +77,22 @@ asan: tests/test_audiobox_vsl.c audiobox_vsl.h | tests
 	$(CC) $(CFLAGS_A) -I. $< -o $(TEST_BIN) $(LDLIBS_A)
 	$(TEST_BIN)
 
+$(TEST_DSP_BIN): tests/test_vsl_dsp_logic.c src/vsl_dsp_logic.c src/vsl_dsp_logic.h
+	$(CC) $(CFLAGS_T) -Isrc tests/test_vsl_dsp_logic.c src/vsl_dsp_logic.c -o $@ $(LDLIBS_T) -lm
+
+test-dsp: $(TEST_DSP_BIN)
+	$(TEST_DSP_BIN)
+
+$(VSL_CLI_BIN): src/vsl_cli.c src/vsl_dsp_logic.c src/vsl_dsp_logic.h \
+                src/vsl_dsp_transport.c src/vsl_dsp_transport.h
+	$(CC) $(CFLAGS_H) src/vsl_cli.c src/vsl_dsp_logic.c src/vsl_dsp_transport.c \
+	-o $(VSL_CLI_BIN) $(LDLIBS_H)
+
+vsl-cli: $(VSL_CLI_BIN)
+
 clean:
 	$(MAKE) -C $(KDIR) M=$(PWD) clean
-	rm -f $(TEST_BIN)
+	rm -f $(TEST_BIN) $(TEST_DSP_BIN) $(VSL_CLI_BIN)
 
 install: modules
 	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
@@ -107,15 +131,17 @@ deb: modules
 
 help:
 	@echo "Targets:"
-	@echo "  all         build kernel module and run test suite (default)"
+	@echo "  all         build kernel module, run tests, build vsl-cli (default)"
 	@echo "  modules     build the kernel module only"
-	@echo "  test        build and run the CMocka test suite"
+	@echo "  test        build and run the CMocka test suite (detector)"
+	@echo "  test-dsp    build and run the DSP logic unit tests"
+	@echo "  vsl-cli     build the VSL DSP control CLI tool"
 	@echo "  asan        build and run the test suite under ASan+UBSan"
 	@echo "  clean       remove build artefacts"
-	@echo "  install     copy the module to $(INSTALL) and run depmod"
-	@echo "  uninstall   remove the module from $(INSTALL)"
-	@echo "  modprobe    load the module into the running kernel"
-	@echo "  rmmod       unload the module from the running kernel"
+	@echo "  install     copy the kernel module to $(INSTALL) and run depmod"
+	@echo "  uninstall   remove the kernel module from $(INSTALL)"
+	@echo "  modprobe    load the kernel module"
+	@echo "  rmmod       unload the kernel module"
 	@echo "  info        print resolved build variables"
 	@echo "  deb         build Debian package (.deb) for the kernel module"
 	@echo "  help        list every available target"

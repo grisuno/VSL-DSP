@@ -50,6 +50,20 @@ else
     warn "  install with: sudo apt install libcmocka-dev"
 fi
 
+if [ -f /usr/include/libusb-1.0/libusb.h ]; then
+    ok "libusb-1.0 (header)"
+else
+    warn "libusb.h not found; 'make vsl-cli' will fail"
+    warn "  install with: sudo apt install libusb-1.0-0-dev"
+fi
+
+if ldconfig -p 2>/dev/null | grep -q libusb-1.0; then
+    ok "libusb-1.0 (library)"
+else
+    warn "libusb-1.0 library not found"
+    warn "  install with: sudo apt install libusb-1.0-0"
+fi
+
 if command -v lsusb >/dev/null 2>&1; then
     if lsusb 2>/dev/null | grep -qi "194f:0101\|194f:0102\|194f:0103"; then
         ok "at least one AudioBox VSL device is connected"

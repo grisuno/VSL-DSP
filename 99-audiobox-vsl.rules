@@ -1,0 +1,17 @@
+# 99-audiobox-vsl.rules - udev rule for PreSonus AudioBox VSL family
+# Grants users in the 'audio' group access to the HID control interface.
+#
+# Install:
+#   sudo cp 99-audiobox-vsl.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload-rules
+#   sudo udevadm trigger
+# Then re-plug the device or log out/in.
+
+# PreSonus AudioBox 22 VSL   (194f:0101)
+SUBSYSTEM=="usb", ATTR{idVendor}=="194f", ATTR{idProduct}=="0101", MODE="0664", GROUP="audio"
+
+# PreSonus AudioBox 44 VSL   (194f:0102)
+SUBSYSTEM=="usb", ATTR{idVendor}=="194f", ATTR{idProduct}=="0102", MODE="0664", GROUP="audio"
+
+# PreSonus AudioBox 1818 VSL (194f:0103)
+SUBSYSTEM=="usb", ATTR{idVendor}=="194f", ATTR{idProduct}=="0103", MODE="0664", GROUP="audio"

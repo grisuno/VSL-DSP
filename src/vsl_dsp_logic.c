@@ -1,8 +1,5 @@
 #include "vsl_dsp_logic.h"
 
-// Declaración de la nueva función de envío
-void VSL_Build_And_Send_Packet(uint16_t dsp_param_id, float encoded_float);
-
 // =========================================================================
 //                       FUNCIONES DE CODIFICACIÓN (Enviar al DSP)
 // =========================================================================

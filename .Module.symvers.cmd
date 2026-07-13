@@ -1,1 +1,1 @@
-savedcmd_Module.symvers :=  /usr/src/linux-headers-6.19.14+kali-amd64/scripts/mod/modpost -M          -o Module.symvers -n -T modules.order -i /usr/src/linux-headers-6.19.14+kali-amd64/Module.symvers -e 
+savedcmd_Module.symvers :=  /usr/src/linux-headers-7.0.12+kali-amd64/scripts/mod/modpost -M          -o Module.symvers -n -T modules.order -i /usr/src/linux-headers-7.0.12+kali-amd64/Module.symvers -e 
