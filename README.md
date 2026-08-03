@@ -201,4 +201,4 @@ using `%s` with a NULL guard.
 
 ## License
 
-GPL-3.0-or-later. See the `LICENSE` file for the full text.
+AGPL-3.0-or-later. See the `LICENSE` file for the full text.
