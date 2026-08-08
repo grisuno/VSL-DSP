@@ -3,74 +3,70 @@
 
 #include <stdint.h>
 #include <math.h>
-#include <float.h> // Para fmaxf, fminf
+#include <float.h>
 
-// Constante para la conversión de logaritmo natural (ln) a logaritmo base 2 (log2)
-// 1 / ln(2) ≈ 1.442695
-#define VSL_INV_LN2 1.442695f
+#define VSL_INV_LN2            1.442695f
+#define VSL_MAX_ENCODED_FLOAT  1000.0f
 
-// Estructura que almacena todos los coeficientes precalculados del DSP
 typedef struct {
-    // === Parámetros de Comunicación DSP (Faltan los valores finales) ===
-    uint32_t dsp_param_id;        // ID binario del parámetro (Ej: 0x1A01 para 'Gain')
-    uint32_t max_encoded_int;     // Valor entero máximo para la precisión DSP (Ej: 65535)
+    uint32_t dsp_param_id;
+    uint32_t max_encoded_int;
 
-    // === Coeficientes de la Curva de Ganancia/Volumen (Base e/10, Mapeo [0x20] a [0x30]) ===
-    float coeff_offset_A;         // Mapeado a [0x20]
-    float coeff_C1;               // Mapeado a [0x24]
-    float log_factor;             // Mapeado a [0x2c] (el resultado de logf(...) de la función constructora)
-    float curve_min_map;          // Mapeado a [0x40]
-    float curve_max_map;          // Mapeado a [0x44]
+    float coeff_offset_A;
+    float coeff_C1;
+    float log_factor;
+    float curve_min_map;
+    float curve_max_map;
 
-    // === Rango de Frecuencia (Usado para Frecuencia, Mapeo [0x8] a [0xc]) ===
-    float freq_min_hz;            // Mapeado a [0x8]
-    float freq_max_hz;            // Mapeado a [0xc]
+    float freq_min_hz;
+    float freq_max_hz;
 
 } VSL_Parameter;
 
-
-// =========================================================================
-//                       FUNCIONES DE CODIFICACIÓN (Enviar al DSP)
-// =========================================================================
-
 /**
- * @brief Codifica un valor lineal (ej. 0.5) a la escala exponencial/logarítmica del DSP (Ganancia/Volumen).
- * @param linear_value El valor lineal de entrada (ej. la posición del slider, 0.0 a 1.0).
- * @param param La estructura del parámetro con sus coeficientes.
- * @return El valor codificado en formato float (listo para la conversión final a int).
+ * @brief Encodes a linear gain value [0.0, 1.0] to the DSP exponential curve.
+ * @param linear_value Linear control position clamped to [0,1].
+ * @param param Parameter coefficients from the DSP parameter database.
+ * @return Encoded float value ready for integer conversion.
+ * @source Reverse-engineered from FUN_00132c90 in the Android driver.
  */
 float VSL_Encode_Gain(float linear_value, const VSL_Parameter *param);
 
 /**
- * @brief Convierte una posición lineal (ej. 0.5) a su frecuencia logarítmica (Hz) real.
- * @param linear_position La posición lineal de entrada (0.0 a 1.0).
- * @param param La estructura del parámetro con sus coeficientes.
- * @return La frecuencia mapeada en Hertz (Hz).
+ * @brief Decodes an encoded gain float back to a linear position [0.0, 1.0].
+ * @param encoded_float Value received from the DSP or produced by VSL_Encode_Gain.
+ * @param param Same coefficients used during encoding.
+ * @return Linear control position clamped to [0,1].
+ * @source Inverse of VSL_Encode_Gain (FUN_00132c90).
+ */
+float VSL_Decode_Gain(float encoded_float, const VSL_Parameter *param);
+
+/**
+ * @brief Maps a linear position [0.0, 1.0] to a logarithmic frequency (Hz).
+ * @param linear_position Linear control position clamped to [0,1].
+ * @param param Parameter with freq_min_hz and freq_max_hz.
+ * @return Frequency in Hz.
+ * @source Reverse-engineered from FUN_00132d00 in the Android driver.
  */
 float VSL_Map_Frequency(float linear_position, const VSL_Parameter *param);
 
 /**
- * @brief Convierte el valor codificado en float a un entero sin signo para el firmware.
- * @note ESTA FUNCIÓN ES UN MARCADOR DE POSICIÓN. El factor de escala final (la fórmula interna) 
- * aún debe ser determinado con ingeniería inversa.
- * @param encoded_float El valor float retornado por VSL_Encode_Gain o VSL_Map_Frequency.
- * @param param La estructura del parámetro con la precisión máxima entera.
- * @return El valor binario final (uint32_t) listo para ser enviado en el paquete DSP.
- */
-uint32_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param);
-
-
-// =========================================================================
-//                       FUNCIONES DE DECODIFICACIÓN (Leer del DSP)
-// =========================================================================
-
-/**
- * @brief Decodifica una frecuencia real (Hz) del DSP a su posición lineal de control (0.0 a 1.0).
- * @param freq_hz_value La frecuencia real en Hertz leída del DSP.
- * @param param La estructura del parámetro con sus rangos.
- * @return La posición lineal (0.0 a 1.0) para actualizar el control de la GUI.
+ * @brief Decodes a frequency (Hz) from the DSP to a linear position [0.0, 1.0].
+ * @param freq_hz_value Frequency in Hz read from the DSP, clamped to range.
+ * @param param Parameter with freq_min_hz and freq_max_hz.
+ * @return Linear control position [0,1].
+ * @source Reverse-engineered from FUN_00132da8 in the Android driver.
  */
 float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param);
 
-#endif // VSL_DSP_LOGIC_H
+/**
+ * @brief Converts an encoded float to a 16-bit integer for the DSP firmware.
+ * @param encoded_float Value from VSL_Encode_Gain or VSL_Map_Frequency.
+ * @param param Parameter with max_encoded_int (typically 65535).
+ * @return Integer value clamped to [0, max_encoded_int] ready for the USB packet.
+ * @note The scale factor VSL_MAX_ENCODED_FLOAT (1000.0f) is a hypothesis
+ *       from the DSP scaling. Validated test: 0.75 -> 40793 (full pipeline).
+ */
+uint16_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param);
 
+#endif /* VSL_DSP_LOGIC_H */

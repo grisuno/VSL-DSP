@@ -118,7 +118,8 @@ sudo make uninstall
 ## Test targets
 
 ```sh
-make test    # build and run the CMocka unit test suite
+make test    # build and run the CMocka unit test suite (detector)
+make test-dsp # build and run the DSP logic unit tests (14 tests)
 make asan    # build and run the test suite under ASan+UBSan
 make info    # print resolved build variables
 make deb     # build Debian package (.deb) for the kernel module
@@ -130,6 +131,27 @@ The test suite covers the model lookup table and accessor:
 entry for every supported PID and `NULL` otherwise. The suite also
 asserts that the model table is well formed: PIDs are unique, product
 names are non-empty, and the count matches the array size.
+
+The DSP unit test suite (`make test-dsp`) covers:
+- `VSL_Encode_Gain` and `VSL_Decode_Gain` (round-trip identity, 10 BDD scenarios)
+- `VSL_Map_Frequency` and `VSL_Decode_Frequency`
+- `VSL_Final_Encode_To_Int` (validated test: `0.75 -> 40793`)
+- All ASan+UBSan clean, mutation tested.
+
+## VSL CLI
+
+The `src/vsl_cli` tool sends DSP parameter changes via USB bulk transfer:
+
+```sh
+./src/vsl_cli --model 22vsl gain 1 0.75   # Set channel 1 gain to 75%
+./src/vsl_cli --pid 0x0102 gain 3 0.5     # Gain ch3 on 44 VSL
+./src/vsl_cli freq 1 80                    # HPF channel 1 at 80 Hz
+./src/vsl_cli raw 1A01 0.5                 # Raw parameter ID
+./src/vsl_cli list                         # List known parameters
+./src/vsl_cli --help                       # Full usage
+```
+
+Requires the VSL device. Build with `make vsl-cli`.
 
 ## Adding a new product ID
 
@@ -157,14 +179,20 @@ To support another model that uses the same UAC2 control plane:
 ├── CLAUDE.md                      working contract for AI agents and maintainers
 ├── LICENSE                        GPL-2.0-or-later
 ├── spec/
-│   └── audiobox_vsl.md            BDD specification for the detector
+│   ├── audiobox_vsl.md            BDD specification for the detector
+│   ├── vsl_dsp_logic.md           BDD specification for the DSP library
+│   ├── vsl_config_centralization.md
+│   └── vsl_decode_gain.md
 ├── src/
+│   ├── vsl_config.h               centralized hardware configuration
 │   ├── vsl_dsp_logic.c            userspace DSP math library
 │   ├── vsl_dsp_logic.h
 │   ├── vsl_dsp_transport.c        userspace HID transport
-│   └── vsl_dsp_transport.h
+│   ├── vsl_dsp_transport.h
+│   └── vsl_cli.c                  CLI control tool
 ├── tests/
-│   └── test_audiobox_vsl.c        CMocka unit test suite
+│   ├── test_audiobox_vsl.c        CMocka unit test suite (kernel)
+│   └── test_vsl_dsp_logic.c       CMocka unit test suite (DSP)
 ├── docs/                          auxiliary documentation
 ├── .github/                       issue and pull request templates
 └── legacy/                        historical artefacts (Python PoC, DKMS

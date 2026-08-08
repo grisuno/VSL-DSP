@@ -84,7 +84,7 @@ test-dsp: $(TEST_DSP_BIN)
 	$(TEST_DSP_BIN)
 
 $(VSL_CLI_BIN): src/vsl_cli.c src/vsl_dsp_logic.c src/vsl_dsp_logic.h \
-                src/vsl_dsp_transport.c src/vsl_dsp_transport.h
+                src/vsl_dsp_transport.c src/vsl_dsp_transport.h src/vsl_config.h
 	$(CC) $(CFLAGS_H) src/vsl_cli.c src/vsl_dsp_logic.c src/vsl_dsp_transport.c \
 	-o $(VSL_CLI_BIN) $(LDLIBS_H)
 

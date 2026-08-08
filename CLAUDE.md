@@ -169,12 +169,16 @@ the buffer and writes; the math is already done and tested above.
 
 - **Gain encoding** (`VSL_Encode_Gain`): exponential curve
   `coeff_offset_A + coeff_C1 * exp(norm_factor * log_factor)`.
+- **Gain decoding** (`VSL_Decode_Gain`): inverse of the exponential
+  curve, `log((encoded - offset) / C1) / log_factor`, clamped to [0,1].
+  BDD-verified round-trip identity with 14 CMocka tests.
 - **Frequency mapping** (`VSL_Map_Frequency` /
   `VSL_Decode_Frequency`): base 2 logarithm,
   `exp2f(log2_min + pos * (log2_max - log2_min))`.
 - **Float to int conversion** (`VSL_Final_Encode_To_Int`): scale
-  `1000.0f -> 65535`. Validated test: `0.75 -> 40793`.
-- **Parameter struct** (`VSL_Parameter`, 8 fields):
+  `1000.0f -> 65535`. Returns `uint16_t`. Validated test: `0.75 -> 40793`
+  (full pipeline: VSL_Encode_Gain + VSL_Final_Encode_To_Int).
+- **Parameter struct** (`VSL_Parameter`, 9 fields):
   `{coeff_offset_A, coeff_C1, log_factor, curve_min_map,
   curve_max_map, freq_min_hz, freq_max_hz, dsp_param_id,
   max_encoded_int}`.
@@ -185,13 +189,17 @@ These three values **are not assumed**. They must be extracted with
 evidence before the userspace I/O path is considered complete:
 
 ```c
-#define VSL_VENDOR_ID   0x????  /* FIXME: from the disassembly or lsusb */
-#define VSL_PRODUCT_ID  0x????  /* FIXME: from the disassembly or lsusb */
 #define VSL_REPORT_ID   0x??    /* FIXME: buf[0] before FUN_00412345 */
+/* VID 0x194f confirmed from public lsusb table */
+/* PIDs 0x0101, 0x0102, 0x0103 confirmed from public lsusb table */
 ```
 
 The kernel detector does not depend on any of these: it only needs
 the VID and the list of supported PIDs, both of which are public.
+
+The userspace transport (`vsl_dsp_transport.c`) uses the working
+hypothesis `VSL_REPORT_ID = 0x06` from `legacy/vsl_config.h`, not
+yet verified in Ghidra. Single source of truth is `src/vsl_config.h`.
 
 ---
 
@@ -268,14 +276,19 @@ VSL-DSP/
 ├── pull_request_template.md
 ├── docs/                          # additional documentation
 ├── spec/                          # BDD specifications (SDD)
-│   └── audiobox_vsl.md
+│   ├── audiobox_vsl.md
+│   ├── vsl_dsp_logic.md
+│   ├── vsl_config_centralization.md
+│   └── vsl_decode_gain.md
 ├── src/                           # userspace DSP library (active)
+│   ├── vsl_config.h               # centralized hardware configuration
 │   ├── vsl_dsp_logic.c
 │   ├── vsl_dsp_logic.h
 │   ├── vsl_dsp_transport.c
 │   └── vsl_dsp_transport.h
 ├── tests/                         # CMocka unit test suite
 │   └── test_audiobox_vsl.c
+│   └── test_vsl_dsp_logic.c
 ├── .github/                       # issue and pull request templates
 └── legacy/                        # historical artefacts (see legacy/README.md)
     ├── README.md
@@ -304,14 +317,17 @@ test, never as verified.
 | Detector unit test suite             | Closed        | `tests/test_audiobox_vsl.c` with CMocka: 10 tests covering the model table, the lookup function, and edge cases. All passing under `-Wall -Wextra -Werror`.   |
 | Architecture of the library          | Confirmed     | Pure C, modular `vsl_dsp_logic.c` + `vsl_dsp_transport.c`, `extern "C"` wrappers.                                                                              |
 | Gain encoding                        | Implemented   | `VSL_Encode_Gain`, exponential curve confirmed from the disassembly.                                                                                          |
+| Gain decoding                        | Closed        | `VSL_Decode_Gain`, inverse exponential, round-trip identity verified with 10 BDD tests.                                                                        |
 | Frequency mapping                    | Implemented   | `VSL_Map_Frequency` / `VSL_Decode_Frequency`, base 2 logarithm.                                                                                                |
-| Float to int conversion              | Validated     | `0.75 -> 40793` (test confirmed).                                                                                                                              |
-| Parameter struct                     | Confirmed     | `VSL_Parameter` (8 fields).                                                                                                                                    |
+| Float to int conversion              | Validated     | Returns `uint16_t` (was `uint32_t`; fixed to match protocol). Scale `1000.0f -> 65535`. Test: `0.75 -> 40793` (full pipeline).                                |
+| Parameter struct                     | Confirmed     | `VSL_Parameter` (9 fields).                                                                                                                                    |
 | HID packet                           | Confirmed     | 64 bytes (`0x40`) from the disassembly.                                                                                                                        |
-| VID/PID library                      | Blocker #1    | Extract from the disassembly or `vsl_discover`.                                                                                                                |
-| Report ID library                    | Blocker #2    | `buf[0]` before `FUN_00412345`.                                                                                                                                |
+| Centralized config                   | Closed        | `src/vsl_config.h`: single source of truth for VID, PIDs, Report ID, MIDI iface, endpoint. `VSL_ModelLookup()` for 3 models. No duplicated constants.           |
+| CLI tool                             | Implemented   | `vsl-cli`: `--pid`, `--model`, `gain`, `freq`, `raw`, `list` commands. Production-quality argument parsing, structured parameter table.                        |
+| DSP unit test suite                  | Closed        | `tests/test_vsl_dsp_logic.c` with CMocka: 14 tests (4 encode + 10 decode). ASan+UBSan clean. Mutation tested.                                                  |
+| Report ID library                    | Blocker #2    | `buf[0]` before `FUN_00412345`. Working hypothesis `0x06` from legacy capture, not yet verified in Ghidra.                                                     |
 | Endianness                           | Blocker #3    | Verify bit shifts in the disassembly.                                                                                                                          |
-| Test with real hardware              | Pending       | Requires blockers #1-#3 for the userspace I/O path.                                                                                                            |
+| Test with real hardware              | Pending       | Requires blockers #2-#3 for the userspace I/O path.                                                                                                            |
 | Public API documentation             | Pending       | Post validation with real hardware.                                                                                                                            |
 
 ### 7.2 Closed milestones (summary)
@@ -332,11 +348,23 @@ test, never as verified.
   USB-HID protocol. Protocol analysis document in
   `legacy/vsl_protocol_analysis.txt`.
 - **Phase 3** — DSP logic in pure C. `VSL_Encode_Gain`,
+  `VSL_Decode_Gain` (inverse exponential, round-trip identity),
   `VSL_Map_Frequency` / `VSL_Decode_Frequency`,
-  `VSL_Final_Encode_To_Int`, `VSL_Parameter` (8 fields). Validated
+  `VSL_Final_Encode_To_Int`, `VSL_Parameter` (9 fields). Validated
   test `0.75 -> 40793`. Modular architecture
   `vsl_dsp_logic.c` + `vsl_dsp_transport.c`. Compiles with
   `-lhidapi-libusb`.
+- **Phase 3a** — Code quality hardening. Centralized configuration
+  in `src/vsl_config.h` (single source of truth for VID, PIDs,
+  Report ID, MIDI iface, endpoint, model table). All Spanish
+  comments translated to English. `VSL_Final_Encode_To_Int`
+  return type fixed from `uint32_t` to `uint16_t` to match
+  protocol (2-byte encoded value slot). CLI rewritten with
+  `--pid`, `--model`, `gain`, `freq`, `raw`, `list` commands.
+  DSP unit test suite extended from 4 to 14 tests with 10
+  new `VSL_Decode_Gain` BDD scenarios. Mutation testing confirms
+  test suite catches injected defects. ASan+UBSan clean.
+  Specs: `vsl_config_centralization.md`, `vsl_decode_gain.md`.
 
 ### 7.3 Roadmap to cross
 

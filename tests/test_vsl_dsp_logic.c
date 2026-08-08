@@ -125,12 +125,223 @@ static void test_VSL_Final_Encode_To_Int(void **state) {
     assert_int_equal(VSL_Final_Encode_To_Int(0.75f, &param), 0);
 }
 
+static void test_VSL_Decode_Gain_c1_zero(void **state) {
+    (void) state;
+
+    VSL_Parameter param = {
+        .coeff_offset_A = 10.0f,
+        .coeff_C1 = 0.0f,
+        .log_factor = 1.0f,
+        .curve_min_map = 0.2f,
+        .curve_max_map = 0.8f,
+        .freq_min_hz = 0.0f,
+        .freq_max_hz = 0.0f,
+        .dsp_param_id = 0,
+        .max_encoded_int = 0
+    };
+
+    assert_float_equal(VSL_Decode_Gain(50.0f, &param), 0.2f, 1e-4f);
+}
+
+static void test_VSL_Decode_Gain_log_factor_zero(void **state) {
+    (void) state;
+
+    VSL_Parameter param = {
+        .coeff_offset_A = 10.0f,
+        .coeff_C1 = 20.0f,
+        .log_factor = 0.0f,
+        .curve_min_map = 0.2f,
+        .curve_max_map = 0.8f,
+        .freq_min_hz = 0.0f,
+        .freq_max_hz = 0.0f,
+        .dsp_param_id = 0,
+        .max_encoded_int = 0
+    };
+
+    assert_float_equal(VSL_Decode_Gain(50.0f, &param), 0.2f, 1e-4f);
+}
+
+static void test_VSL_Decode_Gain_encoded_below_offset(void **state) {
+    (void) state;
+
+    VSL_Parameter param = {
+        .coeff_offset_A = 10.0f,
+        .coeff_C1 = 20.0f,
+        .log_factor = 1.0f,
+        .curve_min_map = 0.2f,
+        .curve_max_map = 0.8f,
+        .freq_min_hz = 0.0f,
+        .freq_max_hz = 0.0f,
+        .dsp_param_id = 0,
+        .max_encoded_int = 0
+    };
+
+    float result = VSL_Decode_Gain(5.0f, &param);
+    assert_float_equal(result, 0.2f, 1e-4f);
+}
+
+static void test_VSL_Decode_Gain_range_zero(void **state) {
+    (void) state;
+
+    VSL_Parameter param = {
+        .coeff_offset_A = 10.0f,
+        .coeff_C1 = 20.0f,
+        .log_factor = 1.0f,
+        .curve_min_map = 0.5f,
+        .curve_max_map = 0.5f,
+        .freq_min_hz = 0.0f,
+        .freq_max_hz = 0.0f,
+        .dsp_param_id = 0,
+        .max_encoded_int = 0
+    };
+
+    assert_float_equal(VSL_Decode_Gain(50.0f, &param), 0.5f, 1e-4f);
+}
+
+static void test_VSL_Decode_Gain_roundtrip_mid(void **state) {
+    (void) state;
+
+    VSL_Parameter param = {
+        .coeff_offset_A = -10.0f,
+        .coeff_C1 = 20.0f,
+        .log_factor = 4.60517f,
+        .curve_min_map = 0.0f,
+        .curve_max_map = 1.0f,
+        .freq_min_hz = 0.0f,
+        .freq_max_hz = 0.0f,
+        .dsp_param_id = 0x1A01,
+        .max_encoded_int = 65535
+    };
+
+    float encoded = VSL_Encode_Gain(0.5f, &param);
+    float decoded = VSL_Decode_Gain(encoded, &param);
+    assert_float_equal(decoded, 0.5f, 1e-4f);
+}
+
+static void test_VSL_Decode_Gain_roundtrip_extremes(void **state) {
+    (void) state;
+
+    VSL_Parameter param = {
+        .coeff_offset_A = -10.0f,
+        .coeff_C1 = 20.0f,
+        .log_factor = 4.60517f,
+        .curve_min_map = 0.0f,
+        .curve_max_map = 1.0f,
+        .freq_min_hz = 0.0f,
+        .freq_max_hz = 0.0f,
+        .dsp_param_id = 0x1A01,
+        .max_encoded_int = 65535
+    };
+
+    float e0 = VSL_Encode_Gain(0.0f, &param);
+    float e1 = VSL_Encode_Gain(1.0f, &param);
+    assert_float_equal(VSL_Decode_Gain(e0, &param), 0.0f, 1e-4f);
+    assert_float_equal(VSL_Decode_Gain(e1, &param), 1.0f, 1e-4f);
+}
+
+static void test_VSL_Decode_Gain_roundtrip_75(void **state) {
+    (void) state;
+
+    VSL_Parameter param = {
+        .coeff_offset_A = -10.0f,
+        .coeff_C1 = 20.0f,
+        .log_factor = 4.60517f,
+        .curve_min_map = 0.0f,
+        .curve_max_map = 1.0f,
+        .freq_min_hz = 0.0f,
+        .freq_max_hz = 0.0f,
+        .dsp_param_id = 0x1A01,
+        .max_encoded_int = 65535
+    };
+
+    float encoded = VSL_Encode_Gain(0.75f, &param);
+    float decoded = VSL_Decode_Gain(encoded, &param);
+    assert_float_equal(decoded, 0.75f, 1e-4f);
+}
+
+static void test_VSL_Decode_Gain_custom_range_roundtrip(void **state) {
+    (void) state;
+
+    VSL_Parameter param = {
+        .coeff_offset_A = 0.0f,
+        .coeff_C1 = 1.0f,
+        .log_factor = 1.0f,
+        .curve_min_map = 0.2f,
+        .curve_max_map = 0.8f,
+        .freq_min_hz = 0.0f,
+        .freq_max_hz = 0.0f,
+        .dsp_param_id = 0,
+        .max_encoded_int = 0
+    };
+
+    float l0 = 0.2f;
+    float l1 = 0.8f;
+    float lmid = 0.5f;
+
+    float e0 = VSL_Encode_Gain(l0, &param);
+    float e1 = VSL_Encode_Gain(l1, &param);
+    float emid = VSL_Encode_Gain(lmid, &param);
+
+    assert_float_equal(VSL_Decode_Gain(e0, &param), l0, 1e-4f);
+    assert_float_equal(VSL_Decode_Gain(e1, &param), l1, 1e-4f);
+    assert_float_equal(VSL_Decode_Gain(emid, &param), lmid, 1e-4f);
+}
+
+static void test_VSL_Decode_Gain_encoded_equals_offset(void **state) {
+    (void) state;
+
+    VSL_Parameter param = {
+        .coeff_offset_A = -10.0f,
+        .coeff_C1 = 20.0f,
+        .log_factor = 4.60517f,
+        .curve_min_map = 0.0f,
+        .curve_max_map = 1.0f,
+        .freq_min_hz = 0.0f,
+        .freq_max_hz = 0.0f,
+        .dsp_param_id = 0,
+        .max_encoded_int = 0
+    };
+
+    float result = VSL_Decode_Gain(-10.0f, &param);
+    assert_float_equal(result, 0.0f, 1e-4f);
+}
+
+static void test_VSL_Decode_Gain_clamps_output(void **state) {
+    (void) state;
+
+    VSL_Parameter param = {
+        .coeff_offset_A = 0.0f,
+        .coeff_C1 = 1.0f,
+        .log_factor = 10.0f,
+        .curve_min_map = 0.0f,
+        .curve_max_map = 1.0f,
+        .freq_min_hz = 0.0f,
+        .freq_max_hz = 0.0f,
+        .dsp_param_id = 0,
+        .max_encoded_int = 0
+    };
+
+    float result = VSL_Decode_Gain(100000.0f, &param);
+    assert_true(result >= 0.0f);
+    assert_true(result <= 1.0f);
+}
+
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_VSL_Encode_Gain),
         cmocka_unit_test(test_VSL_Map_Frequency),
         cmocka_unit_test(test_VSL_Decode_Frequency),
-        cmocka_unit_test(test_VSL_Final_Encode_To_Int)
+        cmocka_unit_test(test_VSL_Final_Encode_To_Int),
+        cmocka_unit_test(test_VSL_Decode_Gain_c1_zero),
+        cmocka_unit_test(test_VSL_Decode_Gain_log_factor_zero),
+        cmocka_unit_test(test_VSL_Decode_Gain_encoded_below_offset),
+        cmocka_unit_test(test_VSL_Decode_Gain_range_zero),
+        cmocka_unit_test(test_VSL_Decode_Gain_roundtrip_mid),
+        cmocka_unit_test(test_VSL_Decode_Gain_roundtrip_extremes),
+        cmocka_unit_test(test_VSL_Decode_Gain_roundtrip_75),
+        cmocka_unit_test(test_VSL_Decode_Gain_custom_range_roundtrip),
+        cmocka_unit_test(test_VSL_Decode_Gain_encoded_equals_offset),
+        cmocka_unit_test(test_VSL_Decode_Gain_clamps_output),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }
