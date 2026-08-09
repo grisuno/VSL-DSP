@@ -1,6 +1,6 @@
 # VoiceCloak
 
-Cryptographically secure voice anonymizer.
+Cryptographically secure voice anonymizer for the VSL-DSP project.
 
 VoiceCloak applies three non-reversible DSP transformations to a
 monophonic WAV recording, each parametrised by a unique 96-byte
@@ -15,28 +15,35 @@ been audited against state-of-the-art speaker identification
 systems. Do not rely on VoiceCloak for life-critical anonymity
 without an independent security assessment.
 
-## Threat model
+## Modes
 
-| Adversary capability              | Countermeasure                       |
-|-----------------------------------|--------------------------------------|
-| Speaker embedding (ECAPA-TDNN, ResNet) | STFT phase randomisation          |
-| Formant matching (forensic voice analysis) | Independent formant warping    |
-| Brute-force seed recovery         | 96-byte seed (2^768 search space)    |
-| Post-quantum attack on RSA-4096   | Planned: Kyber-512 hybrid KEM        |
-| Re-identification via phonemes    | Pitch shift preserves intelligibility but alters F0 |
+VoiceCloak ships with two operational modes selected via `--mode`:
+
+| Parameter          | `subtle` (default)      | `witness`                          |
+|--------------------|-------------------------|------------------------------------|
+| Pitch shift        | +/-3 semitones          | +/-10 semitones (near full octave) |
+| Formant scaling    | 85-115% (barely audible)| 50-180% (vocal tract deformation)  |
+| Spectral scramble  | light phase noise       | aggressive bin permutation in 8 bands + phase randomisation |
+| Use case           | podcast anonymisation   | witness-protection-style anonymity |
+
+The witness mode destroys the spectral envelope structure by
+permuting frequency bins within logarithmically-spaced bands,
+breaking harmonic relationships while preserving broadband energy.
+The result is a voice that is clearly different from the original
+speaker.
 
 ## DSP pipeline
 
 1. **Pitch shift** — phase vocoder with variable synthesis hop.
-   Shift amount: +/- 4 semitones, derived from `vc_prng_float()`.
-2. **Formant warp** — frequency-axis warping of the magnitude
-   spectrum independent of pitch. Warp factor: +/- 0.3.
-3. **Phase scramble** — Gaussian noise injection in the STFT
-   phase domain. Standard deviation: 0.15 to 0.5.
+   Preserves duration while changing perceived pitch.
+2. **Formant scaling** — frequency-axis scaling of the magnitude
+   spectrum independent of pitch. Shifts vocal tract resonances
+   without changing fundamental frequency.
+3. **Spectral scrambling** — bin permutation within 8 mel-spaced
+   bands plus pseudo-random phase noise. Destroys the harmonic
+   structure that speaker identification systems rely on.
 
-All parameters are deterministic for a given seed, but
-probabilistically distributed across the allowed range for
-different seeds.
+All parameters are deterministic for a given seed.
 
 ## Cryptographic design
 
@@ -59,17 +66,18 @@ cd voicecloak && make
 
 ./src/voicecloak cloak -k voicecloak_key.pub input.wav output.wav
 
+./src/voicecloak cloak -k voicecloak_key.pub --mode witness input.wav output.wav
+
 ./src/voicecloak info output.wav
 ```
 
 - `keygen` produces `voicecloak_key.pub` (public) and
   `voicecloak_key.pem` (private, 4096-bit RSA).
-- `cloak` reads a mono 16-bit PCM WAV, generates a 96-byte random
-  session seed, encrypts it with the public key, applies the DSP
-  pipeline, writes the anonymised WAV, and stores the ciphertext
-  in `output.wav.vc`.
-- `info` displays metadata including sample count, duration, and
-  sidecar presence.
+- `cloak` reads a mono WAV (8/16/24/32-bit PCM), generates a
+  96-byte random session seed, encrypts it with the public key,
+  applies the DSP pipeline, writes a 16-bit anonymised WAV, and
+  stores the ciphertext in `output.wav.vc`.
+- `info` displays sample count, duration, and sidecar metadata.
 
 ## Build
 
@@ -83,35 +91,12 @@ Requirements:
 
 - C11 compiler (GCC or Clang)
 - OpenSSL development headers (`libssl-dev`)
+- ALSA development headers (`libasound2-dev`), for `voicecloak-rt`
 - CMocka (`libcmocka-dev`), for the test target only
 
 The FFT (`vc_fft.c`) and WAV parser (`vc_wav.c`) are self-contained
 implementations with no external library dependencies beyond
-`libm`. The entire project links against `libssl`, `libcrypto`,
-and `libm`.
-
-## Verification
-
-```
-$ ./src/voicecloak cloak -k voicecloak_key.pub test.wav test_cloaked.wav
-Loading: test.wav
-  Samples: 132300, Rate: 44100 Hz, Duration: 3.0s
-Encrypting session seed with RSA-4096...
-  Seed encrypted: 512 bytes
-  Sidecar: test_cloaked.wav.vc
-Applying voice cloaking transforms...
-  Output samples: 135424 (3.1s)
-Writing: test_cloaked.wav
-Done. Voice cloaked successfully.
-```
-
-Signal statistics before and after:
-
-| Metric          | Original | Cloaked |
-|-----------------|----------|---------|
-| Samples         | 132300   | 135424  |
-| Duration (s)    | 3.00     | 3.07    |
-| RMS amplitude   | 0.6042   | 0.2319  |
+`libm`.
 
 ## Architecture
 
@@ -124,16 +109,95 @@ voicecloak/
 │   ├── vc_fft.c
 │   ├── vc_stft.h          STFT / ISTFT with Hann window and overlap-add
 │   ├── vc_stft.c
-│   ├── vc_wav.h           WAV PCM read / write (mono, 16-bit)
+│   ├── vc_wav.h           WAV PCM read (8/16/24/32-bit) / write (16-bit)
 │   ├── vc_wav.c
 │   ├── vc_crypto.h        RSA-4096 keygen/seal/unseal, HKDF, AES-CTR PRNG
 │   ├── vc_crypto.c
-│   ├── vc_dsp.h           Pitch shift, formant warp, phase scramble, cloak()
+│   ├── vc_dsp.h           Pitch shift, formant scaling, spectral scramble, cloak()
 │   ├── vc_dsp.c
-│   └── vc_cli.c           Command-line interface
+│   ├── vc_cli.c           Offline CLI (keygen, cloak, info)
+│   ├── vc_stream.h        Streaming STFT overlap-add engine (constant rate)
+│   ├── vc_stream.c
+│   ├── vc_rt.h            Real-time phase-vocoder transform (pitch/formant/scramble)
+│   ├── vc_rt.c
+│   ├── vc_rt_seed.c       Seed-based parameter derivation (HKDF/AES PRNG)
+│   ├── vc_alsa.h          ALSA capture/playback orchestration
+│   ├── vc_alsa.c
+│   └── vc_rt_cli.c        Real-time CLI (list, selftest, live)
+├── spec/
+│   └── voicecloak_realtime.md
 └── tests/
-    └── test_vc_fft.c      FFT unit tests (CMocka, 3 scenarios)
+    ├── test_vc_fft.c      FFT unit tests (CMocka, 3 scenarios)
+    └── test_vc_stream.c   Streaming engine tests (CMocka, 5 scenarios)
 ```
+
+## Real-time (live voice changer)
+
+Status: verified working on an AudioBox 22 VSL (`194f:0101`) at
+48 kHz / S32_LE / 2ch. Unit tests and the offline `selftest` pass;
+the live path was confirmed on real hardware.
+
+The offline `cloak` command reads a WAV and writes a WAV. The
+`voicecloak-rt` binary applies the same transformation concepts
+(pitch shift, formant scaling, spectral scramble) to a **live**
+stream, using the PreSonus AudioBox VSL as a standard ALSA
+class-compliant audio interface.
+
+Important: the transformation runs on the **CPU** as an ALSA client.
+It does **not** run on the AudioBox onboard VSL DSP. That DSP is a
+fixed-function mixer (gain, EQ, dynamics, reverb) exposed only through
+the HID control plane; it cannot execute a phase vocoder. The VSL HID
+driver in the parent repository is not involved in moving audio
+samples and is not modified by this feature: `snd-usb-audio` (ALSA)
+owns the stream, exactly as required by the project non-interference
+doctrine.
+
+Signal path:
+
+```
+mic -> AudioBox ADC -> USB -> snd-usb-audio (ALSA capture)
+     -> vc_stream (streaming phase vocoder, CPU)
+     -> snd-usb-audio (ALSA playback) -> AudioBox DAC -> headphones
+```
+
+Unlike the offline engine, the streaming engine keeps a **constant
+sample rate** (it emits exactly as many samples as it consumes),
+which is mandatory for live audio. Pitch shifting is done in the
+frequency domain (analysis hop equals synthesis hop) with per-bin
+instantaneous-frequency tracking. Algorithmic latency is one FFT
+frame (e.g. `fft=1024`, `hop=256` -> 768 samples, ~16 ms at 48 kHz),
+plus ALSA period buffering.
+
+### Usage
+
+```sh
+cd voicecloak && make        # builds voicecloak and voicecloak-rt
+
+./src/voicecloak-rt list      # find the AudioBox PCM name (e.g. hw:CARD=VSL)
+./src/voicecloak-rt selftest  # verify the engine on a synthetic tone (no device)
+
+# Fixed transform (deterministic):
+./src/voicecloak-rt live -D plughw:CARD=VSL -P plughw:CARD=VSL --semitones 7 --formant 1.3
+
+# Random transform within a mode's ranges:
+./src/voicecloak-rt live -D plughw:CARD=VSL -P plughw:CARD=VSL --mode witness
+```
+
+`live` negotiates rate, format, and channel count from the device
+(nothing hardcoded), processes channel 0, and writes the result to
+all playback channels. Stop with Ctrl-C. `plughw:` is recommended so
+ALSA handles any needed format/rate conversion.
+
+Options: `--mode subtle|witness`, `--semitones N`, `--formant F`,
+`--scramble S`, `--fft N`, `--hop N`, `--rate R`, `--channels C`,
+`--period P`. Any of `--semitones/--formant/--scramble` selects a
+fixed deterministic transform; otherwise a random session seed is
+drawn within the selected mode's ranges (same ranges as offline
+`cloak`).
+
+The real-time binary requires the ALSA development headers
+(`libasound2-dev`) in addition to the offline requirements. Build it
+alone with `make rt`.
 
 ## License
 
