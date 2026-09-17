@@ -1,0 +1,27 @@
+{
+  "tool": "readmenator",
+  "generated_at": "2026-09-17T04:10:59Z",
+  "project_root": "/tmp/push_VSL-DSP_20260917_010128",
+  "files": 49,
+  "symbols": 643,
+  "imports": 472,
+  "resolved_imports": 57,
+  "security_findings": 0,
+  "languages": {
+    "c": 24,
+    "h": 15,
+    "sh": 3,
+    "py": 7
+  },
+  "entrypoints": [
+    "legacy/main.c"
+  ],
+  "start_here": "INDEX.md",
+  "workflow": [
+    "ls *.md readmenator-*/  # orient: docs first, ignore build noise",
+    "grep -n '<keyword>' INDEX.md",
+    "cat KB_<subsystem>.md",
+    "grep -n '<file>' ARCHITECTURE.md SYMBOLS.md"
+  ],
+  "regenerate": "readmenator . --rebuild"
+}
