@@ -122,6 +122,28 @@ Source of constants: Hann COLA identity `y = x * W2 / W2`.
 - When processed
 - Then exactly `n` samples are written to `out`.
 
+### Scenario: level preservation (energy-normalized pitch shift)
+- Given a harmonic signal (120 Hz + harmonics) at fixed RMS
+- When processed with a fixed cloak transform (`+7 st / 1.3 / 0.0`)
+- Then, past the latency region, output RMS is within +/-3 dB of
+  input RMS.
+- Rationale: bins shifted out of range must not silently drop the
+  level; the pitch-mapping stage renormalizes energy, partials move
+  as rigid (magnitude, true frequency) pairs, and non-peak bins
+  identity-lock to their peak (measured pi-structured analysis
+  phases), so adjacent bins cannot cancel in overlap-add. Silence
+  passes through untouched (fail closed, no scaling).
+
+### Scenario: witness level floor (documented, not preserved)
+- Given the same signal with aggressive witness parameters
+  (`-8 st / 0.5 / 1.0`)
+- Then output RMS sits near -7 dB (pinned by test to [-8.5, -5.5]).
+- Rationale: uniform random phase noise makes overlap-add sum powers
+  instead of amplitudes (4 overlapping frames -> ~-6 dB floor), plus
+  permutation misplacement attenuation. Both are inherent to
+  intentional spectral destruction; the test guards regressions, it
+  does not promise transparency in witness mode.
+
 ## 6. Parameter derivation (`vc_rt`)
 
 Reuses `vc_prng` (AES-256-CTR) exactly as the offline pipeline. From a

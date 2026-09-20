@@ -182,6 +182,85 @@ static void test_bounded_output(void **state) {
     free(in); free(out);
 }
 
+static void run_level(float semis, float formant, float scramble,
+                      float max_loss_db) {
+    size_t n = 48000;
+    float *in = (float *)malloc(n * sizeof(float));
+    float *out = (float *)malloc(n * sizeof(float));
+    size_t i;
+    int h;
+    for (i = 0; i < n; ++i) {
+        double v = 0.0;
+        for (h = 1; h <= 12; ++h)
+            v += sin(2.0 * M_PI * 120.0 * h * (double)i / (double)SR) / h;
+        in[i] = (float)(v * 0.25);
+    }
+
+    vc_stream_t *st = vc_stream_create(1024, 256, SR);
+    assert_non_null(st);
+    vc_rt_params_t p = { vc_rt_semitones_to_ratio(semis), formant, scramble };
+    vc_rt_ctx_t *ctx = vc_rt_create(1024 / 2 + 1, p);
+    assert_non_null(ctx);
+
+    run_stream(st, in, out, n, vc_rt_transform, ctx);
+
+    size_t skip = vc_stream_latency_samples(st) + 4096;
+    float in_rms = rms(in + skip, n - skip);
+    float out_rms = rms(out + skip, n - skip);
+    float gain_db = 20.0f * log10f(out_rms / (in_rms + 1e-12f) + 1e-12f);
+    assert_true(fabsf(gain_db) <= max_loss_db);
+
+    vc_rt_destroy(ctx);
+    vc_stream_destroy(st);
+    free(in); free(out);
+}
+
+static void test_level_preserved_fixed(void **state) {
+    (void)state;
+    run_level(7.0f, 1.3f, 0.0f, 3.0f);
+}
+
+static void test_level_preserved_witness(void **state) {
+    /* Witness floor, not a preservation target: uniform random phase
+     * noise (intensity 1.0) makes overlap-add sum powers instead of
+     * amplitudes (4 overlapping frames -> ~-6 dB), plus permutation
+     * misplacement attenuation. Measured -7.0 dB on the reference
+     * harmonic signal; the window guards regressions (e.g. a return
+     * of the -37 dB cancellation bug) without pretending physics
+     * allows 0 dB here. Deterministic: fixed signal, params, hashes.
+     */
+    (void)state;
+    size_t n = 48000;
+    float *in = (float *)malloc(n * sizeof(float));
+    float *out = (float *)malloc(n * sizeof(float));
+    size_t i;
+    int h;
+    for (i = 0; i < n; ++i) {
+        double v = 0.0;
+        for (h = 1; h <= 12; ++h)
+            v += sin(2.0 * M_PI * 120.0 * h * (double)i / (double)SR) / h;
+        in[i] = (float)(v * 0.25);
+    }
+
+    vc_stream_t *st = vc_stream_create(1024, 256, SR);
+    assert_non_null(st);
+    vc_rt_params_t p = { vc_rt_semitones_to_ratio(-8.0f), 0.5f, 1.0f };
+    vc_rt_ctx_t *ctx = vc_rt_create(1024 / 2 + 1, p);
+    assert_non_null(ctx);
+
+    run_stream(st, in, out, n, vc_rt_transform, ctx);
+
+    size_t skip = vc_stream_latency_samples(st) + 4096;
+    float in_rms = rms(in + skip, n - skip);
+    float out_rms = rms(out + skip, n - skip);
+    float gain_db = 20.0f * log10f(out_rms / (in_rms + 1e-12f) + 1e-12f);
+    assert_true(gain_db <= -5.5f && gain_db >= -8.5f);
+
+    vc_rt_destroy(ctx);
+    vc_stream_destroy(st);
+    free(in); free(out);
+}
+
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_create_validation),
@@ -189,6 +268,8 @@ int main(void) {
         cmocka_unit_test(test_pitch_up_octave),
         cmocka_unit_test(test_pitch_down_octave),
         cmocka_unit_test(test_bounded_output),
+        cmocka_unit_test(test_level_preserved_fixed),
+        cmocka_unit_test(test_level_preserved_witness),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

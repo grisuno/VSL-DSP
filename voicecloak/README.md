@@ -199,6 +199,78 @@ The real-time binary requires the ALSA development headers
 (`libasound2-dev`) in addition to the offline requirements. Build it
 alone with `make rt`.
 
+### Streaming with OBS
+
+An ALSA `hw:`/`plughw:` device can be opened by one application at a
+time. If `voicecloak-rt` holds the AudioBox, OBS cannot open it too
+(`Device busy`), and vice versa. The fix is routing: OBS must never
+open the AudioBox directly. Only `voicecloak-rt` captures from the
+hardware; it emits the processed voice to a virtual device, and OBS
+uses that virtual device as its microphone. That way OBS receives the
+distorted voice, not the clean one.
+
+Pick exactly one route:
+
+#### Route A: PulseAudio / PipeWire (`make pulse`, recommended)
+
+Requirements: `pactl` (`pulseaudio-utils` or `pipewire-pulse`).
+
+```sh
+cd voicecloak && make pulse
+# equivalent manual form:
+#   pactl load-module module-null-sink sink_name=vc_out sink_properties=device.description=VoiceCloak
+#   PULSE_SINK=vc_out ./src/voicecloak-rt live -D plughw:CARD=VSL -P pulse --mode witness
+```
+
+OBS configuration:
+
+1. Sources -> Add -> Audio Input Capture (PulseAudio).
+2. Select `Monitor of VoiceCloak` (`Monitor of vc_out`) as the device.
+3. Do not add the AudioBox as a source in any scene.
+
+To hear yourself, set that source to `Monitor and Output` in
+Advanced Audio Properties and route OBS monitoring to the AudioBox
+headphones.
+
+#### Route B: pure ALSA loopback (`make alsa`)
+
+Requirements: `alsa-utils`, permission to run `sudo modprobe snd-aloop`.
+
+```sh
+cd voicecloak && make alsa
+# equivalent manual form:
+#   sudo modprobe snd-aloop index=1
+#   ./src/voicecloak-rt live -D plughw:CARD=VSL -P hw:Loopback,0,0 --mode witness
+```
+
+OBS configuration:
+
+1. Sources -> Add -> Audio Input Capture (ALSA).
+2. Select `hw:Loopback,1,0` as the device.
+3. Do not add the AudioBox as a source in any scene.
+
+`make setup-pulse` and `make setup-alsa` prepare only the virtual
+device without starting `live`. All routes accept the same overrides
+without editing files:
+
+```sh
+make pulse VC_MODE=subtle
+make pulse VC_EXTRA="--semitones 7 --formant 1.3"
+make alsa VSL_CAPTURE=hw:CARD=VSL ALOOP_PB=hw:Loopback,0,0
+make help  # full variable list
+```
+
+| Variable      | Default            | Meaning                                  |
+|---------------|--------------------|------------------------------------------|
+| `VSL_CAPTURE` | `plughw:CARD=VSL`  | ALSA capture device (the AudioBox)       |
+| `PULSE_SINK`  | `vc_out`           | Null-sink name OBS monitors (route A)    |
+| `PULSE_PCM`   | `pulse`            | ALSA PCM used for Pulse/PipeWire output  |
+| `ALOOP_PB`    | `hw:Loopback,0,0`  | Loopback endpoint voicecloak writes (B)  |
+| `ALOOP_CAP`   | `hw:Loopback,1,0`  | Loopback endpoint OBS reads (route B)    |
+| `VC_MODE`     | `witness`          | `subtle` or `witness`                    |
+| `VC_RATE` / `VC_CHANNELS` / `VC_PERIOD` / `VC_FFT` / `VC_HOP` | `48000` / `2` / `256` / `1024` / `256` | Stream parameters |
+| `VC_EXTRA`    | empty              | Extra `live` flags, e.g. fixed transform |
+
 ## License
 
 AGPL-3.0-or-later. See the parent project LICENSE file.
