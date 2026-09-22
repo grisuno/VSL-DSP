@@ -55,9 +55,20 @@ LDLIBS_H ?= -lusb-1.0 -lm
 TEST_BIN := tests/audiobox_vsl_test
 TEST_DSP_BIN := tests/test_vsl_dsp_logic
 VSL_CLI_BIN := src/vsl_cli
+TEST_AVATAR_BIN := tests/test_avatar_logic
+AVATAR_BIN := avatar/avatar
+AVATAR_PCM ?= plughw:CARD=VSL
+AVATAR_EXTRA ?=
+
+CFLAGS_AV ?= $(CSTD) -O2 -g -Wall -Wextra -Werror -Wshadow -Wpedantic \
+            -Wstrict-prototypes -Wmissing-prototypes -Wconversion \
+            -Wsign-conversion -Wold-style-definition \
+            -fstack-protector-strong -D_FORTIFY_SOURCE=2 \
+            -Iavatar $(shell pkg-config --cflags alsa sdl2 SDL2_image)
+LDLIBS_AV ?= $(shell pkg-config --libs alsa sdl2 SDL2_image) -lm
 
 .PHONY: all test asan clean install uninstall modprobe rmmod info help deb \
-        vsl-cli test-dsp
+        vsl-cli test-dsp avatar avatar-build avatar-list avatar-test avatar-asan
 
 all: modules test vsl-cli test-dsp
 
@@ -90,9 +101,30 @@ $(VSL_CLI_BIN): src/vsl_cli.c src/vsl_dsp_logic.c src/vsl_dsp_logic.h \
 
 vsl-cli: $(VSL_CLI_BIN)
 
+$(TEST_AVATAR_BIN): tests/test_avatar_logic.c avatar/avatar_logic.c avatar/avatar_logic.h
+	$(CC) $(CFLAGS_T) -Iavatar tests/test_avatar_logic.c avatar/avatar_logic.c -o $@ $(LDLIBS_T) -lm
+
+avatar-test: $(TEST_AVATAR_BIN)
+	$(TEST_AVATAR_BIN)
+
+avatar-asan: tests/test_avatar_logic.c avatar/avatar_logic.c avatar/avatar_logic.h | tests
+	$(CC) $(CFLAGS_A) -Iavatar tests/test_avatar_logic.c avatar/avatar_logic.c -o $(TEST_AVATAR_BIN) $(LDLIBS_A) -lm
+	$(TEST_AVATAR_BIN)
+
+$(AVATAR_BIN): avatar/avatar_main.c avatar/avatar_logic.c avatar/avatar_logic.h avatar/avatar_config.h
+	$(CC) $(CFLAGS_AV) avatar/avatar_main.c avatar/avatar_logic.c -o $@ $(LDLIBS_AV)
+
+avatar-build: $(AVATAR_BIN)
+
+avatar: avatar-build
+	$(AVATAR_BIN) -D $(AVATAR_PCM) $(AVATAR_EXTRA)
+
+avatar-list: avatar-build
+	$(AVATAR_BIN) --list
+
 clean:
 	$(MAKE) -C $(KDIR) M=$(PWD) clean
-	rm -f $(TEST_BIN) $(TEST_DSP_BIN) $(VSL_CLI_BIN)
+	rm -f $(TEST_BIN) $(TEST_DSP_BIN) $(VSL_CLI_BIN) $(TEST_AVATAR_BIN) $(AVATAR_BIN)
 
 install: modules
 	$(MAKE) -C $(KDIR) M=$(PWD) modules_install
@@ -136,6 +168,11 @@ help:
 	@echo "  test        build and run the CMocka test suite (detector)"
 	@echo "  test-dsp    build and run the DSP logic unit tests"
 	@echo "  vsl-cli     build the VSL DSP control CLI tool"
+	@echo "  avatar      build and launch the PNGTuber avatar (ALSA+SDL2 GUI)"
+	@echo "  avatar-build build the avatar binary only (no launch)"
+	@echo "  avatar-list list ALSA PCMs via the avatar binary"
+	@echo "  avatar-test build and run the avatar logic unit tests"
+	@echo "  avatar-asan avatar tests under ASan+UBSan"
 	@echo "  asan        build and run the test suite under ASan+UBSan"
 	@echo "  clean       remove build artefacts"
 	@echo "  install     copy the kernel module to $(INSTALL) and run depmod"
