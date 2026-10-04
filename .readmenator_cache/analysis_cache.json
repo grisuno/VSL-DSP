@@ -1,0 +1,261 @@
+{
+  "analysis_v2": {
+    "god_nodes": [
+      [
+        "legacy/mixer_quirks.c",
+        32.900000000000006
+      ],
+      [
+        "legacy/vsl_config.h",
+        14.8
+      ],
+      [
+        "voicecloak/src/vc_rt_cli.c",
+        13.0
+      ],
+      [
+        "voicecloak/src/vc_stream.h",
+        12.8
+      ],
+      [
+        "voicecloak/src/vc_fft.h",
+        12.2
+      ],
+      [
+        "voicecloak/src/vc_rt.h",
+        11.7
+      ],
+      [
+        "voicecloak/src/vc_crypto.h",
+        11.6
+      ],
+      [
+        "voicecloak/src/vc_level.h",
+        11.5
+      ],
+      [
+        "voicecloak/src/vc_effects.h",
+        10.9
+      ],
+      [
+        "voicecloak/src/vc_alsa.h",
+        10.5
+      ]
+    ],
+    "communities": [
+      {
+        "id": 0,
+        "label": "root",
+        "file_ids": [
+          "audiobox_vsl.c",
+          "legacy/mixer_quirks.c",
+          "audiobox_vsl.h",
+          "tests/test_audiobox_vsl.c"
+        ],
+        "cohesion": 1.0,
+        "size": 4
+      },
+      {
+        "id": 1,
+        "label": "avatar",
+        "file_ids": [
+          "avatar/avatar_logic.c",
+          "tests/test_avatar_logic.c",
+          "avatar/avatar_logic.h",
+          "avatar/avatar_config.h",
+          "avatar/avatar_main.c"
+        ],
+        "cohesion": 1.0,
+        "size": 5
+      },
+      {
+        "id": 2,
+        "label": "legacy",
+        "file_ids": [
+          "legacy/vsl_dsp_logic.h",
+          "legacy/vsl_config.h",
+          "legacy/vsl_transport.py",
+          "legacy/vsl_poc_main.py",
+          "legacy/vsl_core.py",
+          "legacy/vsl_dsp_transport.c",
+          "legacy/test_connection.c",
+          "legacy/vsl_dsp_transport.h",
+          "legacy/vsl_dsp_logic.c",
+          "legacy/vsl_hid_io.py",
+          "legacy/main.c"
+        ],
+        "cohesion": 1.0,
+        "size": 11
+      },
+      {
+        "id": 3,
+        "label": "src",
+        "file_ids": [
+          "src/vsl_dsp_transport.c",
+          "src/vsl_dsp_logic.c",
+          "src/vsl_config.h",
+          "src/vsl_dsp_transport.h",
+          "src/vsl_cli.c",
+          "src/vsl_dsp_logic.h"
+        ],
+        "cohesion": 1.0,
+        "size": 6
+      },
+      {
+        "id": 4,
+        "label": "voicecloak/src",
+        "file_ids": [
+          "voicecloak/src/vc_rt_cli.c",
+          "voicecloak/src/vc_effects.h",
+          "voicecloak/tests/test_vc_fft.c",
+          "voicecloak/src/vc_rt.c",
+          "voicecloak/src/vc_presets.c",
+          "voicecloak/src/vc_stft.h",
+          "voicecloak/src/vc_fft.h",
+          "voicecloak/src/vc_rt_seed.c",
+          "voicecloak/src/vc_alsa.c",
+          "voicecloak/src/vc_stream.h",
+          "voicecloak/src/vc_level.c",
+          "voicecloak/tests/test_vc_effects.c",
+          "voicecloak/src/vc_fft.c",
+          "voicecloak/src/vc_presets.h",
+          "voicecloak/tests/test_vc_level.c",
+          "voicecloak/src/vc_effects.c",
+          "voicecloak/src/vc_stft.c",
+          "voicecloak/src/vc_stream.c",
+          "voicecloak/tests/test_vc_stream.c",
+          "voicecloak/src/vc_rt.h",
+          "voicecloak/src/vc_audio_config.h",
+          "voicecloak/tests/test_vc_presets.c",
+          "voicecloak/src/vc_alsa.h",
+          "voicecloak/src/vc_level.h"
+        ],
+        "cohesion": 0.9166666666666666,
+        "size": 24
+      },
+      {
+        "id": 5,
+        "label": "voicecloak/src",
+        "file_ids": [
+          "voicecloak/src/vc_crypto.h",
+          "voicecloak/src/vc_crypto.c",
+          "voicecloak/src/vc_cli.c",
+          "voicecloak/src/vc_dsp.h",
+          "voicecloak/src/vc_dsp.c",
+          "voicecloak/src/vc_wav.h",
+          "voicecloak/src/vc_wav.c"
+        ],
+        "cohesion": 0.7,
+        "size": 7
+      }
+    ],
+    "surprising_connections": [
+      [
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_wav.c",
+        7,
+        "{4, 5}"
+      ],
+      [
+        "voicecloak/src/vc_effects.c",
+        "voicecloak/src/vc_wav.c",
+        7,
+        "{4, 5}"
+      ],
+      [
+        "voicecloak/src/vc_level.c",
+        "voicecloak/src/vc_wav.c",
+        7,
+        "{4, 5}"
+      ],
+      [
+        "voicecloak/src/vc_wav.c",
+        "voicecloak/tests/test_vc_effects.c",
+        7,
+        "{4, 5}"
+      ],
+      [
+        "voicecloak/src/vc_wav.c",
+        "voicecloak/tests/test_vc_level.c",
+        7,
+        "{4, 5}"
+      ]
+    ],
+    "suggested_questions": [
+      "What does mixer_quirks.c depend on, and what depends on it? (1 connections)",
+      "What does vsl_config.h depend on, and what depends on it? (7 connections)",
+      "What does vc_rt_cli.c depend on, and what depends on it? (6 connections)",
+      "How are the 4 files in 'root' related to each other?",
+      "Why are vc_audio_config.h and vc_wav.c connected through 7 hops across 2 communities?"
+    ]
+  },
+  "layers": {
+    "audiobox_vsl.c": "infrastructure",
+    "audiobox_vsl.h": "infrastructure",
+    "avatar/avatar_config.h": "infrastructure",
+    "avatar/avatar_logic.c": "business_logic",
+    "avatar/avatar_logic.h": "business_logic",
+    "avatar/avatar_main.c": "utility",
+    "install.sh": "utility",
+    "legacy/app.py": "utility",
+    "legacy/build-dkms.sh": "presentation",
+    "legacy/main.c": "utility",
+    "legacy/mixer_quirks.c": "presentation",
+    "legacy/test.sh": "testing",
+    "legacy/test_connection.c": "testing",
+    "legacy/vsl_config.h": "infrastructure",
+    "legacy/vsl_config.py": "infrastructure",
+    "legacy/vsl_core.py": "utility",
+    "legacy/vsl_dsp_logic.c": "business_logic",
+    "legacy/vsl_dsp_logic.h": "business_logic",
+    "legacy/vsl_dsp_transport.c": "utility",
+    "legacy/vsl_dsp_transport.h": "utility",
+    "legacy/vsl_hid_io.py": "utility",
+    "legacy/vsl_poc_main.py": "utility",
+    "legacy/vsl_protocol_analyzer.py": "utility",
+    "legacy/vsl_transport.py": "utility",
+    "src/vsl_cli.c": "utility",
+    "src/vsl_config.h": "infrastructure",
+    "src/vsl_dsp_logic.c": "business_logic",
+    "src/vsl_dsp_logic.h": "business_logic",
+    "src/vsl_dsp_transport.c": "utility",
+    "src/vsl_dsp_transport.h": "utility",
+    "tests/test_audiobox_vsl.c": "testing",
+    "tests/test_avatar_logic.c": "testing",
+    "tests/test_vsl_dsp_logic.c": "testing",
+    "voicecloak/src/vc_alsa.c": "utility",
+    "voicecloak/src/vc_alsa.h": "utility",
+    "voicecloak/src/vc_audio_config.h": "infrastructure",
+    "voicecloak/src/vc_cli.c": "utility",
+    "voicecloak/src/vc_crypto.c": "utility",
+    "voicecloak/src/vc_crypto.h": "utility",
+    "voicecloak/src/vc_dsp.c": "utility",
+    "voicecloak/src/vc_dsp.h": "utility",
+    "voicecloak/src/vc_effects.c": "utility",
+    "voicecloak/src/vc_effects.h": "utility",
+    "voicecloak/src/vc_fft.c": "utility",
+    "voicecloak/src/vc_fft.h": "utility",
+    "voicecloak/src/vc_level.c": "utility",
+    "voicecloak/src/vc_level.h": "utility",
+    "voicecloak/src/vc_presets.c": "utility",
+    "voicecloak/src/vc_presets.h": "utility",
+    "voicecloak/src/vc_rt.c": "utility",
+    "voicecloak/src/vc_rt.h": "utility",
+    "voicecloak/src/vc_rt_cli.c": "utility",
+    "voicecloak/src/vc_rt_seed.c": "data_access",
+    "voicecloak/src/vc_stft.c": "utility",
+    "voicecloak/src/vc_stft.h": "utility",
+    "voicecloak/src/vc_stream.c": "utility",
+    "voicecloak/src/vc_stream.h": "utility",
+    "voicecloak/src/vc_wav.c": "utility",
+    "voicecloak/src/vc_wav.h": "utility",
+    "voicecloak/tests/test_vc_effects.c": "testing",
+    "voicecloak/tests/test_vc_fft.c": "testing",
+    "voicecloak/tests/test_vc_level.c": "testing",
+    "voicecloak/tests/test_vc_presets.c": "testing",
+    "voicecloak/tests/test_vc_stream.c": "testing"
+  },
+  "security": {
+    "findings": []
+  }
+}
