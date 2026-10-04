@@ -119,7 +119,9 @@ For every module, the cycle is inviolable and **in this order**:
 5. **Validation** —
    - Userspace: `make test` (CMocka), `make asan` (ASan+UBSan),
      `valgrind`, `cppcheck` clean. The validated project test
-     (float to int: `0.75 -> 40793`) must always pass.
+     (float to int: `0.75 -> 40793`) must always pass. Each
+     sub-project validates through its own Makefile: `make -C
+     voicecloak test` and `make -C voicecloak asan`.
    - Kernel: `make` compiles the `.ko` with no warnings; `make
      modprobe` loads the module; connecting or disconnecting an
      AudioBox produces log lines in `dmesg` and **does not
@@ -130,6 +132,9 @@ For every module, the cycle is inviolable and **in this order**:
      `Control GUI -> User value -> Code output -> Match?`. Every
      "TBD" cell must be resolved with hardware or disassembly
      evidence before the contract is closed.
+   - VoiceCloak live chain: the full order
+     (transform -> effect -> RMS gain -> limiter -> PCM) is exercised
+     in a unit test over real blocks, not only stage by stage.
 6. **Fuzzing** — every path that takes external input is fuzzed:
    the HID report parser and the DSP packet path received from
    the device (libFuzzer on `VSL_Decode_*` and the feature
@@ -164,6 +169,38 @@ the buffer and writes; the math is already done and tested above.
 | Kernel tests             | KUnit / load+`dmesg`                                      | Verifies non-interference with ALSA.                                                                |
 | Wrappers                 | `extern "C"`                                              | Prepared for future C++ bindings without breaking the C API.                                       |
 | Protocol                 | USB-HID, 64 byte packet                                   | Confirmed from the disassembly (`0x40` in `FUN_00412345`).                                          |
+| VoiceCloak real-time     | Pure C + ALSA (`libasound`)                              | Constant-rate streaming phase vocoder (`vc_stream`, `vc_rt`) over the AudioBox as a plain ALSA device. The kernel module is untouched. |
+| VoiceCloak level control | Pure C (`vc_level`)                                       | Smoothed RMS gain plus peak limiter, in place after the spectral stages.                             |
+| VoiceCloak effects       | Pure C (`vc_effects`, `vc_presets`)                      | Stateful sample-domain effects behind a single named-preset table.                                  |
+
+### VoiceCloak real-time signal chain (source of truth)
+
+The live path is a strict order, each stage owning its own state:
+`vc_stream` + `vc_rt` (phase vocoder) -> `vc_effects` (named profile)
+-> `vc_level` (smoothed RMS gain, then peak limiter) -> PCM
+conversion in `vc_alsa`. Stateful stages are created once per session;
+no allocation happens per ALSA period. Any stage that rejects a block
+silences it and continues (fail closed), never passing bad samples on.
+
+- **Level defaults** (`vc_level.h`, product defaults, not disassembly
+  values): target -18 dBFS, maximum gain +12 dB, AGC attack 10 ms, AGC
+  release 250 ms, ceiling -1 dBFS, limiter release 50 ms.
+- **Named presets** (`vc_presets.c`, the only place preset values live):
+  `robot`, `monster`, `woman`, `man`, `space`, `underwater`, `church`,
+  `phaser`. Each entry resolves a `vc_rt_params_t` triple plus one
+  `vc_effects_params_t` (ring modulation, low-pass, modulated delay,
+  comb reverb, or modulated all-pass phaser). Values are creative
+  starting points, not measured vocal characteristics.
+- **Fail-closed bounds** (`vc_audio_config.h`): sample rate 8-384 kHz,
+  inter-stage sample magnitude 16.0. Out-of-range or non-finite data is
+  silenced, never amplified or clipped.
+- **Level compensation is bounded.** Witness-mode scrambling costs
+  roughly 7 dB; the AGC restores it only while the required boost stays
+  under the maximum gain. Beyond that the output is intentionally
+  quieter rather than over-amplified.
+- **Ranges accepted by `live`**: pitch -24..+24 semitones, formant
+  factor 0.3-3, scramble 0-1; `--preset` is rejected together with
+  `--mode`, `--semitones`, `--formant`, or `--scramble`.
 
 ### Confirmed math model (DSP)
 
@@ -233,6 +270,32 @@ Makefile targets (single source of truth for commands):
 the system. If they duplicate build logic, they desynchronise and
 become technical debt; unified, they remain one-liners.
 
+### VoiceCloak (userspace voice anonymizer)
+
+The VoiceCloak sub-project owns its own Makefile, which is the single
+source of truth for its commands. Required headers: OpenSSL
+(`libssl-dev`), ALSA (`libasound2-dev`) for `voicecloak-rt`, CMocka
+(`libcmocka-dev`) for the test targets.
+
+| Target                        | Effect                                                                 |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| `make` / `make rt`            | Build `voicecloak` and `voicecloak-rt`.                               |
+| `make test`                   | Run all five CMocka suites (29 scenarios).                            |
+| `make asan`                   | Run the suites under AddressSanitizer + UBSan with leak detection.     |
+| `make pulse` / `make alsa`    | Live OBS routes (PulseAudio/PipeWire null sink, ALSA loopback).        |
+| `make pulse-<preset>`         | Preset shorthand for `pulse` (also `alsa-<preset>`).                  |
+| `make setup-pulse` / `-alsa`  | Prepare only the virtual device OBS reads.                            |
+| `make help` / `make clean`    | List every target / remove build artefacts.                           |
+
+Streaming routes are the OBS integration: OBS must never open the
+AudioBox, so `voicecloak-rt` captures from the hardware and publishes
+to a virtual device that OBS selects as its microphone. Every route
+variable (`VC_PRESET`, `VC_TARGET_DBFS`, `VC_MAX_GAIN_DB`,
+`VC_CEILING_DBFS`, `VC_ATTACK_MS`, `VC_RELEASE_MS`,
+`VC_LIMITER_RELEASE_MS`, `VC_AGC`, plus device and stream variables) is
+overridable on the command line; `VC_PRESET=cloak` keeps the seeded
+`subtle`/`witness` behaviour.
+
 ### Userspace (DSP library)
 
 Compilation flags:
@@ -277,6 +340,7 @@ VSL-DSP/
 ├── docs/                          # additional documentation
 ├── spec/                          # BDD specifications (SDD)
 │   ├── audiobox_vsl.md
+│   ├── avatar.md
 │   ├── vsl_dsp_logic.md
 │   ├── vsl_config_centralization.md
 │   └── vsl_decode_gain.md
@@ -289,6 +353,32 @@ VSL-DSP/
 ├── tests/                         # CMocka unit test suite
 │   └── test_audiobox_vsl.c
 │   └── test_vsl_dsp_logic.c
+├── voicecloak/                    # voice anonymizer sub-project
+│   ├── Makefile                   # build, test, OBS routes (source of truth)
+│   ├── README.md
+│   ├── spec/voicecloak_realtime.md
+│   ├── src/
+│   │   ├── vc_fft.c               # self-contained radix-2 FFT
+│   │   ├── vc_stft.c              # offline STFT/ISTFT
+│   │   ├── vc_wav.c               # WAV read/write
+│   │   ├── vc_crypto.c            # RSA-4096, HKDF, AES-CTR PRNG
+│   │   ├── vc_dsp.c               # offline cloak pipeline
+│   │   ├── vc_stream.c            # constant-rate streaming engine
+│   │   ├── vc_rt.c                # real-time phase vocoder transform
+│   │   ├── vc_rt_seed.c           # seed-derived parameters
+│   │   ├── vc_effects.c           # ring mod, filter, delay/reverb, phaser
+│   │   ├── vc_presets.c           # named voice/effect profiles
+│   │   ├── vc_level.c             # smoothed RMS gain + peak limiter
+│   │   ├── vc_audio_config.h      # live rate and inter-stage bounds
+│   │   ├── vc_alsa.c              # ALSA capture/playback orchestration
+│   │   ├── vc_cli.c               # offline CLI
+│   │   └── vc_rt_cli.c            # live CLI
+│   └── tests/
+│       ├── test_vc_fft.c
+│       ├── test_vc_stream.c
+│       ├── test_vc_level.c
+│       ├── test_vc_effects.c
+│       └── test_vc_presets.c
 ├── .github/                       # issue and pull request templates
 └── legacy/                        # historical artefacts (see legacy/README.md)
     ├── README.md
@@ -325,8 +415,17 @@ test, never as verified.
 | Centralized config                   | Closed        | `src/vsl_config.h`: single source of truth for VID, PIDs, Report ID, MIDI iface, endpoint. `VSL_ModelLookup()` for 3 models. No duplicated constants.           |
 | CLI tool                             | Implemented   | `vsl-cli`: `--pid`, `--model`, `gain`, `freq`, `raw`, `list` commands. Production-quality argument parsing, structured parameter table.                        |
 | DSP unit test suite                  | Closed        | `tests/test_vsl_dsp_logic.c` with CMocka: 14 tests (4 encode + 10 decode). ASan+UBSan clean. Mutation tested.                                                  |
+| VoiceCloak offline pipeline         | Closed        | `vc_dsp_cloak`: pitch shift, formant scaling, spectral scramble, seed-derived parameters. Mode ranges are the source of truth shared with the live path.        |
+| VoiceCloak streaming engine         | Closed        | `vc_stream` (constant rate) + `vc_rt` (constant-rate pitch shift). CMocka: passthrough identity, pitch up/down octave, bounded output, level preservation.        |
+| Live RMS compensation                | Closed        | `vc_level`: target -18 dBFS, attack 10 ms, release 250 ms, boost bounded to +12 dB, silence never amplified. Full-chain test confirms witness attenuation is restored. |
+| Live peak limiter                   | Closed        | Ceiling -1 dBFS with immediate peak attenuation and 50 ms release; stays active when the AGC is disabled. Verified with AGC off.                                   |
+| Named realtime presets              | Closed        | `vc_presets.c` single table: `robot`, `monster`, `woman`, `man`, `space`, `underwater`, `church`, `phaser`, each resolving pitch/formant/scramble plus one effect.       |
+| Stateful realtime effects           | Closed        | `vc_effects`: ring modulation, low-pass, modulated delay, comb reverb, modulated all-pass phaser. Allocated once per session; fail closed on bad data.            |
+| VoiceCloak test suites              | Closed        | `make test`: five CMocka suites, 29 scenarios (3 FFT, 8 stream, 6 level, 6 effects, 6 presets). `make asan` clean with leak detection.                              |
+| CLI argument validation             | Closed        | Strict float parsing; out-of-range pitch/formant/scramble and unknown presets fail closed. Fuzzed with 150 arbitrary argument strings plus out-of-range values.    |
 | Report ID library                    | Blocker #2    | `buf[0]` before `FUN_00412345`. Working hypothesis `0x06` from legacy capture, not yet verified in Ghidra.                                                     |
 | Endianness                           | Blocker #3    | Verify bit shifts in the disassembly.                                                                                                                          |
+| Live audio on real hardware         | Pending       | The ALSA capture/playback path was confirmed on an AudioBox 22 VSL. The RMS stage, limiter, and named effects are unit/ASan verified but still need a human listening check on the device. |
 | Test with real hardware              | Pending       | Requires blockers #2-#3 for the userspace I/O path.                                                                                                            |
 | Public API documentation             | Pending       | Post validation with real hardware.                                                                                                                            |
 
@@ -365,6 +464,20 @@ test, never as verified.
   new `VSL_Decode_Gain` BDD scenarios. Mutation testing confirms
   test suite catches injected defects. ASan+UBSan clean.
   Specs: `vsl_config_centralization.md`, `vsl_decode_gain.md`.
+- **Phase 3b** — VoiceCloak real-time level and effects. `vc_level`
+  (smoothed RMS gain + peak limiter, single `vc_level_config_t`),
+  `vc_effects` (ring modulation, low-pass, modulated delay, comb
+  reverb, modulated all-pass phaser), and `vc_presets` (one table for
+  `robot`, `monster`, `woman`, `man`, `space`, `underwater`, `church`,
+  `phaser`). Wired into `vc_alsa_run` after the phase vocoder, so the
+  live chain is transform -> effect -> RMS gain -> limiter -> PCM.
+  Strict CLI parsing with fail-closed ranges (`--semitones` -24..24,
+  `--formant` 0.3-3, `--scramble` 0-1) replaces `atof`. Three new
+  CMocka suites plus a full live-chain test bring `voicecloak` to 29
+  scenarios, ASan/UBSan clean with leak detection. Makefile gained
+  `asan`, preset routes (`pulse`/`alsa` plus `pulse-<preset>` /
+  `alsa-<preset>` shorthands) and level variables. Spec extended in
+  `spec/voicecloak_realtime.md`.
 
 ### 7.3 Roadmap to cross
 
@@ -373,6 +486,11 @@ test, never as verified.
   hardware. Options: (A) Ghidra/IDA analysis of `FUN_00412345` and
   its caller; (B) `vsl_discover` + `usbhid-dump` with real
   hardware; (C) `strings` / `objdump` of the Android `.so`.
+- **Phase 4a** — VoiceCloak live verification on hardware. Listening
+  check of `vc_level`, `vc_effects`, and `vc_presets` on the AudioBox:
+  confirm the RMS target and ceiling behave as measured in tests, that
+  the phase vocoder adds no audible pumping, and that preset latency
+  stays acceptable for self-monitoring.
 - **Phase 5** — Real I/O integration. `FUN_Send_Packet` with the
   three resolved values. End to end test with hardware: cross
   validation table Control GUI -> Value -> Output -> Match?.

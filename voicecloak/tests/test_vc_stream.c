@@ -83,6 +83,23 @@ static void test_create_validation(void **state) {
     vc_stream_destroy(st);
 }
 
+static void test_transform_parameter_validation(void **state) {
+    (void)state;
+    vc_rt_params_t params = { 1.0f, 1.0f, 0.0f };
+    vc_rt_ctx_t *ctx = vc_rt_create(513U, params);
+    assert_non_null(ctx);
+    vc_rt_destroy(ctx);
+
+    params.pitch_ratio = 0.1f;
+    assert_null(vc_rt_create(513U, params));
+    params.pitch_ratio = 1.0f;
+    params.formant_factor = NAN;
+    assert_null(vc_rt_create(513U, params));
+    params.formant_factor = 1.0f;
+    params.scramble_intensity = 1.1f;
+    assert_null(vc_rt_create(513U, params));
+}
+
 static void test_passthrough_identity(void **state) {
     (void)state;
     size_t n = 16384;
@@ -264,6 +281,7 @@ static void test_level_preserved_witness(void **state) {
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_create_validation),
+        cmocka_unit_test(test_transform_parameter_validation),
         cmocka_unit_test(test_passthrough_identity),
         cmocka_unit_test(test_pitch_up_octave),
         cmocka_unit_test(test_pitch_down_octave),

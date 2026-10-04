@@ -195,6 +195,8 @@ int vc_alsa_run(const vc_alsa_cfg_t *cfg) {
     unsigned char *raw_in = NULL, *raw_out = NULL;
     float *mono_in = NULL, *mono_out = NULL;
     vc_stream_t *st = NULL;
+    vc_effects_t *effects = NULL;
+    vc_level_t *level = NULL;
 
     if (open_stream(&cap, cfg->capture_dev, SND_PCM_STREAM_CAPTURE,
                     cfg->rate, cfg->channels, cfg->period_frames, "capture") < 0)
@@ -216,6 +218,12 @@ int vc_alsa_run(const vc_alsa_cfg_t *cfg) {
     st = vc_stream_create(cfg->fft_size, cfg->hop_size, neg_rate);
     if (!st) {
         fprintf(stderr, "vc_alsa: invalid engine config\n");
+        goto done;
+    }
+    effects = vc_effects_create(neg_rate, &cfg->effect_params);
+    level = vc_level_create(neg_rate, &cfg->level_config);
+    if (!effects || !level) {
+        fprintf(stderr, "vc_alsa: invalid effect/level configuration\n");
         goto done;
     }
 
@@ -255,8 +263,19 @@ int vc_alsa_run(const vc_alsa_cfg_t *cfg) {
         snd_pcm_uframes_t frames = (snd_pcm_uframes_t)got;
 
         raw_to_mono(raw_in, mono_in, frames, &cap);
-        vc_stream_process(st, mono_in, mono_out, (size_t)frames,
-                          cfg->fn, cfg->user);
+        if (vc_stream_process(st, mono_in, mono_out, (size_t)frames,
+                              cfg->fn, cfg->user) != 0) {
+            fprintf(stderr, "vc_alsa: stream rejected block; output silenced\n");
+            memset(mono_out, 0, (size_t)frames * sizeof(float));
+        }
+        if (vc_effects_process(effects, mono_out, (size_t)frames) != 0) {
+            fprintf(stderr, "vc_alsa: effect rejected block; output silenced\n");
+            memset(mono_out, 0, (size_t)frames * sizeof(float));
+        }
+        if (vc_level_process(level, mono_out, (size_t)frames) != 0) {
+            fprintf(stderr, "vc_alsa: level stage rejected block; output silenced\n");
+            memset(mono_out, 0, (size_t)frames * sizeof(float));
+        }
         mono_to_raw(raw_out, mono_out, frames, &play);
 
         snd_pcm_uframes_t written = 0;
@@ -283,6 +302,8 @@ stop_loop:
 done:
     if (cap.pcm)  { snd_pcm_drop(cap.pcm); snd_pcm_close(cap.pcm); }
     if (play.pcm) { snd_pcm_drain(play.pcm); snd_pcm_close(play.pcm); }
+    vc_effects_destroy(effects);
+    vc_level_destroy(level);
     vc_stream_destroy(st);
     free(raw_in); free(raw_out); free(mono_in); free(mono_out);
     return rc;

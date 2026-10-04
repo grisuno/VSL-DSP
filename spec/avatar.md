@@ -86,7 +86,7 @@ hardware calibration (see blockers).
 4. Borderline fricative with low hf: Given rms -25 dB, zcr 0.45, hf 0.30 Then OPEN (both gates required).
 5. Hold: Given state OPEN at t=0, instant CLOSED at t=30 ms, hold 120 ms When smooth Then still OPEN; at t=150 ms Then CLOSED.
 6. Headless: Given `--no-gui` and WAV/ALSA frame When run Then stdout line matches state of direct classify.
-7. VoiceCloak route: Given `voicecloak-rt` publishing to `pulse`/`Loopback` When avatar `-D pulse` Then animates from processed voice, never opens AudioBox directly.
+7. VoiceCloak route: Given `voicecloak-rt` publishing to `pulse`/`Loopback` When avatar `-D pulse` Then animates from processed voice, never opens AudioBox directly. The published level is post-`vc_level` (smoothed RMS gain + peak limiter), so thresholds calibrate against the processed stream, not the raw microphone.
 8. Missing PNG: Given unreadable image When start Then exit 1 with stderr.
 
 ### Validation

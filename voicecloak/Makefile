@@ -15,7 +15,8 @@ OBJS     := $(addprefix $(OBJDIR)/,$(notdir $(SRCS:.c=.o)))
 BIN      := $(SRCDIR)/voicecloak
 
 RT_OBJS  := $(addprefix $(OBJDIR)/,vc_stream.o vc_rt.o vc_rt_seed.o \
-            vc_alsa.o vc_rt_cli.o vc_fft.o vc_crypto.o)
+            vc_alsa.o vc_rt_cli.o vc_fft.o vc_crypto.o vc_effects.o \
+            vc_presets.o vc_level.o)
 RT_BIN   := $(SRCDIR)/voicecloak-rt
 
 BINS     := $(BIN) $(RT_BIN)
@@ -27,10 +28,26 @@ STREAM_TEST_SRCS := $(TESTDIR)/test_vc_stream.c $(SRCDIR)/vc_stream.c \
                     $(SRCDIR)/vc_rt.c $(SRCDIR)/vc_fft.c
 STREAM_TEST_BIN  := $(TESTDIR)/test_vc_stream
 
+LEVEL_TEST_SRCS := $(TESTDIR)/test_vc_level.c $(SRCDIR)/vc_level.c
+LEVEL_TEST_BIN  := $(TESTDIR)/test_vc_level
+
+EFFECT_TEST_SRCS := $(TESTDIR)/test_vc_effects.c $(SRCDIR)/vc_effects.c
+EFFECT_TEST_BIN  := $(TESTDIR)/test_vc_effects
+
+PRESET_TEST_SRCS := $(TESTDIR)/test_vc_presets.c $(SRCDIR)/vc_presets.c \
+                    $(SRCDIR)/vc_effects.c $(SRCDIR)/vc_level.c \
+                    $(SRCDIR)/vc_stream.c $(SRCDIR)/vc_rt.c $(SRCDIR)/vc_fft.c
+PRESET_TEST_BIN  := $(TESTDIR)/test_vc_presets
+
 LDLIBS    := -lssl -lcrypto -lm
 LDLIBS_RT := -lasound -lssl -lcrypto -lm
 LDLIBS_T  := -lssl -lcrypto -lcmocka -lm
 LDLIBS_ST := -lcmocka -lm
+ASAN_FLAGS := -fsanitize=address,undefined -fno-omit-frame-pointer
+ASAN_TEST_DIR := $(OBJDIR)/asan
+ASAN_TEST_BINS := $(ASAN_TEST_DIR)/test_vc_fft $(ASAN_TEST_DIR)/test_vc_stream \
+	$(ASAN_TEST_DIR)/test_vc_level $(ASAN_TEST_DIR)/test_vc_effects \
+	$(ASAN_TEST_DIR)/test_vc_presets
 
 # --- OBS streaming routes (single source of truth, override on CLI) ---
 # Capture is always the AudioBox; playback is the virtual device OBS reads.
@@ -51,8 +68,26 @@ VC_PERIOD    ?= 256
 VC_FFT       ?= 1024
 VC_HOP       ?= 256
 VC_EXTRA     ?=
+VC_PRESET    ?= cloak
+VC_TARGET_DBFS ?= -18
+VC_MAX_GAIN_DB ?= 12
+VC_CEILING_DBFS ?= -1
+VC_ATTACK_MS ?= 10
+VC_RELEASE_MS ?= 250
+VC_LIMITER_RELEASE_MS ?= 50
+VC_AGC       ?= 1
+# Headphone monitor: copy the transformed voice back to the AudioBox so it
+# is audible with the front MIXER knob towards PLAYBACK (OBS is unaffected).
+VC_MONITOR   ?= 1
+VC_MONITOR_LATENCY_MS ?= 20
+PULSE_MONITOR_SINK ?= $(shell pactl list sinks short 2>/dev/null | awk '/AudioBox/{print $$2; exit}')
+VC_PRESETS   := robot monster woman man space underwater church phaser
+VC_PRESET_ARGS = $(if $(filter cloak,$(VC_PRESET)),--mode $(VC_MODE),--preset $(VC_PRESET))
+VC_AGC_ARGS = $(if $(filter 0,$(VC_AGC)),--no-agc,)
 
-.PHONY: all rt clean test pulse alsa setup-pulse setup-alsa help
+.PHONY: all rt clean test asan pulse alsa setup-pulse setup-alsa setup-monitor \
+	stop-monitor help \
+	$(addprefix pulse-,$(VC_PRESETS)) $(addprefix alsa-,$(VC_PRESETS))
 
 all: $(BINS)
 
@@ -76,9 +111,46 @@ $(TEST_BIN): $(TEST_SRCS)
 $(STREAM_TEST_BIN): $(STREAM_TEST_SRCS)
 	$(CC) $(CFLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST)
 
-test: $(TEST_BIN) $(STREAM_TEST_BIN)
+$(LEVEL_TEST_BIN): $(LEVEL_TEST_SRCS)
+	$(CC) $(CFLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST)
+
+$(EFFECT_TEST_BIN): $(EFFECT_TEST_SRCS)
+	$(CC) $(CFLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST)
+
+$(PRESET_TEST_BIN): $(PRESET_TEST_SRCS)
+	$(CC) $(CFLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST)
+
+$(ASAN_TEST_DIR): | $(OBJDIR)
+	mkdir -p $@
+
+$(ASAN_TEST_DIR)/test_vc_fft: $(TEST_SRCS) | $(ASAN_TEST_DIR)
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST) $(ASAN_FLAGS)
+
+$(ASAN_TEST_DIR)/test_vc_stream: $(STREAM_TEST_SRCS) | $(ASAN_TEST_DIR)
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST) $(ASAN_FLAGS)
+
+$(ASAN_TEST_DIR)/test_vc_level: $(LEVEL_TEST_SRCS) | $(ASAN_TEST_DIR)
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST) $(ASAN_FLAGS)
+
+$(ASAN_TEST_DIR)/test_vc_effects: $(EFFECT_TEST_SRCS) | $(ASAN_TEST_DIR)
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST) $(ASAN_FLAGS)
+
+$(ASAN_TEST_DIR)/test_vc_presets: $(PRESET_TEST_SRCS) | $(ASAN_TEST_DIR)
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST) $(ASAN_FLAGS)
+
+test: $(TEST_BIN) $(STREAM_TEST_BIN) $(LEVEL_TEST_BIN) $(EFFECT_TEST_BIN) $(PRESET_TEST_BIN)
 	$(TEST_BIN)
 	$(STREAM_TEST_BIN)
+	$(LEVEL_TEST_BIN)
+	$(EFFECT_TEST_BIN)
+	$(PRESET_TEST_BIN)
+
+asan: $(ASAN_TEST_BINS)
+	ASAN_OPTIONS=detect_leaks=1 $(ASAN_TEST_DIR)/test_vc_fft
+	ASAN_OPTIONS=detect_leaks=1 $(ASAN_TEST_DIR)/test_vc_stream
+	ASAN_OPTIONS=detect_leaks=1 $(ASAN_TEST_DIR)/test_vc_level
+	ASAN_OPTIONS=detect_leaks=1 $(ASAN_TEST_DIR)/test_vc_effects
+	ASAN_OPTIONS=detect_leaks=1 $(ASAN_TEST_DIR)/test_vc_presets
 
 setup-pulse:
 	@command -v pactl >/dev/null || { echo "missing pactl (pipewire-pulse / pulseaudio-utils)"; exit 1; }
@@ -87,11 +159,31 @@ setup-pulse:
 			sink_properties=device.description=VoiceCloak >/dev/null
 	@echo "sink ready: $(PULSE_SINK) (in OBS: Monitor of $(PULSE_SINK))"
 
-pulse: $(RT_BIN) setup-pulse
+setup-monitor: setup-pulse
+	@if [ -z "$(PULSE_MONITOR_SINK)" ]; then \
+		echo "monitor: no AudioBox sink found (set PULSE_MONITOR_SINK=...); skipping"; \
+	elif pactl list modules short | grep -q "module-loopback.*source=$(PULSE_SINK).monitor"; then \
+		echo "monitor: already active -> $(PULSE_MONITOR_SINK)"; \
+	else \
+		pactl load-module module-loopback source=$(PULSE_SINK).monitor \
+			sink=$(PULSE_MONITOR_SINK) latency_msec=$(VC_MONITOR_LATENCY_MS) >/dev/null && \
+		echo "monitor: $(PULSE_SINK) -> $(PULSE_MONITOR_SINK) (MIXER knob towards PLAYBACK)"; \
+	fi
+
+stop-monitor:
+	@pactl list modules short | awk '/module-loopback.*source=$(PULSE_SINK).monitor/{print $$1}' | \
+		xargs -r -n1 pactl unload-module
+	@echo "monitor: stopped"
+
+pulse: $(RT_BIN) setup-pulse $(if $(filter 1,$(VC_MONITOR)),setup-monitor,)
 	@echo "OBS: do NOT open the AudioBox; use 'Monitor of $(PULSE_SINK)' as microphone."
 	PULSE_SINK=$(PULSE_SINK) $(RT_BIN) live -D $(VSL_CAPTURE) -P $(PULSE_PCM) \
-		--mode $(VC_MODE) --rate $(VC_RATE) --channels $(VC_CHANNELS) \
-		--period $(VC_PERIOD) --fft $(VC_FFT) --hop $(VC_HOP) $(VC_EXTRA)
+		$(VC_PRESET_ARGS) --rate $(VC_RATE) --channels $(VC_CHANNELS) \
+		--period $(VC_PERIOD) --fft $(VC_FFT) --hop $(VC_HOP) \
+		--target-dbfs $(VC_TARGET_DBFS) --max-gain-db $(VC_MAX_GAIN_DB) \
+		--ceiling-dbfs $(VC_CEILING_DBFS) --attack-ms $(VC_ATTACK_MS) \
+		--release-ms $(VC_RELEASE_MS) \
+		--limiter-release-ms $(VC_LIMITER_RELEASE_MS) $(VC_AGC_ARGS) $(VC_EXTRA)
 
 setup-alsa:
 	@command -v arecord >/dev/null || { echo "missing alsa-utils"; exit 1; }
@@ -102,17 +194,34 @@ setup-alsa:
 alsa: $(RT_BIN) setup-alsa
 	@echo "OBS: do NOT open the AudioBox; use ALSA source '$(ALOOP_CAP)' as microphone."
 	$(RT_BIN) live -D $(VSL_CAPTURE) -P $(ALOOP_PB) \
-		--mode $(VC_MODE) --rate $(VC_RATE) --channels $(VC_CHANNELS) \
-		--period $(VC_PERIOD) --fft $(VC_FFT) --hop $(VC_HOP) $(VC_EXTRA)
+		$(VC_PRESET_ARGS) --rate $(VC_RATE) --channels $(VC_CHANNELS) \
+		--period $(VC_PERIOD) --fft $(VC_FFT) --hop $(VC_HOP) \
+		--target-dbfs $(VC_TARGET_DBFS) --max-gain-db $(VC_MAX_GAIN_DB) \
+		--ceiling-dbfs $(VC_CEILING_DBFS) --attack-ms $(VC_ATTACK_MS) \
+		--release-ms $(VC_RELEASE_MS) \
+		--limiter-release-ms $(VC_LIMITER_RELEASE_MS) $(VC_AGC_ARGS) $(VC_EXTRA)
+
+$(addprefix pulse-,$(VC_PRESETS)):
+	$(MAKE) pulse VC_PRESET=$(patsubst pulse-%,%,$@)
+
+$(addprefix alsa-,$(VC_PRESETS)):
+	$(MAKE) alsa VC_PRESET=$(patsubst alsa-%,%,$@)
 
 help:
 	@echo "OBS usage (pick ONE route, OBS never opens the AudioBox):"
+	@echo "  make test / make asan  run unit tests normally / with ASan+UBSan"
 	@echo "  make pulse [VC_MODE=witness|subtle] [VC_EXTRA=\"--semitones 7 --formant 1.3\"]"
+	@echo "  make pulse VC_PRESET=robot|monster|woman|man|space|underwater|church|phaser"
+	@echo "  make pulse-robot (aliases: pulse-monster, pulse-woman, pulse-man, pulse-space, pulse-underwater, pulse-church, pulse-phaser)"
 	@echo "    AudioBox -> voicecloak -> null-sink $(PULSE_SINK) -> OBS (Monitor of $(PULSE_SINK))"
 	@echo "  make alsa  [VSL_CAPTURE=$(VSL_CAPTURE)] [ALOOP_PB=$(ALOOP_PB)]"
+	@echo "  make alsa-robot (same preset aliases as pulse-*)"
 	@echo "    AudioBox -> voicecloak -> $(ALOOP_PB) -> OBS (ALSA source $(ALOOP_CAP))"
 	@echo "  make setup-pulse / make setup-alsa  prepare the virtual device without running live"
-	@echo "Vars: VSL_CAPTURE PULSE_SINK PULSE_PCM ALOOP_PB ALOOP_CAP VC_MODE VC_RATE VC_CHANNELS VC_PERIOD VC_FFT VC_HOP VC_EXTRA"
+	@echo "  pulse routes also monitor to the AudioBox (MIXER knob -> PLAYBACK); VC_MONITOR=0 disables it"
+	@echo "  make stop-monitor  remove the headphone monitor loopback"
+	@echo "Vars: VSL_CAPTURE PULSE_SINK PULSE_PCM ALOOP_PB ALOOP_CAP VC_MODE VC_PRESET VC_AGC VC_TARGET_DBFS VC_MAX_GAIN_DB VC_CEILING_DBFS VC_ATTACK_MS VC_RELEASE_MS VC_LIMITER_RELEASE_MS VC_MONITOR VC_MONITOR_LATENCY_MS PULSE_MONITOR_SINK VC_RATE VC_CHANNELS VC_PERIOD VC_FFT VC_HOP VC_EXTRA"
 
 clean:
-	rm -rf $(OBJDIR) $(BINS) $(TESTDIR)/test_vc_fft $(TESTDIR)/test_vc_stream
+	rm -rf $(OBJDIR) $(BINS) $(TESTDIR)/test_vc_fft $(TESTDIR)/test_vc_stream \
+		$(TESTDIR)/test_vc_level $(TESTDIR)/test_vc_effects $(TESTDIR)/test_vc_presets

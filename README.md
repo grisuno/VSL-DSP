@@ -45,7 +45,9 @@ HID control plane. Adding a new product ID is a one-line change in
 - **VoiceCloak** (`voicecloak/`) — cryptographically secure voice
   anonymizer with RSA-4096 and spectral scrambling for witness-style
   voice protection. Works with any WAV recording, and in **real time**
-  (`voicecloak-rt`) using the AudioBox VSL as a live ALSA interface.
+  (`voicecloak-rt`) using the AudioBox VSL as a live ALSA interface,
+  with smoothed RMS gain, a peak limiter, and robot/monster/woman/man/
+  space/underwater/church/phaser presets for OBS.
 
 ## Requirements
 
@@ -167,11 +169,22 @@ kernel detector and `snd-usb-audio` are unaffected:
 ```sh
 ./src/voicecloak-rt list                       # find the AudioBox PCM
 ./src/voicecloak-rt live -D plughw:CARD=VSL -P plughw:CARD=VSL --semitones 7
+make -C voicecloak pulse-robot                 # route processed mic into OBS
 ```
 
+The live chain is phase vocoder -> named effect -> smoothed RMS gain
+-> peak limiter. The gain stage compensates for the level lost to
+spectral scrambling (up to a bounded maximum boost) and the limiter
+keeps peaks under the configured ceiling instead of clipping. Named
+profiles (`robot`, `monster`, `woman`, `man`, `space`, `underwater`,
+`church`, `phaser`) are selectable from the CLI with `--preset` and
+from the Makefile with `VC_PRESET=` or the `pulse-<preset>` and
+`alsa-<preset>` shortcuts. Level defaults are `-18 dBFS` target RMS,
+`+12 dB` maximum gain, `-1 dBFS` ceiling.
+
 See **[`voicecloak/README.md`](voicecloak/README.md)** for full
-documentation, including the real-time engine and all `voicecloak-rt`
-options.
+documentation, including the real-time engine, the level controls,
+and all `voicecloak-rt` options.
 
 ## Adding a new product ID
 
@@ -222,11 +235,18 @@ VSL-DSP/
 │   │   ├── vc_stream.c            real-time streaming STFT engine (constant rate)
 │   │   ├── vc_rt.c                real-time phase-vocoder transform
 │   │   ├── vc_rt_seed.c           seed-based parameter derivation
+│   │   ├── vc_effects.c           ring mod, filters, delay/reverb, phaser
+│   │   ├── vc_presets.c           named voice/effect profiles
+│   │   ├── vc_level.c             smoothed RMS gain and peak limiter
+│   │   ├── vc_audio_config.h      live sample-rate and inter-stage bounds
 │   │   ├── vc_alsa.c              ALSA capture/playback for the AudioBox
 │   │   └── vc_rt_cli.c            real-time CLI: list, selftest, live
 │   └── tests/
 │       ├── test_vc_fft.c          FFT unit tests (3 scenarios)
-│       └── test_vc_stream.c       streaming engine tests (5 scenarios)
+│       ├── test_vc_stream.c       streaming engine tests (8 scenarios)
+│       ├── test_vc_level.c        RMS gain and limiter tests (6 scenarios)
+│       ├── test_vc_effects.c      stateful effect tests (6 scenarios)
+│       └── test_vc_presets.c      presets and live chain tests (6 scenarios)
 ├── legacy/                         historical artefacts (Python PoC, captures)
 └── docs/                           additional documentation
 ```

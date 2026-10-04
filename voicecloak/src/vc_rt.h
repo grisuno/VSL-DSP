@@ -4,6 +4,14 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#define VC_RT_MIN_SEMITONES (-24.0f)
+#define VC_RT_MAX_SEMITONES 24.0f
+#define VC_RT_MIN_PITCH_RATIO 0.25f
+#define VC_RT_MAX_PITCH_RATIO 4.0f
+#define VC_RT_MIN_FORMANT_FACTOR 0.3f
+#define VC_RT_MAX_FORMANT_FACTOR 3.0f
+#define VC_RT_MAX_SCRAMBLE_INTENSITY 1.0f
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -27,7 +35,7 @@ typedef struct vc_rt_ctx_s vc_rt_ctx_t;
 
 /**
  * @brief Create a transform context sized for @p nbins frequency bins.
- * @return Context or NULL on allocation failure / nbins < 2.
+ * @return Context or NULL on allocation failure / invalid bins or params.
  */
 vc_rt_ctx_t *vc_rt_create(size_t nbins, vc_rt_params_t params);
 
@@ -43,7 +51,8 @@ void vc_rt_reset(vc_rt_ctx_t *c);
  *
  * Applies frequency-domain pitch shift (constant rate), formant
  * envelope scaling, and spectral scrambling, then rewrites mag/phase
- * to the synthesis spectrum.
+ * to the synthesis spectrum. Accepted ranges: pitch ratio [0.25, 4],
+ * formant factor [0.3, 3], scramble intensity [0, 1].
  */
 void vc_rt_transform(float *mag, float *phase, size_t nbins,
                      uint32_t sample_rate, size_t hop, void *user);

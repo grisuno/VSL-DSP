@@ -5,12 +5,14 @@
 #include "vc_rt.h"
 #include "vc_fft.h"
 #include "vc_crypto.h"
+#include "vc_presets.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
 #include <math.h>
+#include <errno.h>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -21,6 +23,17 @@ static volatile sig_atomic_t g_stop = 0;
 static void on_sigint(int sig) {
     (void)sig;
     g_stop = 1;
+}
+
+static int parse_float(const char *text, float *out) {
+    if (!text || !out) return -1;
+    errno = 0;
+    char *end = NULL;
+    float value = strtof(text, &end);
+    if (errno != 0 || end == text || *end != '\0' || !isfinite(value))
+        return -1;
+    *out = value;
+    return 0;
 }
 
 static void print_usage(const char *prog) {
@@ -38,7 +51,8 @@ static void print_usage(const char *prog) {
         "  -D <dev>       Capture PCM (default: default; e.g. hw:VSL)\n"
         "  -P <dev>       Playback PCM (default: default; e.g. hw:VSL)\n"
         "  --mode <m>     subtle | witness (random seed within mode ranges)\n"
-        "  --semitones N  Fixed pitch shift in semitones (overrides mode)\n"
+        "  --preset <p>   robot|monster|woman|man|space|underwater|church|phaser\n"
+        "  --semitones N  Fixed pitch shift in -24..24 semitones\n"
         "  --formant F    Fixed formant factor (0.3-3.0, overrides mode)\n"
         "  --scramble S   Fixed scramble intensity (0.0-1.0, overrides mode)\n"
         "  --fft N        FFT size, power of two (default 1024)\n"
@@ -46,13 +60,20 @@ static void print_usage(const char *prog) {
         "  --rate R       Requested sample rate (default 48000)\n"
         "  --channels C   Requested channel count (default 2)\n"
         "  --period P     ALSA period in frames (default 256)\n"
+        "  --target-dbfs DB  RMS target (default -18)\n"
+        "  --max-gain-db DB  Maximum AGC boost (default +12)\n"
+        "  --ceiling-dbfs DB Peak ceiling (default -1)\n"
+        "  --attack-ms MS / --release-ms MS  RMS smoothing times\n"
+        "  --limiter-release-ms MS  Limiter release time (default 50)\n"
+        "  --no-agc       Disable RMS gain; keep peak limiter enabled\n"
         "\n"
         "Examples:\n"
         "  %s list\n"
         "  %s selftest\n"
         "  %s live -D hw:VSL -P hw:VSL --mode witness\n"
-        "  %s live -D hw:VSL -P hw:VSL --semitones 7 --formant 1.3\n",
-        prog, prog, prog, prog, prog);
+        "  %s live -D hw:VSL -P hw:VSL --semitones 7 --formant 1.3\n"
+        "  %s live -D hw:VSL -P pulse --preset robot\n",
+        prog, prog, prog, prog, prog, prog);
 }
 
 static float dominant_freq(const float *x, size_t n, unsigned int sr) {
@@ -141,10 +162,15 @@ static int resolve_params(int have_fixed, float semis, float formant,
 
 static int cmd_live(int argc, char *argv[]) {
     const char *cap_dev = "default", *play_dev = "default";
+    const char *preset_name = NULL;
     int witness = 0, have_fixed = 0;
+    int mode_specified = 0;
     float semis = 0.0f, formant = 1.0f, scramble = 0.0f;
     size_t fft = 1024, hop = 256;
     unsigned int rate = 48000, channels = 2, period = 256;
+    vc_level_config_t level_config;
+    vc_effects_params_t effect_params = {0};
+    vc_level_config_defaults(&level_config);
 
     int i;
     for (i = 2; i < argc; ++i) {
@@ -155,15 +181,28 @@ static int cmd_live(int argc, char *argv[]) {
             if (!strcmp(argv[i], "witness")) witness = 1;
             else if (!strcmp(argv[i], "subtle")) witness = 0;
             else { fprintf(stderr, "Unknown mode: %s\n", argv[i]); return 1; }
+            mode_specified = 1;
+        }
+        else if (!strcmp(argv[i], "--preset") && i + 1 < argc) {
+            preset_name = argv[++i];
         }
         else if (!strcmp(argv[i], "--semitones") && i + 1 < argc) {
-            semis = (float)atof(argv[++i]); have_fixed = 1;
+            if (parse_float(argv[++i], &semis) != 0) {
+                fprintf(stderr, "Invalid --semitones value\n"); return 1;
+            }
+            have_fixed = 1;
         }
         else if (!strcmp(argv[i], "--formant") && i + 1 < argc) {
-            formant = (float)atof(argv[++i]); have_fixed = 1;
+            if (parse_float(argv[++i], &formant) != 0) {
+                fprintf(stderr, "Invalid --formant value\n"); return 1;
+            }
+            have_fixed = 1;
         }
         else if (!strcmp(argv[i], "--scramble") && i + 1 < argc) {
-            scramble = (float)atof(argv[++i]); have_fixed = 1;
+            if (parse_float(argv[++i], &scramble) != 0) {
+                fprintf(stderr, "Invalid --scramble value\n"); return 1;
+            }
+            have_fixed = 1;
         }
         else if (!strcmp(argv[i], "--fft") && i + 1 < argc) {
             fft = (size_t)strtoul(argv[++i], NULL, 10);
@@ -180,20 +219,82 @@ static int cmd_live(int argc, char *argv[]) {
         else if (!strcmp(argv[i], "--period") && i + 1 < argc) {
             period = (unsigned int)strtoul(argv[++i], NULL, 10);
         }
+        else if (!strcmp(argv[i], "--target-dbfs") && i + 1 < argc) {
+            if (parse_float(argv[++i], &level_config.target_dbfs) != 0) {
+                fprintf(stderr, "Invalid --target-dbfs value\n"); return 1;
+            }
+        }
+        else if (!strcmp(argv[i], "--max-gain-db") && i + 1 < argc) {
+            if (parse_float(argv[++i], &level_config.max_gain_db) != 0) {
+                fprintf(stderr, "Invalid --max-gain-db value\n"); return 1;
+            }
+        }
+        else if (!strcmp(argv[i], "--ceiling-dbfs") && i + 1 < argc) {
+            if (parse_float(argv[++i], &level_config.ceiling_dbfs) != 0) {
+                fprintf(stderr, "Invalid --ceiling-dbfs value\n"); return 1;
+            }
+        }
+        else if (!strcmp(argv[i], "--attack-ms") && i + 1 < argc) {
+            if (parse_float(argv[++i], &level_config.attack_ms) != 0) {
+                fprintf(stderr, "Invalid --attack-ms value\n"); return 1;
+            }
+        }
+        else if (!strcmp(argv[i], "--release-ms") && i + 1 < argc) {
+            if (parse_float(argv[++i], &level_config.release_ms) != 0) {
+                fprintf(stderr, "Invalid --release-ms value\n"); return 1;
+            }
+        }
+        else if (!strcmp(argv[i], "--limiter-release-ms") && i + 1 < argc) {
+            if (parse_float(argv[++i], &level_config.limiter_release_ms) != 0) {
+                fprintf(stderr, "Invalid --limiter-release-ms value\n"); return 1;
+            }
+        }
+        else if (!strcmp(argv[i], "--no-agc")) {
+            level_config.agc_enabled = 0;
+        }
         else { fprintf(stderr, "Unknown option: %s\n", argv[i]); return 1; }
     }
 
-    vc_rt_params_t p;
-    if (resolve_params(have_fixed, semis, formant, scramble, witness, &p) != 0)
+    if (have_fixed &&
+        (semis < VC_RT_MIN_SEMITONES || semis > VC_RT_MAX_SEMITONES ||
+         formant < VC_RT_MIN_FORMANT_FACTOR ||
+         formant > VC_RT_MAX_FORMANT_FACTOR ||
+         scramble < 0.0f || scramble > VC_RT_MAX_SCRAMBLE_INTENSITY)) {
+        fprintf(stderr, "Fixed voice settings out of range\n");
         return 1;
+    }
+
+    vc_rt_params_t p;
+    if (preset_name) {
+        if (have_fixed || mode_specified) {
+            fprintf(stderr, "--preset cannot be combined with --mode/voice transform options\n");
+            return 1;
+        }
+        vc_preset_t preset;
+        if (vc_preset_lookup(preset_name, &preset) != 0) {
+            fprintf(stderr, "Unknown preset: %s\n", preset_name);
+            return 1;
+        }
+        p = preset.cloak;
+        effect_params = preset.effects;
+    } else if (resolve_params(have_fixed, semis, formant, scramble,
+                              witness, &p) != 0) {
+        return 1;
+    }
 
     vc_rt_ctx_t *ctx = vc_rt_create(fft / 2 + 1, p);
     if (!ctx) { fprintf(stderr, "live: engine context alloc failed\n"); return 1; }
 
     printf("Mode: %s | pitch x%.3f | formant x%.3f | scramble %.3f\n",
-           have_fixed ? "fixed" : (witness ? "witness" : "subtle"),
+           preset_name ? preset_name :
+           (have_fixed ? "fixed" : (witness ? "witness" : "subtle")),
            (double)p.pitch_ratio, (double)p.formant_factor,
            (double)p.scramble_intensity);
+    printf("Level: AGC %s | target %.1f dBFS | max gain +%.1f dB | ceiling %.1f dBFS\n",
+           level_config.agc_enabled ? "on" : "off",
+           (double)level_config.target_dbfs,
+           (double)level_config.max_gain_db,
+           (double)level_config.ceiling_dbfs);
 
     struct sigaction sa;
     memset(&sa, 0, sizeof(sa));
@@ -212,6 +313,8 @@ static int cmd_live(int argc, char *argv[]) {
     cfg.hop_size      = hop;
     cfg.fn            = vc_rt_transform;
     cfg.user          = ctx;
+    cfg.effect_params = effect_params;
+    cfg.level_config  = level_config;
     cfg.stop          = &g_stop;
 
     int rc = vc_alsa_run(&cfg);

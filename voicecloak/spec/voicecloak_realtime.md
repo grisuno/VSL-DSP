@@ -6,6 +6,8 @@ Provide a real-time voice-changer that reuses the VoiceCloak DSP
 concepts (pitch shift, formant scaling, spectral scramble) on a live
 audio stream captured from and played back to the PreSonus AudioBox
 VSL, using the interface as a standard ALSA class-compliant device.
+The live path also provides smoothed RMS gain control, a peak limiter,
+and named voice/effect presets selectable from the CLI and Makefile.
 
 The transformation runs on the **CPU** as an ALSA client. It does
 **not** run on the AudioBox onboard VSL DSP: that DSP is a
@@ -27,7 +29,9 @@ monitoring, multichannel mixing.
   runtime (`hw:` name or index), never hardcoded. Sample rate and
   channel count are queried from the device, not assumed.
 - Fail closed: every ALSA return code is checked; on xrun the stream
-  is recovered or the session aborts. No unchecked buffer writes.
+  is recovered or the session aborts. No unchecked buffer writes. Every
+  DSP stage return code is checked too; a rejected block is silenced and
+  the session continues.
 
 ## 3. Architecture
 
@@ -35,18 +39,27 @@ monitoring, multichannel mixing.
 mic -> AudioBox ADC -> USB -> snd-usb-audio (ALSA capture, hw:VSL)
      -> vc_alsa capture loop (interleaved int16/int32 -> float mono)
      -> vc_stream_process  (streaming phase vocoder, CPU)
+     -> vc_effects_process (named sample-domain effect)
+     -> vc_level_process   (smoothed RMS gain, then peak limiter)
      -> vc_alsa playback loop (float mono -> interleaved)
      -> snd-usb-audio (ALSA playback, hw:VSL) -> DAC -> headphones
 ```
+
+Stage order is strict: the spectral transform runs first, the effect
+shapes the transformed signal, and level control runs last so it
+compensates for the total loss of the stages before it.
 
 Layers:
 
 | File            | Responsibility                                           | Testable surface |
 |-----------------|----------------------------------------------------------|------------------|
 | `vc_stream.[ch]`| Pure DSP: streaming STFT + phase vocoder, no I/O         | Unit (CMocka)    |
-| `vc_rt.[ch]`    | Derive pitch/formant/scramble scalars from a seed        | Unit (CMocka)    |
+| `vc_rt.[ch]`    | Pitch/formant/scramble spectral transform                | Unit (CMocka)    |
+| `vc_effects.[ch]`| Stateful sample-domain effects (ring mod, filters, delay/reverb, phaser) | Unit (CMocka) |
+| `vc_presets.[ch]`| Named preset definitions and lookup                     | Unit (CMocka)    |
+| `vc_level.[ch]` | Smoothed RMS gain and peak limiting                     | Unit (CMocka)    |
 | `vc_alsa.[ch]`  | ALSA capture/playback orchestration (thin)               | Live only        |
-| `vc_rt_cli.c`   | `voicecloak-rt` entry point (list/selftest/live)         | Live only        |
+| `vc_rt_cli.c`   | `voicecloak-rt` entry point (list/selftest/live)         | CLI + live       |
 
 ## 4. Streaming engine contract (`vc_stream`)
 
@@ -134,15 +147,93 @@ Source of constants: Hann COLA identity `y = x * W2 / W2`.
   phases), so adjacent bins cannot cancel in overlap-add. Silence
   passes through untouched (fail closed, no scaling).
 
-### Scenario: witness level floor (documented, not preserved)
+### Scenario: witness level floor at the spectral stage
 - Given the same signal with aggressive witness parameters
   (`-8 st / 0.5 / 1.0`)
+- When measured after the spectral transform only, before level control
 - Then output RMS sits near -7 dB (pinned by test to [-8.5, -5.5]).
 - Rationale: uniform random phase noise makes overlap-add sum powers
   instead of amplitudes (4 overlapping frames -> ~-6 dB floor), plus
   permutation misplacement attenuation. Both are inherent to
   intentional spectral destruction; the test guards regressions, it
-  does not promise transparency in witness mode.
+  does not promise transparency in witness mode. `vc_level` restores
+  the level downstream when the configured maximum gain allows it (see
+  the next scenario).
+
+### Scenario: live RMS compensation
+- Given non-silent transformed audio below the configured target RMS
+- When it passes through the live level controller
+- Then gain approaches the target smoothly, with no block-boundary jump,
+  and boost never exceeds the configured maximum.
+- Defaults: target -18 dBFS, attack 10 ms, release 250 ms, maximum boost
+  +12 dB, limiter release 50 ms, ceiling -1 dBFS. These are VoiceCloak
+  product defaults in `vc_level.h`, not hardware or cryptographic constants.
+
+### Scenario: compensate witness-mode attenuation
+- Given the fixed witness transform (`-8 st / 0.5 / 1.0`) on a harmonic
+  voice signal whose RMS is within the configured maximum-gain range
+- When processed after startup settling by the live gain stage
+- Then output RMS is within +/-3 dB of the configured target while the
+  peak limiter still enforces the ceiling.
+
+### Scenario: peak limiting
+- Given any finite transformed sample, including a transient above full
+  scale after gain compensation
+- When it passes through the limiter
+- Then output magnitude never exceeds the configured ceiling (-1 dBFS).
+- The limiter attenuates peaks immediately and releases smoothly; it
+  must not hard-clip at 0 dBFS.
+
+### Scenario: silence is not amplified
+- Given digital silence
+- When processed by RMS gain control and limiting
+- Then output remains digital silence and all output samples are finite.
+
+### Scenario: named realtime effects
+- Given any preset name `robot`, `monster`, `woman`, `man`, `space`,
+  `underwater`, `church`, or `phaser`
+- When selected with `voicecloak-rt --preset` or `make pulse/alsa`
+- Then the preset resolves its pitch/formant/scramble and sample-domain
+  effect parameters from the single preset table in `vc_presets.c`.
+- Robot uses ring modulation; monster/woman/man use distinct pitch and
+  formant shifts; space uses modulated delay; underwater uses low-pass
+  filtering; church uses reverberation; phaser uses modulated all-pass
+  stages. Named DSP values are creative starting points, not claims of
+  universally correct voice characteristics.
+- Unknown preset names fail closed with usage information.
+
+### Scenario: independent processing stages
+- Given a live stream
+- When VoiceCloak processes it
+- Then the order is phase-vocoder transform, named sample-domain effect,
+  smoothed RMS gain, peak limiter, and PCM conversion.
+- Each stateful DSP stage keeps state across ALSA periods and resets at
+  session creation; no per-period allocation is allowed.
+
+### C API contracts
+
+`vc_level_config_t` carries target dBFS, maximum gain dB, ceiling dBFS,
+AGC attack/release milliseconds, limiter release milliseconds, and an
+AGC enable flag. Target must not exceed ceiling. `vc_level_create`
+validates finite values and sample rate. `vc_level_process` operates
+in-place and returns an error for invalid pointers or sample data; invalid
+data blocks and inputs outside +/-16 are silenced fail-closed. Sample
+rates outside 8–384 kHz are rejected. The limiter remains active when
+AGC is disabled. `vc_level_current_gain_db` is a read-only test/diagnostic
+query.
+
+`vc_effects_params_t` selects `NONE`, `RING_MOD`, `UNDERWATER`, `PHASER`,
+`SPACE`, or `REVERB`, with effect values supplied by the preset table.
+The opaque effects context is allocated once per session; processing is
+in-place and allocation-free. Invalid parameters or non-finite input are
+rejected and the affected block is silenced. The same 8–384 kHz rate
+range and +/-16 inter-stage sample bound apply.
+
+`vc_preset_lookup(name, out)` returns 0 only for a known preset and fills
+both the existing `vc_rt_params_t` and sample-domain effects config. The
+preset table is the single source of truth for names and parameters.
+`vc_rt_create` rejects non-finite/out-of-range parameters: pitch ratio
+0.25–4, formant factor 0.3–3, and scramble intensity 0–1.
 
 ## 6. Parameter derivation (`vc_rt`)
 
@@ -158,7 +249,8 @@ as `vc_dsp_cloak`:
 
 A fixed pitch (e.g. `--semitones N`) may override the seed for
 predictable live use. Ranges are the source of truth in `vc_dsp.c`
-(`vc_dsp_cloak`) and must stay in sync.
+(`vc_dsp_cloak`) and must stay in sync. The live fixed-pitch CLI accepts
+-24 to +24 semitones; formant factor is 0.3–3 and scramble is 0–1.
 
 ## 7. ALSA layer (`vc_alsa`) and CLI
 
@@ -171,16 +263,43 @@ predictable live use. Ranges are the source of truth in `vc_dsp.c`
   opens capture and playback, negotiates rate/format/channels from the
   device, and runs the loop until interrupted. Channel 0 is processed;
   output is written to all playback channels.
+- `voicecloak-rt live ... --preset <name>` selects a deterministic
+  named preset. `--target-dbfs`, `--max-gain-db`, `--ceiling-dbfs`,
+  `--attack-ms`, `--release-ms`, and `--limiter-release-ms` override
+  level defaults; `--no-agc` disables RMS gain while retaining the
+  peak limiter.
+- Make entry points accept `VC_PRESET=<name>` for both PulseAudio/PipeWire
+  and ALSA loopback routes. `VC_PRESET=cloak` keeps the existing seeded
+  `VC_MODE` behavior. Preset shorthand targets are also provided.
+- Level defaults are configurable from Make with `VC_TARGET_DBFS`,
+  `VC_MAX_GAIN_DB`, `VC_CEILING_DBFS`, `VC_ATTACK_MS`, `VC_RELEASE_MS`,
+  `VC_LIMITER_RELEASE_MS`, and `VC_AGC`; CLI equivalents are accepted by
+  direct `live` invocations.
 - Latency target: `fft=1024`, `hop=256` -> ~21 ms window at 48 kHz
   plus ALSA period buffering; acceptable for anonymization, audible
   for self-monitoring.
 
-## 8. Validation
+## 8. Source of constants
 
-- `make -C voicecloak test` includes `test_vc_stream` (CMocka):
-  passthrough, pitch up/down, bounded output, constant rate.
-- ASan/UBSan clean on the test binary.
+| Constant | Source |
+|---|---|
+| 96-byte seed, RSA-4096, HKDF/AES-CTR | Offline cryptographic design (`vc_crypto.c`); not from the AudioBox disassembly. |
+| Mode ranges (subtle/witness) | `vc_dsp_cloak` in `vc_dsp.c`, shared with the live path. |
+| Level defaults (-18 dBFS, +12 dB, 10/250 ms, -1 dBFS, 50 ms) | VoiceCloak product defaults in `vc_level.h`. Creative choices for comfortable speech, not hardware measurements. |
+| Preset values (semitones, formants, effect rates) | Single table in `vc_presets.c`. Stylized voice/effect characters, not measured vocal characteristics. |
+| Sample-rate range 8-384 kHz, inter-stage bound 16.0 | Fail-closed guards in `vc_audio_config.h`. |
+| Latency (`fft=1024`, `hop=256`) | Engineering choice in this module; the AudioBox latency target is ~21 ms. |
+
+## 9. Validation
+
+- `make -C voicecloak test` includes CMocka coverage for stream,
+  effects, presets, the full live chain, and level control
+  (29 scenarios across five suites).
+- `make -C voicecloak asan` clean under ASan+UBSan with leak detection.
+- `cppcheck` clean on the changed sources.
 - `voicecloak-rt selftest` reports the expected pitch ratio.
+- CLI hardening verified with 150 arbitrary argument strings plus
+  out-of-range pitch/formant/scramble values: all rejected, no crash.
 - Live proof (requires the operator to speak into the AudioBox):
   transformed voice is heard on the AudioBox output; ALSA still owns
   the device (`snd-usb-audio` not displaced); no xrun storm.

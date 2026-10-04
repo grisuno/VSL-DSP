@@ -34,6 +34,10 @@ speaker.
 
 ## DSP pipeline
 
+This section describes the offline `cloak` command. The real-time
+`voicecloak-rt` path uses a constant-rate streaming variant plus
+additional stages; see [Real-time](#real-time-live-voice-changer).
+
 1. **Pitch shift** — phase vocoder with variable synthesis hop.
    Preserves duration while changing perceived pitch.
 2. **Formant scaling** — frequency-axis scaling of the magnitude
@@ -82,8 +86,10 @@ cd voicecloak && make
 ## Build
 
 ```sh
-make        # build voicecloak binary
-make test   # run FFT unit tests (CMocka)
+make        # build voicecloak and voicecloak-rt
+make rt     # build only the real-time binary
+make test   # run all CMocka suites (29 scenarios)
+make asan   # run the suites under ASan + UBSan with leak detection
 make clean  # remove build artefacts
 ```
 
@@ -121,6 +127,10 @@ voicecloak/
 │   ├── vc_rt.h            Real-time phase-vocoder transform (pitch/formant/scramble)
 │   ├── vc_rt.c
 │   ├── vc_rt_seed.c       Seed-based parameter derivation (HKDF/AES PRNG)
+│   ├── vc_effects.h/.c    Ring modulation, filters, delay/reverb, phaser
+│   ├── vc_presets.h/.c    Named real-time voice/effect profiles
+│   ├── vc_level.h/.c      Smoothed RMS gain and peak limiter
+│   ├── vc_audio_config.h  Live sample-rate and inter-stage bounds
 │   ├── vc_alsa.h          ALSA capture/playback orchestration
 │   ├── vc_alsa.c
 │   └── vc_rt_cli.c        Real-time CLI (list, selftest, live)
@@ -128,20 +138,25 @@ voicecloak/
 │   └── voicecloak_realtime.md
 └── tests/
     ├── test_vc_fft.c      FFT unit tests (CMocka, 3 scenarios)
-    └── test_vc_stream.c   Streaming engine tests (CMocka, 5 scenarios)
+    ├── test_vc_stream.c   Streaming tests (CMocka, 8 scenarios)
+    ├── test_vc_level.c    RMS/limiter tests (CMocka, 6 scenarios)
+    ├── test_vc_effects.c  Stateful effects tests (CMocka, 6 scenarios)
+    └── test_vc_presets.c  Presets/live chain tests (CMocka, 6 scenarios)
 ```
 
 ## Real-time (live voice changer)
 
-Status: verified working on an AudioBox 22 VSL (`194f:0101`) at
-48 kHz / S32_LE / 2ch. Unit tests and the offline `selftest` pass;
-the live path was confirmed on real hardware.
+The original ALSA capture/playback path was verified on an AudioBox 22
+VSL (`194f:0101`) at 48 kHz / S32_LE / 2ch. RMS gain, limiting, and the
+new named effects pass unit tests, ASan/UBSan, and the synthetic
+streaming selftest. Live verification of these newest DSP stages on
+physical hardware remains pending.
 
 The offline `cloak` command reads a WAV and writes a WAV. The
-`voicecloak-rt` binary applies the same transformation concepts
-(pitch shift, formant scaling, spectral scramble) to a **live**
-stream, using the PreSonus AudioBox VSL as a standard ALSA
-class-compliant audio interface.
+`voicecloak-rt` applies pitch shift, formant scaling, spectral scramble,
+and optional sample-domain effects to a **live** stream. A smoothed RMS
+gain controller compensates for level loss; a peak limiter caps output
+at -1 dBFS by default.
 
 Important: the transformation runs on the **CPU** as an ALSA client.
 It does **not** run on the AudioBox onboard VSL DSP. That DSP is a
@@ -156,7 +171,9 @@ Signal path:
 
 ```
 mic -> AudioBox ADC -> USB -> snd-usb-audio (ALSA capture)
-     -> vc_stream (streaming phase vocoder, CPU)
+     -> vc_stream / vc_rt (phase vocoder, CPU)
+     -> vc_effects (selected voice/effect profile)
+     -> vc_level (smoothed RMS gain + peak limiter)
      -> snd-usb-audio (ALSA playback) -> AudioBox DAC -> headphones
 ```
 
@@ -181,6 +198,10 @@ cd voicecloak && make        # builds voicecloak and voicecloak-rt
 
 # Random transform within a mode's ranges:
 ./src/voicecloak-rt live -D plughw:CARD=VSL -P plughw:CARD=VSL --mode witness
+
+# Deterministic named effects:
+./src/voicecloak-rt live -D plughw:CARD=VSL -P plughw:CARD=VSL --preset robot
+./src/voicecloak-rt live -D plughw:CARD=VSL -P plughw:CARD=VSL --preset church
 ```
 
 `live` negotiates rate, format, and channel count from the device
@@ -188,12 +209,65 @@ cd voicecloak && make        # builds voicecloak and voicecloak-rt
 all playback channels. Stop with Ctrl-C. `plughw:` is recommended so
 ALSA handles any needed format/rate conversion.
 
-Options: `--mode subtle|witness`, `--semitones N`, `--formant F`,
-`--scramble S`, `--fft N`, `--hop N`, `--rate R`, `--channels C`,
-`--period P`. Any of `--semitones/--formant/--scramble` selects a
-fixed deterministic transform; otherwise a random session seed is
-drawn within the selected mode's ranges (same ranges as offline
-`cloak`).
+Options: `--mode subtle|witness`, `--preset NAME`, `--semitones N`
+(-24..24), `--formant F`, `--scramble S`, `--fft N`, `--hop N`, `--rate R`,
+`--channels C`, `--period P`, `--target-dbfs DB`, `--max-gain-db DB`,
+`--ceiling-dbfs DB`, `--attack-ms MS`, `--release-ms MS`,
+`--limiter-release-ms MS`, and `--no-agc`. Any of
+`--semitones/--formant/--scramble` selects a fixed deterministic
+transform; otherwise a random session seed is drawn within the selected
+mode's ranges (same ranges as offline `cloak`). `--preset` chooses a
+deterministic profile and cannot be combined with those voice options.
+Numeric values are parsed strictly; out-of-range values and unknown
+preset names are rejected instead of being silently clamped.
+
+### Named profiles
+
+| Profile      | Voice transform                | Sample-domain effect              |
+|--------------|--------------------------------|-----------------------------------|
+| `robot`      | neutral pitch, light scramble  | 42 Hz ring modulation             |
+| `monster`    | -8 semitones, 0.78x formant    | none                              |
+| `woman`      | +5 semitones, 1.15x formant    | none                              |
+| `man`        | -3 semitones, 0.90x formant    | none                              |
+| `space`      | +2 semitones, 1.05x formant    | modulated delay (24 ms / 8 ms)    |
+| `underwater` | -1 semitone, 0.82x formant    | 900 Hz low-pass                   |
+| `church`     | neutral, light scramble        | reverb, 2.4 s decay               |
+| `phaser`     | +1 semitone                    | 6 modulated all-pass stages       |
+
+These are stylized starting points for voice and effect character, not
+measurements of how any real speaker sounds. Results vary with the
+speaker, microphone, and room. All values live in one table in
+`src/vc_presets.c`; adding a profile is one table entry plus a unit
+test.
+
+### Level control
+
+Spectral scrambling loses level: aggressive scramble makes overlap-add
+sum powers instead of amplitudes and costs roughly 7 dB. The live chain
+compensates for that with two stages, both configurable:
+
+| Control        | CLI flag                 | Make variable           | Default |
+|----------------|--------------------------|-------------------------|---------|
+| RMS target     | `--target-dbfs`          | `VC_TARGET_DBFS`        | `-18`   |
+| Maximum gain   | `--max-gain-db`          | `VC_MAX_GAIN_DB`        | `12`    |
+| Peak ceiling   | `--ceiling-dbfs`         | `VC_CEILING_DBFS`       | `-1`    |
+| AGC attack     | `--attack-ms`            | `VC_ATTACK_MS`          | `10`    |
+| AGC release    | `--release-ms`           | `VC_RELEASE_MS`         | `250`   |
+| Limiter release| `--limiter-release-ms`   | `VC_LIMITER_RELEASE_MS` | `50`    |
+| AGC switch     | `--no-agc`               | `VC_AGC=0`              | `1`     |
+
+The AGC gain follows a smoothed RMS estimate and is capped at the
+maximum gain, so quiet input is boosted only up to that limit and the
+output is intentionally quieter rather than amplified without bound.
+The peak limiter attenuates transients immediately and releases over
+the limiter release time, keeping every sample under the ceiling
+instead of hard-clipping at 0 dBFS. Digital silence stays silent.
+`--no-agc` (or `VC_AGC=0`) disables the gain stage and keeps the
+limiter. These levels are VoiceCloak product defaults, not values
+recovered from the Android driver.
+
+The offline `cloak` command is unaffected: it already normalises its
+output RMS inside `vc_dsp_cloak`.
 
 The real-time binary requires the ALSA development headers
 (`libasound2-dev`) in addition to the offline requirements. Build it
@@ -220,6 +294,10 @@ cd voicecloak && make pulse
 # equivalent manual form:
 #   pactl load-module module-null-sink sink_name=vc_out sink_properties=device.description=VoiceCloak
 #   PULSE_SINK=vc_out ./src/voicecloak-rt live -D plughw:CARD=VSL -P pulse --mode witness
+
+# Named profile; shorthand `make pulse-robot` is equivalent:
+make pulse VC_PRESET=robot
+make pulse VC_PRESET=woman VC_TARGET_DBFS=-20
 ```
 
 OBS configuration:
@@ -241,6 +319,9 @@ cd voicecloak && make alsa
 # equivalent manual form:
 #   sudo modprobe snd-aloop index=1
 #   ./src/voicecloak-rt live -D plughw:CARD=VSL -P hw:Loopback,0,0 --mode witness
+
+# Named profile:
+make alsa-church
 ```
 
 OBS configuration:
@@ -256,8 +337,13 @@ without editing files:
 ```sh
 make pulse VC_MODE=subtle
 make pulse VC_EXTRA="--semitones 7 --formant 1.3"
+make pulse VC_PRESET=space VC_TARGET_DBFS=-20 VC_MAX_GAIN_DB=10
+make pulse-underwater
+make alsa-phaser
 make alsa VSL_CAPTURE=hw:CARD=VSL ALOOP_PB=hw:Loopback,0,0
 make help  # full variable list
+make test
+make asan
 ```
 
 | Variable      | Default            | Meaning                                  |
@@ -268,6 +354,13 @@ make help  # full variable list
 | `ALOOP_PB`    | `hw:Loopback,0,0`  | Loopback endpoint voicecloak writes (B)  |
 | `ALOOP_CAP`   | `hw:Loopback,1,0`  | Loopback endpoint OBS reads (route B)    |
 | `VC_MODE`     | `witness`          | `subtle` or `witness`                    |
+| `VC_PRESET`   | `cloak`            | `cloak` or one of the eight named profiles |
+| `VC_AGC`      | `1`                | `1` enables RMS gain; `0` disables it (limiter stays on) |
+| `VC_TARGET_DBFS` | `-18`            | RMS target level                         |
+| `VC_MAX_GAIN_DB` | `12`             | Maximum RMS compensation                 |
+| `VC_CEILING_DBFS` | `-1`            | Peak limiter ceiling                     |
+| `VC_ATTACK_MS` / `VC_RELEASE_MS` | `10` / `250` | RMS gain smoothing times          |
+| `VC_LIMITER_RELEASE_MS` | `50`      | Limiter release time                     |
 | `VC_RATE` / `VC_CHANNELS` / `VC_PERIOD` / `VC_FFT` / `VC_HOP` | `48000` / `2` / `256` / `1024` / `256` | Stream parameters |
 | `VC_EXTRA`    | empty              | Extra `live` flags, e.g. fixed transform |
 

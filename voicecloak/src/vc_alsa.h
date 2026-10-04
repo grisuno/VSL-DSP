@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <signal.h>
 #include "vc_stream.h"
+#include "vc_effects.h"
+#include "vc_level.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,6 +32,8 @@ typedef struct {
     size_t hop_size;              /* engine hop size                   */
     vc_spectral_fn fn;            /* per-frame transform, or NULL      */
     void *user;                   /* transform context                 */
+    vc_effects_params_t effect_params; /* sample-domain effect settings */
+    vc_level_config_t level_config;    /* RMS gain + limiter settings    */
     volatile sig_atomic_t *stop;  /* set non-zero to end the loop      */
 } vc_alsa_cfg_t;
 

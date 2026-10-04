@@ -29,7 +29,16 @@ struct vc_rt_ctx_s {
 };
 
 vc_rt_ctx_t *vc_rt_create(size_t nbins, vc_rt_params_t params) {
-    if (nbins < 2) return NULL;
+    if (nbins < 2 || !isfinite(params.pitch_ratio) ||
+        !isfinite(params.formant_factor) ||
+        !isfinite(params.scramble_intensity) ||
+        params.pitch_ratio < VC_RT_MIN_PITCH_RATIO ||
+        params.pitch_ratio > VC_RT_MAX_PITCH_RATIO ||
+        params.formant_factor < VC_RT_MIN_FORMANT_FACTOR ||
+        params.formant_factor > VC_RT_MAX_FORMANT_FACTOR ||
+        params.scramble_intensity < 0.0f ||
+        params.scramble_intensity > VC_RT_MAX_SCRAMBLE_INTENSITY)
+        return NULL;
     vc_rt_ctx_t *c = (vc_rt_ctx_t *)calloc(1, sizeof(*c));
     if (!c) return NULL;
     c->nbins = nbins;
