@@ -51,7 +51,7 @@ works on this repository. **These rules override default behaviour.**
    array plus a unit test.
 
 **Doctrine of separation (kernel vs userspace):** the `.ko` module
-and the HIDAPI library are distinct contracts with distinct
+and the userspace USB transport library are distinct contracts with distinct
 responsibilities. The kernel detects and logs; the userspace
 controls the DSP. Responsibilities are never mixed, and DSP logic
 is never introduced inside the kernel module.
@@ -64,8 +64,8 @@ is never introduced inside the kernel module.
   Rust, no userspace dependencies inside the module. Standard
   kernel headers (`<linux/module.h>`, `<linux/usb.h>`,
   `<linux/printk.h>`); never libc.
-- **Userspace (PoC and library):** pure C, C11, with HIDAPI
-  (`-lhidapi-libusb`). C++ wrappers via `extern "C"`.
+- **Userspace (PoC and library):** pure C, C11, with libusb-1.0
+  (`-lusb-1.0`). C++ wrappers via `extern "C"`.
 - **Identifiers and strings are English.** Documentation
   (`spec/`, this file, `README.md`) may also be English; the
   source code itself is always English. The exception: the
@@ -78,10 +78,10 @@ is never introduced inside the kernel module.
   docstrings.
 - **Prefix by module.** `audiobox_` for the kernel detector,
   `VSL_` for the userspace DSP library. No unnecessary mutable
-  global state. The HID handle is an explicit singleton
+  global state. The USB device handle is an explicit singleton
   (`vsl_device_handle`) with a clear lifecycle
   (`VSL_Init_Device` / `VSL_Close_Device`). Every `malloc` /
-  `hid_open` has an idempotent releaser.
+  `libusb_open` has an idempotent releaser.
 - **No hardcoded values, no magic numbers, no absolute system
   paths in scripts.** Every configurable value lives in the
   `Makefile` (kernel module build) or in the central configuration
@@ -105,8 +105,8 @@ For every module, the cycle is inviolable and **in this order**:
    the directly verifiable surface. For the kernel detector, the
    tests are load/unload of the module and log inspection.
 3. **Code (green)** — `src/<module>.c` (or root for the `.ko`)
-   with the minimum code to pass. USB-HID calls in userspace use
-   HIDAPI; the kernel module uses the kernel USB API. **No
+   with the minimum code to pass. USB calls in userspace use
+   libusb-1.0 bulk transfer; the kernel module uses the kernel USB API. **No
    compilable placeholders:** an unknown value is a blocker and
    the test is adapted (conditional skip), never faked.
 4. **Refactor** — harden pointers, bounds, readability, without
@@ -137,8 +137,8 @@ For every module, the cycle is inviolable and **in this order**:
      limiter -> PCM) is exercised
      in a unit test over real blocks, not only stage by stage.
 6. **Fuzzing** — every path that takes external input is fuzzed:
-   the HID report parser and the DSP packet path received from
-   the device (libFuzzer on `VSL_Decode_*` and the feature
+   the USB packet parser and the DSP packet path received from
+   the device (libFuzzer on `VSL_Decode_*` and the
    report parser; AFL++ on the userspace binary). Zero crashes,
    zero leaks, zero undefined behaviour before closure.
 7. **Documentation** — **only after validation and fuzzing** is
@@ -153,7 +153,7 @@ and fuzzed (where applicable).
 **Test-oriented design:** the DSP math (gain curves, logarithmic
 frequency mapping, float to int conversion) lives in **pure
 functions without I/O** (the directly verifiable surface); the
-HIDAPI/USB orchestrators only wire things up and call those pure
+libusb/USB orchestrators only wire things up and call those pure
 functions. The USB send function (`FUN_Send_Packet`) only builds
 the buffer and writes; the math is already done and tested above.
 
@@ -164,12 +164,12 @@ the buffer and writes; the math is already done and tested above.
 | Component                | Technology                                                | Note                                                                                                |
 | ------------------------ | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | Kernel detector          | Linux USB core (`module_usb_driver`, `usb_driver`)         | Pure C, GPL-2.0-or-later. `probe` returns `-ENODEV` (does not claim the interface). Supports three product IDs: 0x0101, 0x0102, 0x0103. Single source of truth in `audiobox_vsl.h`. |
-| Userspace DSP library    | Pure C + **HIDAPI** (`hidapi-libusb`)                     | USB-HID communication: Feature/Output Report, 64 bytes (`0x40`), minimum 6 byte payload.            |
+| Userspace DSP library    | Pure C + **libusb-1.0**                     | USB bulk transfer on the MIDI interface: 64 byte packet (`0x40`), minimum 6 byte payload.            |
 | Source of the code       | Reverse engineering of the Android driver                 | `FUN_00132c90` (Encode Gain), `FUN_00132d00` (Map Frequency), `FUN_00132da8` (Decode Frequency), `FUN_00412345` (USB Send). Immutable names. |
 | Userspace tests          | CMocka                                                    | TDD. `sudo apt install libcmocka-dev`.                                                              |
 | Kernel tests             | KUnit / load+`dmesg`                                      | Verifies non-interference with ALSA.                                                                |
 | Wrappers                 | `extern "C"`                                              | Prepared for future C++ bindings without breaking the C API.                                       |
-| Protocol                 | USB-HID, 64 byte packet                                   | Confirmed from the disassembly (`0x40` in `FUN_00412345`).                                          |
+| Protocol                 | USB bulk on MIDI interface, 64 byte packet             | Confirmed packet size from the disassembly (`0x40` in `FUN_00412345`); interface and endpoint from USB capture (`src/vsl_config.h`). |
 | VoiceCloak real-time     | Pure C + ALSA (`libasound`)                              | Constant-rate streaming phase vocoder (`vc_stream`, `vc_rt`) over the AudioBox as a plain ALSA device. The kernel module is untouched. |
 | VoiceCloak noise reduction | Pure C (`vc_denoise`, `vc_spectral_chain_t`)          | Noise print spectral subtraction + spectral gate before the phase vocoder. |
 | VoiceCloak level control | Pure C (`vc_eq`, `vc_level`)                              | Presence EQ, smoothed RMS gain, optional soft saturation, and peak limiter, in place after the spectral stages. |
@@ -353,7 +353,7 @@ VSL-DSP/
 ├── install.sh                     # wrapper: installs build dependencies
 ├── configure                      # wrapper: verifies build environment
 ├── README.md                      # user-facing documentation
-├── LICENSE                        # GPL-2.0-or-later
+├── LICENSE                        # GPL-3.0-or-later (kernel sources: GPL-2.0-or-later SPDX)
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
 ├── SECURITY.md
@@ -478,8 +478,8 @@ test, never as verified.
   `VSL_Map_Frequency` / `VSL_Decode_Frequency`,
   `VSL_Final_Encode_To_Int`, `VSL_Parameter` (9 fields). Validated
   test `0.75 -> 40793`. Modular architecture
-  `vsl_dsp_logic.c` + `vsl_dsp_transport.c`. Compiles with
-  `-lhidapi-libusb`.
+   `vsl_dsp_logic.c` + `vsl_dsp_transport.c`. Compiles with
+   `-lusb-1.0`.
 - **Phase 3a** — Code quality hardening. Centralized configuration
   in `src/vsl_config.h` (single source of truth for VID, PIDs,
   Report ID, MIDI iface, endpoint, model table). All Spanish
@@ -576,13 +576,13 @@ boy-scout mode on technical debt.
   exercised here (I/O with real hardware, module load without the
   device) is marked pending real-hardware test, never as verified.
 - Verify that every symbol, flag, or constant exists before
-  recommending it (`lsusb`, `hid_enumerate`, `dmesg`, `modprobe`).
+  recommending it (`lsusb`, `dmesg`, `modprobe`).
 - New commands go in the `Makefile` (single source of truth), not
   in loose scripts that desynchronise (see section 5).
 - Boy-scout mode: retiring technical debt and security flaws is
   never out of scope, always without losing functionality. Look
   for and extinguish duplicate code.
-- Lateral thinking when the environment demands it (e.g. HIDAPI
+- Lateral thinking when the environment demands it (e.g. libusb-1.0
   absent from repositories -> compile from source; Kali without
   the package -> alternate route). Document the non-obvious
   solution in the spec.

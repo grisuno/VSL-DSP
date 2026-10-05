@@ -1,6 +1,6 @@
 # orphans
 
-*Community 6 | 7 files | cohesion 0.00*
+*Community 5 | 7 files | cohesion 0.00*
 
 ## Definition
 
@@ -58,10 +58,9 @@ This community groups 7 file(s) rooted at `legacy` with dominant language sh (co
 
 ## Connections
 
-- [INFERRED] shares_context community 2 <-> 6 (strength 0.5): Inferred shared context (language py and layer utility) with no import path between community 2 (legacy) and community 6 (orphans).
-- [INFERRED] shares_context community 3 <-> 6 (strength 0.5): Inferred shared context (layer utility) with no import path between community 3 (src) and community 6 (orphans).
-- [INFERRED] shares_context community 4 <-> 6 (strength 0.5): Inferred shared context (layer utility) with no import path between community 4 (voicecloak/src) and community 6 (orphans).
-- [INFERRED] shares_context community 5 <-> 6 (strength 0.5): Inferred shared context (layer utility) with no import path between community 5 (voicecloak/src) and community 6 (orphans).
+- [INFERRED] shares_context community 2 <-> 5 (strength 0.5): Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 5 (orphans).
+- [INFERRED] shares_context community 3 <-> 5 (strength 0.5): Inferred shared context (layer utility) with no import path between community 3 (src) and community 5 (orphans).
+- [INFERRED] shares_context community 4 <-> 5 (strength 0.5): Inferred shared context (layer utility) with no import path between community 4 (voicecloak/src) and community 5 (orphans).
 
 ## Risks
 

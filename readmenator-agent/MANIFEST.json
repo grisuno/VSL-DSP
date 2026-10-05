@@ -1,15 +1,15 @@
 {
   "tool": "readmenator",
-  "generated_at": "2026-10-04T04:14:39Z",
+  "generated_at": "2026-10-05T00:31:07Z",
   "project_root": "/home/grisun0/src_note/c/VSL-DSP",
-  "files": 64,
-  "symbols": 811,
-  "imports": 540,
-  "resolved_imports": 76,
+  "files": 70,
+  "symbols": 948,
+  "imports": 581,
+  "resolved_imports": 88,
   "security_findings": 0,
   "languages": {
-    "c": 33,
-    "h": 21,
+    "c": 37,
+    "h": 23,
     "sh": 3,
     "py": 7
   },

@@ -498,4 +498,4 @@ make asan
 
 ## License
 
-AGPL-3.0-or-later. See the parent project LICENSE file.
+GPL-3.0-or-later. See the parent project LICENSE file.

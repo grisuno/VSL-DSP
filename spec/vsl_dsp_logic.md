@@ -39,16 +39,16 @@ Provides pure mathematical functions for encoding and decoding DSP parameters fo
 - **Source**: Reverse-engineered from `FUN_00132da8` in the Android driver.
 
 #### VSL_Final_Encode_To_Int
-- **Description**: Converts a float encoded value (assumed to be in the range 0.0-1000.0) to an integer for transmission to the DSP.
+- **Description**: Converts a float encoded value to a 16-bit integer for transmission to the DSP.
 - **Inputs**:
   - `encoded_float`: float, the encoded value from `VSL_Encode_Gain` or `VSL_Map_Frequency`.
-  - `param`: pointer to `VSL_Parameter` containing `max_encoded_int` (the maximum integer value, e.g., 65535).
-- **Output**: uint32_t, the integer value to send (clamped to 0..max_encoded_int).
+  - `param`: pointer to `VSL_Parameter` containing `max_encoded_int` (the maximum integer value, e.g., 65535 for the 2-byte encoded value slot).
+- **Output**: uint16_t, the integer value to send (clamped to 0..max_encoded_int).
 - **Error Handling**:
   - If `param->max_encoded_int == 0`, returns 0.
-  - Values are scaled, rounded, and clamped to the valid range.
-- **Note**: The scaling factor (1000.0) is based on the hypothesis that the DSP uses a float range of 0.0-1000.0. This constant should be verified against the disassembly.
-- **Source**: Placeholder implementation; the exact scaling factor and rounding method (roundf) are based on the hypothesis and the validated test case (0.75 -> 40793 for max_encoded_int=65535? Wait, note: the test in the code uses 0.75 -> 49, which is inconsistent with the validated test in the CLAUDE.md (0.75 -> 40793). This discrepancy must be resolved by extracting the correct constant from the disassembly.
+  - Values are scaled, rounded with `roundf`, and clamped to the valid range.
+- **Scale**: `encoded_float * (max_encoded_int / 1000.0f)`, where `VSL_MAX_ENCODED_FLOAT` (1000.0f) is the DSP float-range hypothesis. Validated test: full pipeline `VSL_Encode_Gain` + `VSL_Final_Encode_To_Int` maps user value `0.75 -> 40793` with `max_encoded_int=65535`.
+- **Source**: `src/vsl_dsp_logic.c`, return type `uint16_t` to match the 2-byte protocol slot.
 
 ### Data Structure: VSL_Parameter
 - `dsp_param_id`: uint32_t, the DSP parameter ID (e.g., 0x1A01 for gain).
@@ -65,7 +65,7 @@ Provides pure mathematical functions for encoding and decoding DSP parameters fo
 - `VSL_INV_LN2`: 1.0f / ln(2) ≈ 1.442695f, used to convert natural log to base-2 log.
 
 ### Assumptions and Open Issues
-- The exact scaling factor in `VSL_Final_Encode_To_Int` (currently 1000.0) is not yet verified from the disassembly. This is a blocker and must be resolved by extracting the constant from the Android driver (see CLAUDE.md blockers).
+- The float-range divisor in `VSL_Final_Encode_To_Int` (1000.0f, `VSL_MAX_ENCODED_FLOAT`) remains a hypothesis from DSP scaling, pending extraction of the exact constant from the disassembly. The current behavior is pinned by the validated test (`0.75 -> 40793`, full pipeline).
 - The `VSL_Parameter` structure fields are annotated with comments indicating their likely offsets in the original structure (from the disassembly). These annotations should be verified and updated as needed.
 
 ### Safety
@@ -77,4 +77,4 @@ Provides pure mathematical functions for encoding and decoding DSP parameters fo
 ### Testing
 - Unit tests are provided in `tests/test_vsl_dsp_logic.c` using CMocka.
 - Tests cover normal operation, clamping, and error conditions.
-- The test for `VSL_Final_Encode_To_Int` uses the hypothesis (0.75 -> 49 with max_encoded_int=65535) and must be updated once the true scaling factor is known.
+- The test for `VSL_Final_Encode_To_Int` pins the validated full-pipeline case (`0.75 -> 40793` with max_encoded_int=65535).

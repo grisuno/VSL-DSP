@@ -83,9 +83,9 @@ static void print_usage(FILE *fp, const char *prog)
 
 static void print_version(void)
 {
-    printf("vsl-cli 2.0.0\n"
+     printf("vsl-cli 2.0.0\n"
            "PreSonus AudioBox VSL DSP control tool\n"
-           "License: AGPL-3.0-or-later\n");
+           "License: GPL-3.0-or-later\n");
 }
 
 static void print_list(uint16_t product_id)

@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VSL-DSP | System Maps</title>
 <style>
-:root{--canvas:#020617;--mask:#0f172a;--ink:#ffffff;--muted:#94a3b8;--border:#1e293b}
-html[data-theme="light"]{--canvas:#f8fafc;--mask:#ffffff;--ink:#0f172a;--muted:#475569;--border:#e2e8f0}
+:root{--canvas:#020617;--mask:#0f172a;--ink:#ffffff;--muted:#94a3b8;--border:#1e293b;--accent:#22d3ee;--code:#0b1226;--kw:#c084fc;--str:#86efac;--fn:#fcd34d;--cm:#64748b}
+html[data-theme="light"]{--canvas:#f8fafc;--mask:#ffffff;--ink:#0f172a;--muted:#475569;--border:#e2e8f0;--code:#f1f5f9;--cm:#94a3b8}
 *{box-sizing:border-box}
 body{margin:0;background:var(--canvas);color:var(--ink);font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 header{padding:28px 20px 18px;max-width:1024px;margin:0 auto}
@@ -20,11 +20,31 @@ header p{color:var(--muted);font-size:13px;margin:4px 0}
 .card h2{font-size:15px;margin:0}
 .card p{font-size:12px;color:var(--muted);margin:0;line-height:1.6}
 .card .meta{font-size:11px;color:var(--muted)}
-.card a{margin-top:auto;color:var(--ink);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;text-decoration:none;text-align:center}
-.card a:hover,.card a:focus-visible{border-color:#22d3ee;outline:2px solid #22d3ee;outline-offset:2px}
+.card a,.card button.doc-open{margin-top:auto;color:var(--ink);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12px;text-decoration:none;text-align:center;background:transparent;font:inherit;cursor:pointer}
+.card a:hover,.card a:focus-visible,.card button.doc-open:hover,.card button.doc-open:focus-visible{border-color:var(--accent);outline:2px solid var(--accent);outline-offset:2px}
 .howto{max-width:1024px;margin:0 auto;padding:0 20px 20px}
 .howto h2{font-size:15px;margin:0 0 8px}
 .howto p{font-size:12px;color:var(--muted);line-height:1.7;margin:0}
+.section{max-width:1024px;margin:0 auto;padding:0 20px 20px}
+.section h2{font-size:15px;margin:0 0 10px}
+video.overview{width:100%;max-height:520px;background:#000;border:1px solid var(--border);border-radius:14px}
+.md-body{font-size:13px;line-height:1.7}
+.md-body h1,.md-body h2,.md-body h3{margin:14px 0 8px;line-height:1.3}
+.md-body h1{font-size:18px}.md-body h2{font-size:16px}.md-body h3{font-size:14px}
+.md-body p{margin:8px 0;color:var(--ink)}
+.md-body a{color:var(--accent)}
+.md-body code{background:var(--code);border:1px solid var(--border);border-radius:6px;padding:1px 6px;font-size:12px}
+.md-body pre{background:var(--code);border:1px solid var(--border);border-radius:10px;padding:12px;overflow:auto}
+.md-body pre code{background:none;border:none;padding:0}
+.md-body blockquote{border-left:3px solid var(--accent);margin:8px 0;padding:4px 12px;color:var(--muted)}
+.md-body ul,.md-body ol{margin:8px 0;padding-left:22px}
+.md-body table{border-collapse:collapse;width:100%;font-size:12px;margin:10px 0}
+.md-body th,.md-body td{border:1px solid var(--border);padding:6px 8px;text-align:left}
+.md-body th{color:var(--muted);font-weight:400}
+.md-body hr{border:none;border-top:1px solid var(--border);margin:14px 0}
+.tok-kw{color:var(--kw)}.tok-str{color:var(--str)}.tok-fn{color:var(--fn)}.tok-cm{color:var(--cm);font-style:italic}
+#doc-viewer{background:var(--mask);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:12px;max-height:640px;overflow:auto}
+#doc-viewer .meta{font-size:11px;color:var(--muted);margin-bottom:8px}
 .empty{color:var(--muted);font-size:13px}
 footer{max-width:1024px;margin:0 auto;padding:0 20px 30px;color:var(--muted);font-size:11px}
 </style>
@@ -32,20 +52,47 @@ footer{max-width:1024px;margin:0 auto;padding:0 20px 30px;color:var(--muted);fon
 <body>
 <header>
 <h1>VSL-DSP | System Maps</h1>
-<p>files: 64 | imports: 540 | symbols: 811</p>
-<p>This gallery page works offline. Each map loads its physics engine from a CDN and needs network access.</p>
+<p>files: 70 | imports: 581 | symbols: 948</p>
+<p>This gallery page works offline. Each map loads its physics engine from a CDN and needs network access. Video and documentation below are local and work offline.</p>
 </header>
 <div class="controls">
-<input id="filter" type="search" placeholder="Filter diagrams..." aria-label="Filter diagrams">
+<input id="filter" type="search" placeholder="Filter diagrams and docs..." aria-label="Filter diagrams and docs">
 <button type="button" id="theme">Theme</button>
 </div>
 <main class="grid" id="gallery">
-<article class="card" data-kind="architecture"><h2>Runtime Architecture</h2><p>Components, services, storage, and boundaries across layers.</p><div class="meta">64 of 64 files in full scope | 76 links | 5 chapters</div><a href="architecture.html">Open architecture map</a></article>
-<article class="card" data-kind="dataflow"><h2>Data Flow</h2><p>Movement of data from sources through transforms to stores.</p><div class="meta">64 of 64 files in full scope | 76 links | 5 chapters</div><a href="dataflow.html">Open dataflow map</a></article>
-<article class="card" data-kind="lifecycle"><h2>Change Lifecycle</h2><p>States, transitions, waits, and retry paths of change.</p><div class="meta">64 of 64 files in full scope | 73 links | 5 chapters</div><a href="lifecycle.html">Open lifecycle map</a></article>
-<article class="card" data-kind="sequence"><h2>Request Sequence</h2><p>Ordered interaction between top participants over time.</p><div class="meta">64 of 64 files in full scope | 76 links | 5 chapters</div><a href="sequence.html">Open sequence map</a></article>
-<article class="card" data-kind="workflow"><h2>Delivery Workflow</h2><p>Delivery path across lanes from entry to terminal outcomes.</p><div class="meta">64 of 64 files in full scope | 137 links | 5 chapters</div><a href="workflow.html">Open workflow map</a></article>
+<article class="card" data-kind="architecture"><h2>Runtime Architecture</h2><p>Components, services, storage, and boundaries across layers.</p><div class="meta">70 of 70 files in full scope | 88 links | 5 chapters</div><a href="architecture.html">Open architecture map</a></article>
+<article class="card" data-kind="dataflow"><h2>Data Flow</h2><p>Movement of data from sources through transforms to stores.</p><div class="meta">70 of 70 files in full scope | 88 links | 5 chapters</div><a href="dataflow.html">Open dataflow map</a></article>
+<article class="card" data-kind="lifecycle"><h2>Change Lifecycle</h2><p>States, transitions, waits, and retry paths of change.</p><div class="meta">70 of 70 files in full scope | 85 links | 5 chapters</div><a href="lifecycle.html">Open lifecycle map</a></article>
+<article class="card" data-kind="sequence"><h2>Request Sequence</h2><p>Ordered interaction between top participants over time.</p><div class="meta">70 of 70 files in full scope | 88 links | 5 chapters</div><a href="sequence.html">Open sequence map</a></article>
+<article class="card" data-kind="workflow"><h2>Delivery Workflow</h2><p>Delivery path across lanes from entry to terminal outcomes.</p><div class="meta">70 of 70 files in full scope | 153 links | 5 chapters</div><a href="workflow.html">Open workflow map</a></article>
 </main>
+<section class="section" id="video"><h2>Overview video</h2><video class="overview" controls preload="metadata" src="readmenator.mp4">Your browser does not support the video tag. <a href="readmenator.mp4">Download the overview video</a>.</video><p class="empty">Cinematic synthwave overview rendered from real scan data. <a href="readmenator.mp4">Open/download readmenator.mp4</a>.</p></section><section class="section" id="docs"><h2>Documentation 27 files</h2><div class="grid" id="docs-grid" style="padding:0;max-width:none"><article class="card" data-doc="KNOWLEDGE_BASE.md"><h2>KNOWLEDGE_BASE.md</h2><p>KNOWLEDGE_BASE.md</p><p class="meta"># Polyglot Codebase Knowledge Graph &gt; Generated offline by **readmenator**. 70 files, 948 symbols, 330 imports. Supports</p><button type="button" class="doc-open" data-href="md/KNOWLEDGE_BASE.md" data-name="KNOWLEDGE_BASE.md">Read rendered</button><a href="md/KNOWLEDGE_BASE.md">Open raw markdown</a></article>
+<article class="card" data-doc="README.md"><h2>README.md</h2><p>README.md</p><p class="meta"># VSL-DSP — The only open source driver for PreSonus AudioBox VSL **This is the sole free software Linux driver for the </p><button type="button" class="doc-open" data-href="md/README.md" data-name="README.md">Read rendered</button><a href="md/README.md">Open raw markdown</a></article>
+<article class="card" data-doc="SECURITY.md"><h2>SECURITY.md</h2><p>SECURITY.md</p><p class="meta"># Security Policy ## Supported Versions Use this section to tell people about which versions of your project are current</p><button type="button" class="doc-open" data-href="md/SECURITY.md" data-name="SECURITY.md">Read rendered</button><a href="md/SECURITY.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/API.md"><h2>API.md</h2><p>readmenator-agent/API.md</p><p class="meta"># API ## audiobox_vsl.c ### audiobox_probe (function) `static int audiobox_probe(struct usb_interface *intf, const struc</p><button type="button" class="doc-open" data-href="md/readmenator-agent/API.md" data-name="readmenator-agent/API.md">Read rendered</button><a href="md/readmenator-agent/API.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/ARCHITECTURE.md"><h2>ARCHITECTURE.md</h2><p>readmenator-agent/ARCHITECTURE.md</p><p class="meta"># Architecture ## Internal Dependencies - `audiobox_vsl.c` -&gt; `audiobox_vsl.h` - `avatar/avatar_logic.c` -&gt; `avatar/avat</p><button type="button" class="doc-open" data-href="md/readmenator-agent/ARCHITECTURE.md" data-name="readmenator-agent/ARCHITECTURE.md">Read rendered</button><a href="md/readmenator-agent/ARCHITECTURE.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/GOTCHAS.md"><h2>GOTCHAS.md</h2><p>readmenator-agent/GOTCHAS.md</p><p class="meta"># Gotchas ## God Nodes (high connectivity) These files have the most connections. Changes here have high blast radius. -</p><button type="button" class="doc-open" data-href="md/readmenator-agent/GOTCHAS.md" data-name="readmenator-agent/GOTCHAS.md">Read rendered</button><a href="md/readmenator-agent/GOTCHAS.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/INDEX.md"><h2>INDEX.md</h2><p>readmenator-agent/INDEX.md</p><p class="meta"># Index | File | Purpose | Subsystem | Symbols | |------|---------|-----------|---------| | `audiobox_vsl.c` | SPDX-Lice</p><button type="button" class="doc-open" data-href="md/readmenator-agent/INDEX.md" data-name="readmenator-agent/INDEX.md">Read rendered</button><a href="md/readmenator-agent/INDEX.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/KB_avatar.md"><h2>KB_avatar.md</h2><p>readmenator-agent/KB_avatar.md</p><p class="meta"># Subsystem: avatar ## avatar/avatar_config.h - Layer: infrastructure - Language: h - Symbols: - `AVATAR_CONFIG_H` (macr</p><button type="button" class="doc-open" data-href="md/readmenator-agent/KB_avatar.md" data-name="readmenator-agent/KB_avatar.md">Read rendered</button><a href="md/readmenator-agent/KB_avatar.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/KB_legacy.md"><h2>KB_legacy.md</h2><p>readmenator-agent/KB_legacy.md</p><p class="meta"># Subsystem: legacy ## legacy/app.py - Layer: utility - Doc: app.py Autor: Gris Iscomeback Correo electrónico: grisiscom</p><button type="button" class="doc-open" data-href="md/readmenator-agent/KB_legacy.md" data-name="readmenator-agent/KB_legacy.md">Read rendered</button><a href="md/readmenator-agent/KB_legacy.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/KB_root.md"><h2>KB_root.md</h2><p>readmenator-agent/KB_root.md</p><p class="meta"># Subsystem: root ## audiobox_vsl.c - Layer: infrastructure - Doc: SPDX-License-Identifier: GPL-2.0-or-later - Language:</p><button type="button" class="doc-open" data-href="md/readmenator-agent/KB_root.md" data-name="readmenator-agent/KB_root.md">Read rendered</button><a href="md/readmenator-agent/KB_root.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/KB_src.md"><h2>KB_src.md</h2><p>readmenator-agent/KB_src.md</p><p class="meta"># Subsystem: src ## src/vsl_cli.c - Layer: utility - Language: c - Symbols: - `ParamEntry` (struct, line 15) - `print_us</p><button type="button" class="doc-open" data-href="md/readmenator-agent/KB_src.md" data-name="readmenator-agent/KB_src.md">Read rendered</button><a href="md/readmenator-agent/KB_src.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/KB_tests.md"><h2>KB_tests.md</h2><p>readmenator-agent/KB_tests.md</p><p class="meta"># Subsystem: tests ## tests/test_audiobox_vsl.c - Layer: testing - Doc: SPDX-License-Identifier: GPL-2.0-or-later - Lang</p><button type="button" class="doc-open" data-href="md/readmenator-agent/KB_tests.md" data-name="readmenator-agent/KB_tests.md">Read rendered</button><a href="md/readmenator-agent/KB_tests.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/SECURITY.md"><h2>SECURITY.md</h2><p>readmenator-agent/SECURITY.md</p><p class="meta"># Security Findings No security findings.</p><button type="button" class="doc-open" data-href="md/readmenator-agent/SECURITY.md" data-name="readmenator-agent/SECURITY.md">Read rendered</button><a href="md/readmenator-agent/SECURITY.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/SYMBOLS.md"><h2>SYMBOLS.md</h2><p>readmenator-agent/SYMBOLS.md</p><p class="meta"># Symbols | Symbol | Kind | File:Line | Signature | |--------|------|-----------|-----------| | `AUDIOBOX_DRIVER_DESC` |</p><button type="button" class="doc-open" data-href="md/readmenator-agent/SYMBOLS.md" data-name="readmenator-agent/SYMBOLS.md">Read rendered</button><a href="md/readmenator-agent/SYMBOLS.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/recipes/add-function.md"><h2>add-function.md</h2><p>readmenator-agent/recipes/add-function.md</p><p class="meta"># Recipe: Add a Function 1. Find the target file: `grep -rn &#x27;TODO\|FIXME&#x27; readmenator-agent/INDEX.md` 2. Read the subsys</p><button type="button" class="doc-open" data-href="md/readmenator-agent/recipes/add-function.md" data-name="readmenator-agent/recipes/add-function.md">Read rendered</button><a href="md/readmenator-agent/recipes/add-function.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/recipes/fix-cycle.md"><h2>fix-cycle.md</h2><p>readmenator-agent/recipes/fix-cycle.md</p><p class="meta"># Recipe: Fix a Dependency Cycle 1. Read cycles: `grep -A5 &#x27;Dependency Cycles&#x27; readmenator-agent/GOTCHAS.md` 2. Pick the</p><button type="button" class="doc-open" data-href="md/readmenator-agent/recipes/fix-cycle.md" data-name="readmenator-agent/recipes/fix-cycle.md">Read rendered</button><a href="md/readmenator-agent/recipes/fix-cycle.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/recipes/fix-security.md"><h2>fix-security.md</h2><p>readmenator-agent/recipes/fix-security.md</p><p class="meta"># Recipe: Fix a Security Finding 1. Read findings: `grep -n &#x27;&lt;file&gt;&#x27; readmenator-agent/SECURITY.md` 2. Check API contrac</p><button type="button" class="doc-open" data-href="md/readmenator-agent/recipes/fix-security.md" data-name="readmenator-agent/recipes/fix-security.md">Read rendered</button><a href="md/readmenator-agent/recipes/fix-security.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-agent/recipes/reduce-complexity.md"><h2>reduce-complexity.md</h2><p>readmenator-agent/recipes/reduce-complexity.md</p><p class="meta"># Recipe: Reduce File Complexity Target hotspot: `legacy/mixer_quirks.c` (complexity 1.0, centrality 1.0) 1. Read depend</p><button type="button" class="doc-open" data-href="md/readmenator-agent/recipes/reduce-complexity.md" data-name="readmenator-agent/recipes/reduce-complexity.md">Read rendered</button><a href="md/readmenator-agent/recipes/reduce-complexity.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-wiki/REPORT.md"><h2>REPORT.md</h2><p>readmenator-wiki/REPORT.md</p><p class="meta"># Audit Report *Project: VSL-DSP | 2026-10-04 | offline, deterministic* ## Confidence Trail Every edge is tagged. Extrac</p><button type="button" class="doc-open" data-href="md/readmenator-wiki/REPORT.md" data-name="readmenator-wiki/REPORT.md">Read rendered</button><a href="md/readmenator-wiki/REPORT.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-wiki/community_0_root.md"><h2>community_0_root.md</h2><p>readmenator-wiki/community_0_root.md</p><p class="meta"># root *Community 0 | 4 files | cohesion 1.00* ## Definition This community groups 4 file(s) rooted at `root` with domin</p><button type="button" class="doc-open" data-href="md/readmenator-wiki/community_0_root.md" data-name="readmenator-wiki/community_0_root.md">Read rendered</button><a href="md/readmenator-wiki/community_0_root.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-wiki/community_1_avatar.md"><h2>community_1_avatar.md</h2><p>readmenator-wiki/community_1_avatar.md</p><p class="meta"># avatar *Community 1 | 5 files | cohesion 1.00* ## Definition This community groups 5 file(s) rooted at `avatar` with d</p><button type="button" class="doc-open" data-href="md/readmenator-wiki/community_1_avatar.md" data-name="readmenator-wiki/community_1_avatar.md">Read rendered</button><a href="md/readmenator-wiki/community_1_avatar.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-wiki/community_2_legacy.md"><h2>community_2_legacy.md</h2><p>readmenator-wiki/community_2_legacy.md</p><p class="meta"># legacy *Community 2 | 11 files | cohesion 1.00* ## Definition This community groups 11 file(s) rooted at `legacy` with</p><button type="button" class="doc-open" data-href="md/readmenator-wiki/community_2_legacy.md" data-name="readmenator-wiki/community_2_legacy.md">Read rendered</button><a href="md/readmenator-wiki/community_2_legacy.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-wiki/community_3_src.md"><h2>community_3_src.md</h2><p>readmenator-wiki/community_3_src.md</p><p class="meta"># src *Community 3 | 6 files | cohesion 1.00* ## Definition This community groups 6 file(s) rooted at `src` with dominan</p><button type="button" class="doc-open" data-href="md/readmenator-wiki/community_3_src.md" data-name="readmenator-wiki/community_3_src.md">Read rendered</button><a href="md/readmenator-wiki/community_3_src.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-wiki/community_4_voicecloak_src.md"><h2>community_4_voicecloak_src.md</h2><p>readmenator-wiki/community_4_voicecloak_src.md</p><p class="meta"># voicecloak/src *Community 4 | 37 files | cohesion 1.00* ## Definition This community groups 37 file(s) rooted at `voic</p><button type="button" class="doc-open" data-href="md/readmenator-wiki/community_4_voicecloak_src.md" data-name="readmenator-wiki/community_4_voicecloak_src.md">Read rendered</button><a href="md/readmenator-wiki/community_4_voicecloak_src.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-wiki/community_5_orphans.md"><h2>community_5_orphans.md</h2><p>readmenator-wiki/community_5_orphans.md</p><p class="meta"># orphans *Community 5 | 7 files | cohesion 0.00* ## Definition This community groups 7 file(s) rooted at `legacy` with </p><button type="button" class="doc-open" data-href="md/readmenator-wiki/community_5_orphans.md" data-name="readmenator-wiki/community_5_orphans.md">Read rendered</button><a href="md/readmenator-wiki/community_5_orphans.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-wiki/index.md"><h2>index.md</h2><p>readmenator-wiki/index.md</p><p class="meta"># Second Brain *Last synthesized: 2026-10-04 | 70 files | 6 concept pages | offline, zero tokens* &gt; Raw sources -&gt; readm</p><button type="button" class="doc-open" data-href="md/readmenator-wiki/index.md" data-name="readmenator-wiki/index.md">Read rendered</button><a href="md/readmenator-wiki/index.md">Open raw markdown</a></article>
+<article class="card" data-doc="readmenator-wiki/queries.md"><h2>queries.md</h2><p>readmenator-wiki/queries.md</p><p class="meta"># Queries Log each answered question here so the wiki compounds. Format: question, answer, cited files. ## Suggested ###</p><button type="button" class="doc-open" data-href="md/readmenator-wiki/queries.md" data-name="readmenator-wiki/queries.md">Read rendered</button><a href="md/readmenator-wiki/queries.md">Open raw markdown</a></article></div><div id="doc-viewer"><h2 id="doc-title">Rendered documentation</h2><div class="meta" id="doc-meta">Pick any document above to render it here with offline markdown2html and colored code.</div><div id="doc-body" class="md-body"></div></div></section>
 <section class="howto">
 <h2>How to read these maps</h2>
 <p>Open any map, then: drag nodes freely while physics settles the rest, search (/) to filter, click a node to focus it with full file documentation, Upstream and Downstream to trace authored reach, Path to probe the exact route between two ids, Lens to compare semantic roles, Play to walk the guided chapters, Stabilize to re-run physics, Theme for dark and light, Export for PNG or typed JSON. Deep links such as #route=a~b restore any reading.</p>
@@ -54,6 +101,32 @@ footer{max-width:1024px;margin:0 auto;padding:0 20px 30px;color:var(--muted);fon
 <script>
 (function(){
 "use strict";
+function escapeHtml(text){return String(text).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function highlightCode(code,lang){
+var esc=escapeHtml(code);
+esc=esc.replace(/(&quot;.*?&quot;|&#x27;.*?&#x27;|"[^"\n]*"|'[^'\n]*')/g,'<span class="tok-str">$1</span>');
+esc=esc.replace(/(^|\s)(def|class|return|import|from|if|else|elif|for|while|try|except|with|as|pass|raise|None|True|False|function|const|let|var|new|typeof|struct|impl|fn|pub|mut|match|enum|interface|type)\b/g,'$1<span class="tok-kw">$2</span>');
+return esc;}
+function md2html(src){
+var lines=String(src).split("\n");var out=[];var inCode=false;var codeLang="";var buf=[];var listTag="";
+function closeList(){if(listTag){out.push("</"+listTag+">");listTag="";}}
+function flushCode(){out.push('<pre><code class="lang-'+escapeHtml(codeLang)+'">'+highlightCode(buf.join("\n"),codeLang)+'</code></pre>');buf=[];}
+for(var i=0;i<lines.length;i++){var line=lines[i];
+if(line.indexOf("```")===0){if(!inCode){inCode=true;codeLang=line.slice(3).trim();buf=[];}else{inCode=false;flushCode();}continue;}
+if(inCode){buf.push(line);continue;}
+if(line.indexOf("# ")===0){closeList();out.push("<h1>"+inline(line.slice(2))+"</h1>");continue;}
+if(line.indexOf("## ")===0){closeList();out.push("<h2>"+inline(line.slice(3))+"</h2>");continue;}
+if(line.indexOf("### ")===0){closeList();out.push("<h3>"+inline(line.slice(4))+"</h3>");continue;}
+if(line.trim()==="---"||line.trim()==="***"){closeList();out.push("<hr>");continue;}
+if(line.indexOf("> ")===0){closeList();out.push("<blockquote>"+inline(line.slice(2))+"</blockquote>");continue;}
+if(line.indexOf("|")>=0&&lines[i+1]&&/^\s*\|?[\s:\-|]+\|?\s*$/.test(lines[i+1])){closeList();var head=line.split("|").map(function(c){return c.trim();}).filter(function(c){return c;});i++;var rows=[];while(i+1<lines.length&&lines[i+1].indexOf("|")>=0){i++;rows.push(lines[i].split("|").map(function(c){return c.trim();}).filter(function(c){return c;}));}var h="<table><thead><tr>"+head.map(function(c){return "<th>"+inline(c)+"</th>";}).join("")+"</tr></thead>";if(rows.length){h+="<tbody>"+rows.map(function(r){return "<tr>"+r.map(function(c){return "<td>"+inline(c)+"</td>";}).join("")+"</tr>";}).join("")+"</tbody>";}out.push(h+"</table>");continue;}
+if(/^(\s*[-*]\s+)/.test(line)){if(listTag!=="ul"){closeList();listTag="ul";out.push("<ul>");}out.push("<li>"+inline(line.replace(/^\s*[-*]\s+/,""))+"</li>");continue;}
+if(/^(\s*\d+\.\s+)/.test(line)){if(listTag!=="ol"){closeList();listTag="ol";out.push("<ol>");}out.push("<li>"+inline(line.replace(/^\s*\d+\.\s+/,""))+"</li>");continue;}
+if(!line.trim()){closeList();continue;}
+closeList();out.push("<p>"+inline(line)+"</p>");}
+closeList();if(inCode){flushCode();}
+return out.join("\n");}
+function inline(s){var esc=escapeHtml(s);esc=esc.replace(/`([^`]+)`/g,"<code>$1</code>");esc=esc.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");esc=esc.replace(/\*([^*]+)\*/g,"<em>$1</em>");esc=esc.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2">$1</a>');return esc;}
 var filter=document.getElementById("filter");
 var theme=document.getElementById("theme");
 var cards=Array.prototype.slice.call(document.querySelectorAll(".card"));
@@ -65,6 +138,15 @@ card.style.display=(!term||text.indexOf(term)>=0)?"":"none";});});
 theme.addEventListener("click",function(){
 var root=document.documentElement;
 root.setAttribute("data-theme",root.getAttribute("data-theme")==="light"?"dark":"light");});
+var viewer=document.getElementById("doc-body");var title=document.getElementById("doc-title");var meta=document.getElementById("doc-meta");
+document.querySelectorAll("button.doc-open").forEach(function(btn){btn.addEventListener("click",function(){
+var href=btn.getAttribute("data-href");var name=btn.getAttribute("data-name");
+if(title){title.textContent=name;}
+if(meta){meta.textContent="Loading "+name+"...";}
+fetch(href).then(function(r){if(!r.ok){throw new Error("HTTP "+r.status);}return r.text();}).then(function(md){
+if(meta){meta.textContent=name+" | "+md.length+" chars | rendered with offline markdown2html";}
+if(viewer){viewer.innerHTML=md2html(md);location.hash="#doc="+encodeURIComponent(name);}}).catch(function(e){if(meta){meta.textContent="Could not load "+name+": "+e;}});});});
+if(location.hash.indexOf("#doc=")===0){var wanted=decodeURIComponent(location.hash.slice(5));var match=null;document.querySelectorAll("button.doc-open").forEach(function(b){if(b.getAttribute("data-name")===wanted){match=b;}});if(match){match.click();}}
 })();
 </script>
 </body>
