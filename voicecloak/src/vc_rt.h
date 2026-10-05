@@ -20,12 +20,15 @@ extern "C" {
  * @brief Real-time cloak parameters (already resolved to scalars).
  *
  * pitch_ratio 1.0 = no shift; formant_factor 1.0 = no shift;
- * scramble_intensity 0.0 = none.
+ * scramble_intensity 0.0 = none; robotize 0 = off, 1 = every synthesis
+ * frame is rewritten with a centered zero phase, which locks the output
+ * pitch to sample_rate / hop and erases the input pitch contour.
  */
 typedef struct {
     float pitch_ratio;
     float formant_factor;
     float scramble_intensity;
+    int robotize;
 } vc_rt_params_t;
 
 /**
@@ -50,9 +53,10 @@ void vc_rt_reset(vc_rt_ctx_t *c);
  * @param user Must be a vc_rt_ctx_t* created with matching nbins.
  *
  * Applies frequency-domain pitch shift (constant rate), formant
- * envelope scaling, and spectral scrambling, then rewrites mag/phase
- * to the synthesis spectrum. Accepted ranges: pitch ratio [0.25, 4],
- * formant factor [0.3, 3], scramble intensity [0, 1].
+ * envelope scaling, spectral scrambling, and optional robotization,
+ * then rewrites mag/phase to the synthesis spectrum. Accepted ranges:
+ * pitch ratio [0.25, 4], formant factor [0.3, 3], scramble intensity
+ * [0, 1], robotize 0 or 1.
  */
 void vc_rt_transform(float *mag, float *phase, size_t nbins,
                      uint32_t sample_rate, size_t hop, void *user);

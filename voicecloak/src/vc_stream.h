@@ -36,6 +36,37 @@ typedef void (*vc_spectral_fn)(float *mag, float *phase, size_t nbins,
                                uint32_t sample_rate, size_t hop,
                                void *user);
 
+#define VC_SPECTRAL_CHAIN_MAX 4U
+
+/**
+ * @brief Ordered list of spectral stages run as one vc_spectral_fn.
+ *
+ * Each stage keeps its own state in its user pointer; the chain only
+ * sequences them on the same magnitude/phase buffers.
+ */
+typedef struct {
+    vc_spectral_fn fns[VC_SPECTRAL_CHAIN_MAX];
+    void *users[VC_SPECTRAL_CHAIN_MAX];
+    size_t count;
+} vc_spectral_chain_t;
+
+/** @brief Empty a chain. NULL-safe. */
+void vc_spectral_chain_init(vc_spectral_chain_t *chain);
+
+/**
+ * @brief Append a stage.
+ * @return 0 on success; -1 for NULL chain/fn or a full chain (unchanged).
+ */
+int vc_spectral_chain_add(vc_spectral_chain_t *chain, vc_spectral_fn fn,
+                          void *user);
+
+/**
+ * @brief vc_spectral_fn that runs every stage of the chain in @p user.
+ *        A NULL chain leaves the spectrum untouched.
+ */
+void vc_spectral_chain_run(float *mag, float *phase, size_t nbins,
+                           uint32_t sample_rate, size_t hop, void *user);
+
 /**
  * @brief Create a streaming engine.
  * @param fft_size  Power of two.

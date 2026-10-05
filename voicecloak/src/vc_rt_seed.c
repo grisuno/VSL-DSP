@@ -34,5 +34,6 @@ int vc_rt_derive(const unsigned char *pitch_seed,
     out->pitch_ratio        = vc_rt_semitones_to_ratio(pitch_semitones);
     out->formant_factor     = formant_factor;
     out->scramble_intensity = scramble_intensity;
+    out->robotize           = 0;
     return 0;
 }

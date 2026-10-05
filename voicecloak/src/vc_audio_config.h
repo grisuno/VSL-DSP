@@ -16,5 +16,6 @@
 #define VC_LEVEL_MIN_TIME_MS 0.1f
 #define VC_LEVEL_MAX_TIME_MS 5000.0f
 #define VC_LEVEL_RMS_FLOOR 1e-12f
+#define VC_LEVEL_MAX_SATURATION_DRIVE 8.0f
 
 #endif

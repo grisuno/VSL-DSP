@@ -85,7 +85,7 @@ static void test_create_validation(void **state) {
 
 static void test_transform_parameter_validation(void **state) {
     (void)state;
-    vc_rt_params_t params = { 1.0f, 1.0f, 0.0f };
+    vc_rt_params_t params = { 1.0f, 1.0f, 0.0f, 0 };
     vc_rt_ctx_t *ctx = vc_rt_create(513U, params);
     assert_non_null(ctx);
     vc_rt_destroy(ctx);
@@ -98,6 +98,15 @@ static void test_transform_parameter_validation(void **state) {
     params.formant_factor = 1.0f;
     params.scramble_intensity = 1.1f;
     assert_null(vc_rt_create(513U, params));
+    params.scramble_intensity = 0.0f;
+    params.robotize = 2;
+    assert_null(vc_rt_create(513U, params));
+    params.robotize = -1;
+    assert_null(vc_rt_create(513U, params));
+    params.robotize = 1;
+    ctx = vc_rt_create(513U, params);
+    assert_non_null(ctx);
+    vc_rt_destroy(ctx);
 }
 
 static void test_passthrough_identity(void **state) {
@@ -136,6 +145,98 @@ static void test_passthrough_identity(void **state) {
     free(in); free(out);
 }
 
+static float normalized_autocorrelation(const float *x, size_t n,
+                                        size_t lag) {
+    double cross = 0.0, energy_a = 0.0, energy_b = 0.0;
+    size_t i;
+    for (i = 0; i + lag < n; ++i) {
+        cross += (double)x[i] * (double)x[i + lag];
+        energy_a += (double)x[i] * (double)x[i];
+        energy_b += (double)x[i + lag] * (double)x[i + lag];
+    }
+    if (energy_a <= 0.0 || energy_b <= 0.0) return 0.0f;
+    return (float)(cross / sqrt(energy_a * energy_b));
+}
+
+static void test_robotize_locks_pitch_to_frame_rate(void **state) {
+    (void)state;
+    const size_t fft = 1024U, hop = 256U, n = 24000U;
+    float *in = (float *)malloc(n * sizeof(float));
+    float *out = (float *)malloc(n * sizeof(float));
+    assert_non_null(in);
+    assert_non_null(out);
+    float f = 1000.0f, a = 0.5f;
+    gen_sines(in, n, SR, &f, &a, 1);
+
+    vc_stream_t *st = vc_stream_create(fft, hop, SR);
+    vc_rt_params_t p = { 1.0f, 1.0f, 0.0f, 1 };
+    vc_rt_ctx_t *ctx = vc_rt_create(fft / 2 + 1, p);
+    assert_non_null(st);
+    assert_non_null(ctx);
+    run_stream(st, in, out, n, vc_rt_transform, ctx);
+
+    size_t skip = vc_stream_latency_samples(st) + fft;
+    assert_true(normalized_autocorrelation(in + skip, n - skip, hop) < 0.0f);
+    assert_true(normalized_autocorrelation(out + skip, n - skip, hop) > 0.9f);
+    assert_true(rms(out + skip, n - skip) > 0.01f);
+    size_t i;
+    for (i = 0; i < n; ++i) assert_true(isfinite(out[i]));
+
+    vc_rt_destroy(ctx);
+    vc_stream_destroy(st);
+    free(in);
+    free(out);
+}
+
+static void scale_by_two(float *mag, float *phase, size_t nbins,
+                         uint32_t sample_rate, size_t hop, void *user) {
+    (void)phase; (void)sample_rate; (void)hop;
+    size_t *calls = (size_t *)user;
+    calls[0] = calls[0] * 10U + 1U;
+    size_t b;
+    for (b = 0; b < nbins; ++b) mag[b] *= 2.0f;
+}
+
+static void add_one(float *mag, float *phase, size_t nbins,
+                    uint32_t sample_rate, size_t hop, void *user) {
+    (void)phase; (void)sample_rate; (void)hop;
+    size_t *calls = (size_t *)user;
+    calls[0] = calls[0] * 10U + 2U;
+    size_t b;
+    for (b = 0; b < nbins; ++b) mag[b] += 1.0f;
+}
+
+static void test_spectral_chain_runs_in_order(void **state) {
+    (void)state;
+    vc_spectral_chain_t chain;
+    vc_spectral_chain_init(&chain);
+    size_t calls = 0U;
+    assert_int_equal(vc_spectral_chain_add(&chain, scale_by_two, &calls), 0);
+    assert_int_equal(vc_spectral_chain_add(&chain, add_one, &calls), 0);
+    float mag[3] = {1.0f, 2.0f, 3.0f};
+    float phase[3] = {0.0f, 0.0f, 0.0f};
+    vc_spectral_chain_run(mag, phase, 3U, SR, 256U, &chain);
+    assert_int_equal((int)calls, 12);
+    assert_float_equal(mag[0], 3.0f, 0.0f);
+    assert_float_equal(mag[2], 7.0f, 0.0f);
+}
+
+static void test_spectral_chain_rejects_null_and_overflow(void **state) {
+    (void)state;
+    vc_spectral_chain_t chain;
+    vc_spectral_chain_init(&chain);
+    size_t calls = 0U, i;
+    assert_int_not_equal(vc_spectral_chain_add(&chain, NULL, &calls), 0);
+    assert_int_not_equal(vc_spectral_chain_add(NULL, add_one, &calls), 0);
+    for (i = 0; i < VC_SPECTRAL_CHAIN_MAX; ++i)
+        assert_int_equal(vc_spectral_chain_add(&chain, add_one, &calls), 0);
+    assert_int_not_equal(vc_spectral_chain_add(&chain, add_one, &calls), 0);
+    assert_int_equal((int)chain.count, (int)VC_SPECTRAL_CHAIN_MAX);
+    float mag[2] = {0.0f, 0.0f}, phase[2] = {0.0f, 0.0f};
+    vc_spectral_chain_run(mag, phase, 2U, SR, 256U, NULL);
+    assert_float_equal(mag[0], 0.0f, 0.0f);
+}
+
 static void run_pitch(float in_freq, float ratio, float expect_freq) {
     size_t n = 24000;
     float *in = (float *)malloc(n * sizeof(float));
@@ -145,7 +246,7 @@ static void run_pitch(float in_freq, float ratio, float expect_freq) {
 
     vc_stream_t *st = vc_stream_create(2048, 512, SR);
     assert_non_null(st);
-    vc_rt_params_t p = { ratio, 1.0f, 0.0f };
+    vc_rt_params_t p = { ratio, 1.0f, 0.0f, 0 };
     vc_rt_ctx_t *ctx = vc_rt_create(2048 / 2 + 1, p);
     assert_non_null(ctx);
 
@@ -182,7 +283,7 @@ static void test_bounded_output(void **state) {
 
     vc_stream_t *st = vc_stream_create(1024, 256, SR);
     assert_non_null(st);
-    vc_rt_params_t p = { vc_rt_semitones_to_ratio(-8.0f), 1.6f, 0.9f };
+    vc_rt_params_t p = { vc_rt_semitones_to_ratio(-8.0f), 1.6f, 0.9f, 0 };
     vc_rt_ctx_t *ctx = vc_rt_create(1024 / 2 + 1, p);
     assert_non_null(ctx);
 
@@ -215,7 +316,7 @@ static void run_level(float semis, float formant, float scramble,
 
     vc_stream_t *st = vc_stream_create(1024, 256, SR);
     assert_non_null(st);
-    vc_rt_params_t p = { vc_rt_semitones_to_ratio(semis), formant, scramble };
+    vc_rt_params_t p = { vc_rt_semitones_to_ratio(semis), formant, scramble, 0 };
     vc_rt_ctx_t *ctx = vc_rt_create(1024 / 2 + 1, p);
     assert_non_null(ctx);
 
@@ -261,7 +362,7 @@ static void test_level_preserved_witness(void **state) {
 
     vc_stream_t *st = vc_stream_create(1024, 256, SR);
     assert_non_null(st);
-    vc_rt_params_t p = { vc_rt_semitones_to_ratio(-8.0f), 0.5f, 1.0f };
+    vc_rt_params_t p = { vc_rt_semitones_to_ratio(-8.0f), 0.5f, 1.0f, 0 };
     vc_rt_ctx_t *ctx = vc_rt_create(1024 / 2 + 1, p);
     assert_non_null(ctx);
 
@@ -288,6 +389,9 @@ int main(void) {
         cmocka_unit_test(test_bounded_output),
         cmocka_unit_test(test_level_preserved_fixed),
         cmocka_unit_test(test_level_preserved_witness),
+        cmocka_unit_test(test_robotize_locks_pitch_to_frame_rate),
+        cmocka_unit_test(test_spectral_chain_runs_in_order),
+        cmocka_unit_test(test_spectral_chain_rejects_null_and_overflow),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

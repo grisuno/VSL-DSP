@@ -46,8 +46,10 @@ HID control plane. Adding a new product ID is a one-line change in
   anonymizer with RSA-4096 and spectral scrambling for witness-style
   voice protection. Works with any WAV recording, and in **real time**
   (`voicecloak-rt`) using the AudioBox VSL as a live ALSA interface,
-  with smoothed RMS gain, a peak limiter, and robot/monster/woman/man/
-  space/underwater/church/phaser presets for OBS.
+  with noise reduction (learned noise print), a presence equalizer,
+  smoothed RMS gain, soft saturation, a peak limiter, and
+  robot/monster/woman/man/space/underwater/church/phaser presets for
+  OBS.
 
 ## Requirements
 
@@ -170,12 +172,22 @@ kernel detector and `snd-usb-audio` are unaffected:
 ./src/voicecloak-rt list                       # find the AudioBox PCM
 ./src/voicecloak-rt live -D plughw:CARD=VSL -P plughw:CARD=VSL --semitones 7
 make -C voicecloak pulse-robot                 # route processed mic into OBS
+make -C voicecloak pulse-robot VC_NOISE_SAVE=room.vcn     # learn the noise print once
+make -C voicecloak pulse-robot VC_NOISE_PROFILE=room.vcn  # reuse it, no pause
 ```
 
-The live chain is phase vocoder -> named effect -> smoothed RMS gain
--> peak limiter. The gain stage compensates for the level lost to
-spectral scrambling (up to a bounded maximum boost) and the limiter
-keeps peaks under the configured ceiling instead of clipping. Named
+The live chain is noise reduction -> phase vocoder -> named effect ->
+presence equalizer -> smoothed RMS gain -> soft saturation -> peak
+limiter. Noise reduction learns a noise print while you stay silent
+for about 1.5 s at start (or loads a saved one), subtracts it from
+every frame, and gates frames that hold only noise, so the background
+hiss is not turned into a robot buzz and boosted by the AGC (about
+42 dB less noise in the unit tests). The gain stage compensates for
+the level lost to spectral scrambling (up to a bounded maximum boost)
+and the limiter keeps peaks under the configured ceiling instead of
+clipping. The `robot` profile robotizes the voice (pitch locked to
+`rate / hop`, 187.5 Hz by default) and adds a metallic comb, a light
+ring modulation, a presence boost, and soft saturation. Named
 profiles (`robot`, `monster`, `woman`, `man`, `space`, `underwater`,
 `church`, `phaser`) are selectable from the CLI with `--preset` and
 from the Makefile with `VC_PRESET=` or the `pulse-<preset>` and
@@ -183,8 +195,9 @@ from the Makefile with `VC_PRESET=` or the `pulse-<preset>` and
 `+12 dB` maximum gain, `-1 dBFS` ceiling.
 
 See **[`voicecloak/README.md`](voicecloak/README.md)** for full
-documentation, including the real-time engine, the level controls,
-and all `voicecloak-rt` options.
+documentation, including the real-time engine, the robot voice, noise
+reduction, the level controls, and all `voicecloak-rt` options and
+Make variables.
 
 ## Adding a new product ID
 
@@ -232,21 +245,25 @@ VSL-DSP/
 │   │   ├── vc_crypto.c            RSA-4096 + HKDF + AES-CTR
 │   │   ├── vc_dsp.c               pitch shift, formant scaling, spectral scramble
 │   │   ├── vc_cli.c               offline CLI: keygen, cloak, info
-│   │   ├── vc_stream.c            real-time streaming STFT engine (constant rate)
-│   │   ├── vc_rt.c                real-time phase-vocoder transform
+│   │   ├── vc_stream.c            real-time streaming STFT engine + spectral chain
+│   │   ├── vc_denoise.c           noise print, spectral subtraction, spectral gate
+│   │   ├── vc_rt.c                real-time phase vocoder (pitch/formant/scramble/robotize)
 │   │   ├── vc_rt_seed.c           seed-based parameter derivation
-│   │   ├── vc_effects.c           ring mod, filters, delay/reverb, phaser
+│   │   ├── vc_effects.c           ring mod, metallic comb, filters, delay/reverb, phaser
+│   │   ├── vc_eq.c                high-pass + presence peaking equalizer
 │   │   ├── vc_presets.c           named voice/effect profiles
-│   │   ├── vc_level.c             smoothed RMS gain and peak limiter
+│   │   ├── vc_level.c             smoothed RMS gain, soft saturation, peak limiter
 │   │   ├── vc_audio_config.h      live sample-rate and inter-stage bounds
 │   │   ├── vc_alsa.c              ALSA capture/playback for the AudioBox
 │   │   └── vc_rt_cli.c            real-time CLI: list, selftest, live
 │   └── tests/
 │       ├── test_vc_fft.c          FFT unit tests (3 scenarios)
-│       ├── test_vc_stream.c       streaming engine tests (8 scenarios)
-│       ├── test_vc_level.c        RMS gain and limiter tests (6 scenarios)
-│       ├── test_vc_effects.c      stateful effect tests (6 scenarios)
-│       └── test_vc_presets.c      presets and live chain tests (6 scenarios)
+│       ├── test_vc_stream.c       streaming, robotize, chain tests (11 scenarios)
+│       ├── test_vc_level.c        RMS gain, saturation, limiter tests (9 scenarios)
+│       ├── test_vc_effects.c      stateful effect tests (10 scenarios)
+│       ├── test_vc_eq.c           equalizer tests (5 scenarios)
+│       ├── test_vc_denoise.c      noise reduction tests (9 scenarios)
+│       └── test_vc_presets.c      presets and live chain tests (8 scenarios)
 ├── legacy/                         historical artefacts (Python PoC, captures)
 └── docs/                           additional documentation
 ```

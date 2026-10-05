@@ -133,7 +133,8 @@ For every module, the cycle is inviolable and **in this order**:
      "TBD" cell must be resolved with hardware or disassembly
      evidence before the contract is closed.
    - VoiceCloak live chain: the full order
-     (transform -> effect -> RMS gain -> limiter -> PCM) is exercised
+     (denoise -> transform -> effect -> EQ -> RMS gain -> saturation ->
+     limiter -> PCM) is exercised
      in a unit test over real blocks, not only stage by stage.
 6. **Fuzzing** — every path that takes external input is fuzzed:
    the HID report parser and the DSP packet path received from
@@ -170,14 +171,18 @@ the buffer and writes; the math is already done and tested above.
 | Wrappers                 | `extern "C"`                                              | Prepared for future C++ bindings without breaking the C API.                                       |
 | Protocol                 | USB-HID, 64 byte packet                                   | Confirmed from the disassembly (`0x40` in `FUN_00412345`).                                          |
 | VoiceCloak real-time     | Pure C + ALSA (`libasound`)                              | Constant-rate streaming phase vocoder (`vc_stream`, `vc_rt`) over the AudioBox as a plain ALSA device. The kernel module is untouched. |
-| VoiceCloak level control | Pure C (`vc_level`)                                       | Smoothed RMS gain plus peak limiter, in place after the spectral stages.                             |
+| VoiceCloak noise reduction | Pure C (`vc_denoise`, `vc_spectral_chain_t`)          | Noise print spectral subtraction + spectral gate before the phase vocoder. |
+| VoiceCloak level control | Pure C (`vc_eq`, `vc_level`)                              | Presence EQ, smoothed RMS gain, optional soft saturation, and peak limiter, in place after the spectral stages. |
 | VoiceCloak effects       | Pure C (`vc_effects`, `vc_presets`)                      | Stateful sample-domain effects behind a single named-preset table.                                  |
 
 ### VoiceCloak real-time signal chain (source of truth)
 
 The live path is a strict order, each stage owning its own state:
-`vc_stream` + `vc_rt` (phase vocoder) -> `vc_effects` (named profile)
--> `vc_level` (smoothed RMS gain, then peak limiter) -> PCM
+`vc_stream` running the spectral chain `vc_denoise` (optional noise
+print subtraction + spectral gate) -> `vc_rt` (phase vocoder), then
+`vc_effects` (named profile)
+-> `vc_eq` (high-pass + presence peak) -> `vc_level` (smoothed RMS
+gain, optional soft saturation, then peak limiter) -> PCM
 conversion in `vc_alsa`. Stateful stages are created once per session;
 no allocation happens per ALSA period. Any stage that rejects a block
 silences it and continues (fail closed), never passing bad samples on.
@@ -187,10 +192,26 @@ silences it and continues (fail closed), never passing bad samples on.
   release 250 ms, ceiling -1 dBFS, limiter release 50 ms.
 - **Named presets** (`vc_presets.c`, the only place preset values live):
   `robot`, `monster`, `woman`, `man`, `space`, `underwater`, `church`,
-  `phaser`. Each entry resolves a `vc_rt_params_t` triple plus one
-  `vc_effects_params_t` (ring modulation, low-pass, modulated delay,
-  comb reverb, or modulated all-pass phaser). Values are creative
-  starting points, not measured vocal characteristics.
+  `phaser`. Each entry resolves a `vc_rt_params_t` (pitch, formant,
+  scramble, robotize), one `vc_effects_params_t` (ring modulation,
+  metallic comb, low-pass, modulated delay, comb reverb, or modulated
+  all-pass phaser), a `vc_eq_params_t`, and a saturation drive. Values
+  are creative starting points, not measured vocal characteristics.
+- **Robot preset**: phase-reset robotization (pitch = rate / hop, 187.5
+  Hz at 48 kHz / hop 256), scramble 0, 7 ms metallic comb (feedback
+  0.6) plus 0.3 soft-square ring modulation at 93.75 Hz, 100 Hz
+  high-pass, +5 dB presence at 3 kHz, saturation drive 2. `--drive`,
+  `--ring-amount`, `--ring-hz`, `--ring-wave` (Make: `VC_DRIVE`,
+  `VC_RING_*`, empty = preset value) override it.
+- **Noise reduction** (`vc_denoise.h`, product defaults): learns a
+  noise print for 1.5 s at start (output muted) or loads a text profile
+  (`VCNOISE 1 <rate> <nbins>`, max 2 MiB, strict parser, fuzzed);
+  power spectral subtraction (over-subtraction 2, floor -24 dB,
+  smoothing 0.5) plus a spectral gate relative to the profile (6 dB
+  threshold, 30 dB range, 3 dB hysteresis, 120 ms release). Runs before
+  `vc_rt` so noise is never robotized. CLI `--denoise` (off by
+  default); Make routes `VC_DENOISE=1` by default, `VC_NOISE_SAVE` /
+  `VC_NOISE_PROFILE` save and reuse a profile.
 - **Fail-closed bounds** (`vc_audio_config.h`): sample rate 8-384 kHz,
   inter-stage sample magnitude 16.0. Out-of-range or non-finite data is
   silenced, never amplified or clipped.
@@ -280,7 +301,7 @@ source of truth for its commands. Required headers: OpenSSL
 | Target                        | Effect                                                                 |
 | ----------------------------- | ---------------------------------------------------------------------- |
 | `make` / `make rt`            | Build `voicecloak` and `voicecloak-rt`.                               |
-| `make test`                   | Run all five CMocka suites (29 scenarios).                            |
+| `make test`                   | Run all seven CMocka suites (55 scenarios).                           |
 | `make asan`                   | Run the suites under AddressSanitizer + UBSan with leak detection.     |
 | `make pulse` / `make alsa`    | Live OBS routes (PulseAudio/PipeWire null sink, ALSA loopback).        |
 | `make pulse-<preset>`         | Preset shorthand for `pulse` (also `alsa-<preset>`).                  |
@@ -364,11 +385,13 @@ VSL-DSP/
 │   │   ├── vc_crypto.c            # RSA-4096, HKDF, AES-CTR PRNG
 │   │   ├── vc_dsp.c               # offline cloak pipeline
 │   │   ├── vc_stream.c            # constant-rate streaming engine
+│   │   ├── vc_denoise.c           # noise print subtraction + spectral gate
 │   │   ├── vc_rt.c                # real-time phase vocoder transform
 │   │   ├── vc_rt_seed.c           # seed-derived parameters
-│   │   ├── vc_effects.c           # ring mod, filter, delay/reverb, phaser
+│   │   ├── vc_effects.c           # ring mod, metallic comb, filter, delay/reverb, phaser
+│   │   ├── vc_eq.c                # high-pass + presence peaking EQ
 │   │   ├── vc_presets.c           # named voice/effect profiles
-│   │   ├── vc_level.c             # smoothed RMS gain + peak limiter
+│   │   ├── vc_level.c             # smoothed RMS gain + soft saturation + peak limiter
 │   │   ├── vc_audio_config.h      # live rate and inter-stage bounds
 │   │   ├── vc_alsa.c              # ALSA capture/playback orchestration
 │   │   ├── vc_cli.c               # offline CLI
@@ -378,6 +401,8 @@ VSL-DSP/
 │       ├── test_vc_stream.c
 │       ├── test_vc_level.c
 │       ├── test_vc_effects.c
+│       ├── test_vc_eq.c
+│       ├── test_vc_denoise.c
 │       └── test_vc_presets.c
 ├── .github/                       # issue and pull request templates
 └── legacy/                        # historical artefacts (see legacy/README.md)
@@ -420,8 +445,10 @@ test, never as verified.
 | Live RMS compensation                | Closed        | `vc_level`: target -18 dBFS, attack 10 ms, release 250 ms, boost bounded to +12 dB, silence never amplified. Full-chain test confirms witness attenuation is restored. |
 | Live peak limiter                   | Closed        | Ceiling -1 dBFS with immediate peak attenuation and 50 ms release; stays active when the AGC is disabled. Verified with AGC off.                                   |
 | Named realtime presets              | Closed        | `vc_presets.c` single table: `robot`, `monster`, `woman`, `man`, `space`, `underwater`, `church`, `phaser`, each resolving pitch/formant/scramble plus one effect.       |
-| Stateful realtime effects           | Closed        | `vc_effects`: ring modulation, low-pass, modulated delay, comb reverb, modulated all-pass phaser. Allocated once per session; fail closed on bad data.            |
-| VoiceCloak test suites              | Closed        | `make test`: five CMocka suites, 29 scenarios (3 FFT, 8 stream, 6 level, 6 effects, 6 presets). `make asan` clean with leak detection.                              |
+| Stateful realtime effects           | Closed        | `vc_effects`: ring modulation (sine/soft square), metallic comb, low-pass, modulated delay, comb reverb, modulated all-pass phaser. Allocated once per session; fail closed on bad data. |
+| Live noise reduction                | Closed        | `vc_denoise`: noise print learning or profile file, spectral subtraction, spectral gate; chained before `vc_rt`. Tests: -42 dB on stationary noise and on robot buzz, voice level kept. Profile parser fuzzed (300k inputs), CLI fuzzed, ASan clean. Listening check pending on hardware. |
+| Robot voice clarity                 | Closed        | `vc_rt` robotize, `vc_eq` (RBJ high-pass + presence), `vc_level` soft saturation. Robot chain test: within ceiling, >= 2 dB above the AGC target. ASan clean; DSP and CLI fuzzed (4000 random configs, 300 argument sets). Listening check pending on hardware. |
+| VoiceCloak test suites              | Closed        | `make test`: seven CMocka suites, 55 scenarios (3 FFT, 11 stream, 9 level, 10 effects, 5 EQ, 9 denoise, 8 presets). `make asan` clean with leak detection.        |
 | CLI argument validation             | Closed        | Strict float parsing; out-of-range pitch/formant/scramble and unknown presets fail closed. Fuzzed with 150 arbitrary argument strings plus out-of-range values.    |
 | Report ID library                    | Blocker #2    | `buf[0]` before `FUN_00412345`. Working hypothesis `0x06` from legacy capture, not yet verified in Ghidra.                                                     |
 | Endianness                           | Blocker #3    | Verify bit shifts in the disassembly.                                                                                                                          |
@@ -478,6 +505,18 @@ test, never as verified.
   `asan`, preset routes (`pulse`/`alsa` plus `pulse-<preset>` /
   `alsa-<preset>` shorthands) and level variables. Spec extended in
   `spec/voicecloak_realtime.md`.
+- **Phase 3c** — VoiceCloak robot clarity and noise reduction.
+  `vc_rt` robotization (centered zero phase per frame, pitch =
+  rate / hop), `METALLIC` comb plus soft-square ring modulation in
+  `vc_effects`, `vc_eq` (RBJ high-pass + presence peak), soft
+  saturation in `vc_level`, and `vc_denoise` (noise print, spectral
+  subtraction, spectral gate, text profile files) chained before
+  `vc_rt` through `vc_spectral_chain_t`. Robot preset uses scramble 0,
+  EQ, and drive 2. New CLI flags (`--drive`, `--ring-*`, `--denoise`,
+  `--noise-*`) and Make variables (`VC_DRIVE`, `VC_RING_*`,
+  `VC_DENOISE`, `VC_NOISE_*`). 55 CMocka scenarios in seven suites,
+  ASan clean; DSP parameters, CLI arguments, and the profile parser
+  fuzzed. Listening check of the denoiser pending on hardware.
 
 ### 7.3 Roadmap to cross
 

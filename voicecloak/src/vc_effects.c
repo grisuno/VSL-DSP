@@ -13,6 +13,9 @@
 #define VC_REVERB_MIN_DECAY_SECONDS 0.1f
 #define VC_REVERB_MAX_DECAY_SECONDS 10.0f
 #define VC_REVERB_MAX_FEEDBACK 0.95f
+#define VC_METALLIC_MAX_DELAY_MS 50.0f
+#define VC_METALLIC_MAX_FEEDBACK 0.9f
+#define VC_RING_SQUARE_SHARPNESS 4.0
 
 typedef struct {
     float *buffer;
@@ -35,7 +38,8 @@ struct vc_effects_s {
 };
 
 static int finite_params(const vc_effects_params_t *p) {
-    if (!p || !isfinite(p->amount) || !isfinite(p->rate_hz) ||
+    if (!p || !isfinite(p->amount) || !isfinite(p->ring_amount) ||
+        !isfinite(p->rate_hz) ||
         !isfinite(p->low_hz) || !isfinite(p->high_hz) ||
         !isfinite(p->cutoff_hz) || !isfinite(p->delay_ms) ||
         !isfinite(p->depth_ms) || !isfinite(p->feedback) ||
@@ -44,6 +48,14 @@ static int finite_params(const vc_effects_params_t *p) {
     for (i = 0; i < VC_REVERB_COMB_COUNT; ++i)
         if (!isfinite(p->comb_delay_ms[i])) return 0;
     return 1;
+}
+
+static int ring_valid(const vc_effects_params_t *p, float nyquist) {
+    if (p->ring_amount < 0.0f || p->ring_amount > 1.0f) return 0;
+    if (p->waveform != VC_RING_WAVE_SINE &&
+        p->waveform != VC_RING_WAVE_SQUARE) return 0;
+    return p->ring_amount == 0.0f ||
+           (p->rate_hz > 0.0f && p->rate_hz < nyquist);
 }
 
 static int params_valid(uint32_t sample_rate, const vc_effects_params_t *p) {
@@ -56,7 +68,13 @@ static int params_valid(uint32_t sample_rate, const vc_effects_params_t *p) {
         case VC_EFFECT_NONE:
             return 1;
         case VC_EFFECT_RING_MOD:
-            return p->rate_hz > 0.0f && p->rate_hz < nyquist;
+            return ring_valid(p, nyquist);
+        case VC_EFFECT_METALLIC:
+            return ring_valid(p, nyquist) &&
+                   p->delay_ms > 0.0f &&
+                   p->delay_ms <= VC_METALLIC_MAX_DELAY_MS &&
+                   p->feedback >= 0.0f &&
+                   p->feedback <= VC_METALLIC_MAX_FEEDBACK;
         case VC_EFFECT_UNDERWATER:
             return p->cutoff_hz > 0.0f && p->cutoff_hz < nyquist;
         case VC_EFFECT_PHASER:
@@ -90,6 +108,16 @@ static size_t samples_from_ms(float milliseconds, uint32_t sample_rate) {
     return (size_t)count;
 }
 
+static int alloc_comb(vc_comb_t *comb, float milliseconds,
+                      uint32_t sample_rate) {
+    size_t length = samples_from_ms(milliseconds, sample_rate);
+    if (length == 0U) return -1;
+    comb->buffer = (float *)calloc(length, sizeof(float));
+    if (!comb->buffer) return -1;
+    comb->length = length;
+    return 0;
+}
+
 static void free_combs(vc_effects_t *fx) {
     size_t i;
     for (i = 0; i < VC_REVERB_COMB_COUNT; ++i) {
@@ -119,22 +147,22 @@ vc_effects_t *vc_effects_create(uint32_t sample_rate,
             vc_effects_destroy(fx);
             return NULL;
         }
+    } else if (params->kind == VC_EFFECT_METALLIC) {
+        if (alloc_comb(&fx->combs[0], params->delay_ms, sample_rate) != 0) {
+            vc_effects_destroy(fx);
+            return NULL;
+        }
+        fx->combs[0].feedback = params->feedback;
     } else if (params->kind == VC_EFFECT_REVERB) {
         size_t i;
         for (i = 0; i < VC_REVERB_COMB_COUNT; ++i) {
-            size_t length = samples_from_ms(params->comb_delay_ms[i],
-                                            sample_rate);
-            if (length == 0U) {
+            if (alloc_comb(&fx->combs[i], params->comb_delay_ms[i],
+                           sample_rate) != 0) {
                 vc_effects_destroy(fx);
                 return NULL;
             }
-            fx->combs[i].buffer = (float *)calloc(length, sizeof(float));
-            if (!fx->combs[i].buffer) {
-                vc_effects_destroy(fx);
-                return NULL;
-            }
-            fx->combs[i].length = length;
-            double delay_seconds = (double)length / (double)sample_rate;
+            double delay_seconds = (double)fx->combs[i].length /
+                                   (double)sample_rate;
             fx->combs[i].feedback = (float)pow(
                 10.0, -3.0 * delay_seconds / (double)params->decay_seconds);
         }
@@ -215,6 +243,30 @@ static float process_phaser(vc_effects_t *fx, float input, double lfo) {
     return input * (1.0f - p->amount) + phased * p->amount;
 }
 
+/* Soft square: a hard edge multiplies the voice by infinitely many
+ * harmonics that alias; tanh(k sin) keeps the square character with a
+ * bounded edge slope. */
+static float ring_modulate(const vc_effects_t *fx, float input) {
+    const vc_effects_params_t *p = &fx->params;
+    if (p->ring_amount == 0.0f) return input;
+    double carrier = sin(fx->phase);
+    if (p->waveform == VC_RING_WAVE_SQUARE)
+        carrier = tanh(VC_RING_SQUARE_SHARPNESS * carrier) /
+                  tanh(VC_RING_SQUARE_SHARPNESS);
+    return input * ((1.0f - p->ring_amount) +
+                    p->ring_amount * (float)carrier);
+}
+
+static float process_metallic(vc_effects_t *fx, float input) {
+    vc_comb_t *comb = &fx->combs[0];
+    float resonant = input + comb->feedback * comb->buffer[comb->cursor];
+    comb->buffer[comb->cursor] = resonant;
+    comb->cursor = (comb->cursor + 1U) % comb->length;
+    float mixed = input * (1.0f - fx->params.amount) +
+                  resonant * fx->params.amount;
+    return ring_modulate(fx, mixed);
+}
+
 static float process_one(vc_effects_t *fx, float input) {
     const vc_effects_params_t *p = &fx->params;
     double lfo = sin(fx->phase);
@@ -222,11 +274,12 @@ static float process_one(vc_effects_t *fx, float input) {
     switch (p->kind) {
         case VC_EFFECT_NONE:
             break;
-        case VC_EFFECT_RING_MOD: {
-            float carrier = (float)sin(fx->phase);
-            output = input * ((1.0f - p->amount) + p->amount * carrier);
+        case VC_EFFECT_RING_MOD:
+            output = ring_modulate(fx, input);
             break;
-        }
+        case VC_EFFECT_METALLIC:
+            output = process_metallic(fx, input);
+            break;
         case VC_EFFECT_UNDERWATER: {
             float alpha = 1.0f - expf(-2.0f * (float)M_PI * p->cutoff_hz /
                                       (float)fx->sample_rate);

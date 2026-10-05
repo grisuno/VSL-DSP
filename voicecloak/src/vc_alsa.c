@@ -196,6 +196,7 @@ int vc_alsa_run(const vc_alsa_cfg_t *cfg) {
     float *mono_in = NULL, *mono_out = NULL;
     vc_stream_t *st = NULL;
     vc_effects_t *effects = NULL;
+    vc_eq_t *eq = NULL;
     vc_level_t *level = NULL;
 
     if (open_stream(&cap, cfg->capture_dev, SND_PCM_STREAM_CAPTURE,
@@ -221,9 +222,10 @@ int vc_alsa_run(const vc_alsa_cfg_t *cfg) {
         goto done;
     }
     effects = vc_effects_create(neg_rate, &cfg->effect_params);
+    eq = vc_eq_create(neg_rate, &cfg->eq_params);
     level = vc_level_create(neg_rate, &cfg->level_config);
-    if (!effects || !level) {
-        fprintf(stderr, "vc_alsa: invalid effect/level configuration\n");
+    if (!effects || !eq || !level) {
+        fprintf(stderr, "vc_alsa: invalid effect/eq/level configuration\n");
         goto done;
     }
 
@@ -272,6 +274,10 @@ int vc_alsa_run(const vc_alsa_cfg_t *cfg) {
             fprintf(stderr, "vc_alsa: effect rejected block; output silenced\n");
             memset(mono_out, 0, (size_t)frames * sizeof(float));
         }
+        if (vc_eq_process(eq, mono_out, (size_t)frames) != 0) {
+            fprintf(stderr, "vc_alsa: eq stage rejected block; output silenced\n");
+            memset(mono_out, 0, (size_t)frames * sizeof(float));
+        }
         if (vc_level_process(level, mono_out, (size_t)frames) != 0) {
             fprintf(stderr, "vc_alsa: level stage rejected block; output silenced\n");
             memset(mono_out, 0, (size_t)frames * sizeof(float));
@@ -303,6 +309,7 @@ done:
     if (cap.pcm)  { snd_pcm_drop(cap.pcm); snd_pcm_close(cap.pcm); }
     if (play.pcm) { snd_pcm_drain(play.pcm); snd_pcm_close(play.pcm); }
     vc_effects_destroy(effects);
+    vc_eq_destroy(eq);
     vc_level_destroy(level);
     vc_stream_destroy(st);
     free(raw_in); free(raw_out); free(mono_in); free(mono_out);

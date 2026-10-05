@@ -174,3 +174,25 @@ int vc_stream_process(vc_stream_t *st,
     }
     return 0;
 }
+
+void vc_spectral_chain_init(vc_spectral_chain_t *chain) {
+    if (chain) memset(chain, 0, sizeof(*chain));
+}
+
+int vc_spectral_chain_add(vc_spectral_chain_t *chain, vc_spectral_fn fn,
+                          void *user) {
+    if (!chain || !fn || chain->count >= VC_SPECTRAL_CHAIN_MAX) return -1;
+    chain->fns[chain->count] = fn;
+    chain->users[chain->count] = user;
+    chain->count++;
+    return 0;
+}
+
+void vc_spectral_chain_run(float *mag, float *phase, size_t nbins,
+                           uint32_t sample_rate, size_t hop, void *user) {
+    vc_spectral_chain_t *chain = (vc_spectral_chain_t *)user;
+    if (!chain) return;
+    size_t i;
+    for (i = 0; i < chain->count && i < VC_SPECTRAL_CHAIN_MAX; ++i)
+        chain->fns[i](mag, phase, nbins, sample_rate, hop, chain->users[i]);
+}

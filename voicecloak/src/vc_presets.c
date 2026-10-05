@@ -7,7 +7,10 @@ typedef struct {
     float semitones;
     float formant_factor;
     float scramble_intensity;
+    int robotize;
     vc_effects_params_t effects;
+    vc_eq_params_t eq;
+    float saturation_drive;
 } vc_preset_definition_t;
 
 #define NO_EFFECT { .kind = VC_EFFECT_NONE }
@@ -17,10 +20,24 @@ static const vc_preset_definition_t presets[] = {
         .name = "robot",
         .semitones = 0.0f,
         .formant_factor = 1.0f,
-        .scramble_intensity = 0.15f,
+        .scramble_intensity = 0.0f,
+        .robotize = 1,
         .effects = {
-            .kind = VC_EFFECT_RING_MOD, .amount = 0.85f, .rate_hz = 42.0f
-        }
+            .kind = VC_EFFECT_METALLIC,
+            .amount = 0.45f,
+            .delay_ms = 7.0f,
+            .feedback = 0.6f,
+            .ring_amount = 0.3f,
+            .rate_hz = 93.75f,
+            .waveform = VC_RING_WAVE_SQUARE
+        },
+        .eq = {
+            .highpass_hz = 100.0f,
+            .presence_hz = 3000.0f,
+            .presence_gain_db = 5.0f,
+            .presence_q = 1.0f
+        },
+        .saturation_drive = 2.0f
     },
     {
         .name = "monster",
@@ -105,7 +122,10 @@ int vc_preset_lookup(const char *name, vc_preset_t *out) {
                 presets[i].semitones);
             out->cloak.formant_factor = presets[i].formant_factor;
             out->cloak.scramble_intensity = presets[i].scramble_intensity;
+            out->cloak.robotize = presets[i].robotize;
             out->effects = presets[i].effects;
+            out->eq = presets[i].eq;
+            out->saturation_drive = presets[i].saturation_drive;
             return 0;
         }
     }

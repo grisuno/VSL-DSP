@@ -37,7 +37,8 @@ vc_rt_ctx_t *vc_rt_create(size_t nbins, vc_rt_params_t params) {
         params.formant_factor < VC_RT_MIN_FORMANT_FACTOR ||
         params.formant_factor > VC_RT_MAX_FORMANT_FACTOR ||
         params.scramble_intensity < 0.0f ||
-        params.scramble_intensity > VC_RT_MAX_SCRAMBLE_INTENSITY)
+        params.scramble_intensity > VC_RT_MAX_SCRAMBLE_INTENSITY ||
+        (params.robotize != 0 && params.robotize != 1))
         return NULL;
     vc_rt_ctx_t *c = (vc_rt_ctx_t *)calloc(1, sizeof(*c));
     if (!c) return NULL;
@@ -346,6 +347,11 @@ void vc_rt_transform(float *mag, float *phase, size_t nbins,
             double r = (double)(h & 0x7FFFFF) / 8388608.0;
             out_phase += r * (double)intensity * 2.0 * M_PI;
         }
+        /* Robotization: linear phase pi*b centers a zero-phase pulse in
+         * the frame, where the Hann window peaks (phase 0 would put it
+         * at the frame edges, where the window silences it). */
+        if (c->p.robotize)
+            out_phase = (b & 1U) ? M_PI : 0.0;
         mag[b]   = c->syn_mag[b];
         phase[b] = (float)out_phase;
     }

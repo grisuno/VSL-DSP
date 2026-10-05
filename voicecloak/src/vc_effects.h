@@ -18,12 +18,28 @@ typedef enum {
     VC_EFFECT_UNDERWATER,
     VC_EFFECT_PHASER,
     VC_EFFECT_SPACE,
-    VC_EFFECT_REVERB
+    VC_EFFECT_REVERB,
+    VC_EFFECT_METALLIC
 } vc_effect_kind_t;
 
+/** @brief Ring-modulation carrier shape (SQUARE is a soft square). */
+typedef enum {
+    VC_RING_WAVE_SINE = 0,
+    VC_RING_WAVE_SQUARE
+} vc_ring_waveform_t;
+
+/**
+ * @brief Effect selection and values (supplied by the preset table).
+ *
+ * RING_MOD reads ring_amount/rate_hz/waveform. METALLIC is a short
+ * feedback comb (delay_ms, feedback, wet mix amount) followed by the
+ * same optional ring modulation (ring_amount 0 disables it).
+ */
 typedef struct {
     vc_effect_kind_t kind;
     float amount;
+    float ring_amount;
+    vc_ring_waveform_t waveform;
     float rate_hz;
     float low_hz;
     float high_hz;

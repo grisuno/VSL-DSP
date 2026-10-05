@@ -2,16 +2,23 @@
 #define VC_PRESETS_H
 
 #include "vc_effects.h"
+#include "vc_eq.h"
 #include "vc_rt.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/**
+ * @brief Resolved preset: spectral transform, sample-domain effect,
+ *        equalizer, and the saturation drive for the level stage.
+ */
 typedef struct {
     const char *name;
     vc_rt_params_t cloak;
     vc_effects_params_t effects;
+    vc_eq_params_t eq;
+    float saturation_drive;
 } vc_preset_t;
 
 /**

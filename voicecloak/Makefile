@@ -16,7 +16,7 @@ BIN      := $(SRCDIR)/voicecloak
 
 RT_OBJS  := $(addprefix $(OBJDIR)/,vc_stream.o vc_rt.o vc_rt_seed.o \
             vc_alsa.o vc_rt_cli.o vc_fft.o vc_crypto.o vc_effects.o \
-            vc_presets.o vc_level.o)
+            vc_presets.o vc_level.o vc_eq.o vc_denoise.o)
 RT_BIN   := $(SRCDIR)/voicecloak-rt
 
 BINS     := $(BIN) $(RT_BIN)
@@ -34,8 +34,15 @@ LEVEL_TEST_BIN  := $(TESTDIR)/test_vc_level
 EFFECT_TEST_SRCS := $(TESTDIR)/test_vc_effects.c $(SRCDIR)/vc_effects.c
 EFFECT_TEST_BIN  := $(TESTDIR)/test_vc_effects
 
+EQ_TEST_SRCS := $(TESTDIR)/test_vc_eq.c $(SRCDIR)/vc_eq.c
+EQ_TEST_BIN  := $(TESTDIR)/test_vc_eq
+
+DENOISE_TEST_SRCS := $(TESTDIR)/test_vc_denoise.c $(SRCDIR)/vc_denoise.c \
+                     $(SRCDIR)/vc_stream.c $(SRCDIR)/vc_rt.c $(SRCDIR)/vc_fft.c
+DENOISE_TEST_BIN  := $(TESTDIR)/test_vc_denoise
+
 PRESET_TEST_SRCS := $(TESTDIR)/test_vc_presets.c $(SRCDIR)/vc_presets.c \
-                    $(SRCDIR)/vc_effects.c $(SRCDIR)/vc_level.c \
+                    $(SRCDIR)/vc_effects.c $(SRCDIR)/vc_level.c $(SRCDIR)/vc_eq.c \
                     $(SRCDIR)/vc_stream.c $(SRCDIR)/vc_rt.c $(SRCDIR)/vc_fft.c
 PRESET_TEST_BIN  := $(TESTDIR)/test_vc_presets
 
@@ -47,6 +54,7 @@ ASAN_FLAGS := -fsanitize=address,undefined -fno-omit-frame-pointer
 ASAN_TEST_DIR := $(OBJDIR)/asan
 ASAN_TEST_BINS := $(ASAN_TEST_DIR)/test_vc_fft $(ASAN_TEST_DIR)/test_vc_stream \
 	$(ASAN_TEST_DIR)/test_vc_level $(ASAN_TEST_DIR)/test_vc_effects \
+	$(ASAN_TEST_DIR)/test_vc_eq $(ASAN_TEST_DIR)/test_vc_denoise \
 	$(ASAN_TEST_DIR)/test_vc_presets
 
 # --- OBS streaming routes (single source of truth, override on CLI) ---
@@ -76,6 +84,19 @@ VC_ATTACK_MS ?= 10
 VC_RELEASE_MS ?= 250
 VC_LIMITER_RELEASE_MS ?= 50
 VC_AGC       ?= 1
+# Empty means "use the preset value"; set to forward --drive / --ring-*.
+VC_DRIVE       ?=
+VC_RING_AMOUNT ?=
+VC_RING_HZ     ?=
+VC_RING_WAVE   ?=
+# Noise reduction (on by default in routes): stay silent for
+# VC_NOISE_LEARN_MS at start, or load a print saved with VC_NOISE_SAVE.
+VC_DENOISE         ?= 1
+VC_NOISE_LEARN_MS  ?=
+VC_NOISE_PROFILE   ?=
+VC_NOISE_SAVE      ?=
+VC_NOISE_REDUCTION ?=
+VC_NOISE_GATE_RANGE_DB ?=
 # Headphone monitor: copy the transformed voice back to the AudioBox so it
 # is audible with the front MIXER knob towards PLAYBACK (OBS is unaffected).
 VC_MONITOR   ?= 1
@@ -84,6 +105,16 @@ PULSE_MONITOR_SINK ?= $(shell pactl list sinks short 2>/dev/null | awk '/AudioBo
 VC_PRESETS   := robot monster woman man space underwater church phaser
 VC_PRESET_ARGS = $(if $(filter cloak,$(VC_PRESET)),--mode $(VC_MODE),--preset $(VC_PRESET))
 VC_AGC_ARGS = $(if $(filter 0,$(VC_AGC)),--no-agc,)
+VC_TONE_ARGS = $(if $(VC_DRIVE),--drive $(VC_DRIVE),) \
+	$(if $(VC_RING_AMOUNT),--ring-amount $(VC_RING_AMOUNT),) \
+	$(if $(VC_RING_HZ),--ring-hz $(VC_RING_HZ),) \
+	$(if $(VC_RING_WAVE),--ring-wave $(VC_RING_WAVE),)
+VC_DENOISE_ARGS = $(if $(filter 1,$(VC_DENOISE)),--denoise \
+	$(if $(VC_NOISE_LEARN_MS),--noise-learn-ms $(VC_NOISE_LEARN_MS),) \
+	$(if $(VC_NOISE_PROFILE),--noise-profile $(VC_NOISE_PROFILE),) \
+	$(if $(VC_NOISE_SAVE),--noise-save $(VC_NOISE_SAVE),) \
+	$(if $(VC_NOISE_REDUCTION),--noise-reduction $(VC_NOISE_REDUCTION),) \
+	$(if $(VC_NOISE_GATE_RANGE_DB),--noise-gate-range-db $(VC_NOISE_GATE_RANGE_DB),),)
 
 .PHONY: all rt clean test asan pulse alsa setup-pulse setup-alsa setup-monitor \
 	stop-monitor help \
@@ -117,6 +148,12 @@ $(LEVEL_TEST_BIN): $(LEVEL_TEST_SRCS)
 $(EFFECT_TEST_BIN): $(EFFECT_TEST_SRCS)
 	$(CC) $(CFLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST)
 
+$(EQ_TEST_BIN): $(EQ_TEST_SRCS)
+	$(CC) $(CFLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST)
+
+$(DENOISE_TEST_BIN): $(DENOISE_TEST_SRCS)
+	$(CC) $(CFLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST)
+
 $(PRESET_TEST_BIN): $(PRESET_TEST_SRCS)
 	$(CC) $(CFLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST)
 
@@ -135,14 +172,23 @@ $(ASAN_TEST_DIR)/test_vc_level: $(LEVEL_TEST_SRCS) | $(ASAN_TEST_DIR)
 $(ASAN_TEST_DIR)/test_vc_effects: $(EFFECT_TEST_SRCS) | $(ASAN_TEST_DIR)
 	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST) $(ASAN_FLAGS)
 
+$(ASAN_TEST_DIR)/test_vc_eq: $(EQ_TEST_SRCS) | $(ASAN_TEST_DIR)
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST) $(ASAN_FLAGS)
+
+$(ASAN_TEST_DIR)/test_vc_denoise: $(DENOISE_TEST_SRCS) | $(ASAN_TEST_DIR)
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST) $(ASAN_FLAGS)
+
 $(ASAN_TEST_DIR)/test_vc_presets: $(PRESET_TEST_SRCS) | $(ASAN_TEST_DIR)
 	$(CC) $(CFLAGS) $(ASAN_FLAGS) -I$(SRCDIR) $^ -o $@ $(LDLIBS_ST) $(ASAN_FLAGS)
 
-test: $(TEST_BIN) $(STREAM_TEST_BIN) $(LEVEL_TEST_BIN) $(EFFECT_TEST_BIN) $(PRESET_TEST_BIN)
+test: $(TEST_BIN) $(STREAM_TEST_BIN) $(LEVEL_TEST_BIN) $(EFFECT_TEST_BIN) \
+	$(EQ_TEST_BIN) $(DENOISE_TEST_BIN) $(PRESET_TEST_BIN)
 	$(TEST_BIN)
 	$(STREAM_TEST_BIN)
 	$(LEVEL_TEST_BIN)
 	$(EFFECT_TEST_BIN)
+	$(EQ_TEST_BIN)
+	$(DENOISE_TEST_BIN)
 	$(PRESET_TEST_BIN)
 
 asan: $(ASAN_TEST_BINS)
@@ -150,6 +196,8 @@ asan: $(ASAN_TEST_BINS)
 	ASAN_OPTIONS=detect_leaks=1 $(ASAN_TEST_DIR)/test_vc_stream
 	ASAN_OPTIONS=detect_leaks=1 $(ASAN_TEST_DIR)/test_vc_level
 	ASAN_OPTIONS=detect_leaks=1 $(ASAN_TEST_DIR)/test_vc_effects
+	ASAN_OPTIONS=detect_leaks=1 $(ASAN_TEST_DIR)/test_vc_eq
+	ASAN_OPTIONS=detect_leaks=1 $(ASAN_TEST_DIR)/test_vc_denoise
 	ASAN_OPTIONS=detect_leaks=1 $(ASAN_TEST_DIR)/test_vc_presets
 
 setup-pulse:
@@ -183,7 +231,8 @@ pulse: $(RT_BIN) setup-pulse $(if $(filter 1,$(VC_MONITOR)),setup-monitor,)
 		--target-dbfs $(VC_TARGET_DBFS) --max-gain-db $(VC_MAX_GAIN_DB) \
 		--ceiling-dbfs $(VC_CEILING_DBFS) --attack-ms $(VC_ATTACK_MS) \
 		--release-ms $(VC_RELEASE_MS) \
-		--limiter-release-ms $(VC_LIMITER_RELEASE_MS) $(VC_AGC_ARGS) $(VC_EXTRA)
+		--limiter-release-ms $(VC_LIMITER_RELEASE_MS) $(VC_AGC_ARGS) \
+		$(VC_TONE_ARGS) $(VC_DENOISE_ARGS) $(VC_EXTRA)
 
 setup-alsa:
 	@command -v arecord >/dev/null || { echo "missing alsa-utils"; exit 1; }
@@ -199,7 +248,8 @@ alsa: $(RT_BIN) setup-alsa
 		--target-dbfs $(VC_TARGET_DBFS) --max-gain-db $(VC_MAX_GAIN_DB) \
 		--ceiling-dbfs $(VC_CEILING_DBFS) --attack-ms $(VC_ATTACK_MS) \
 		--release-ms $(VC_RELEASE_MS) \
-		--limiter-release-ms $(VC_LIMITER_RELEASE_MS) $(VC_AGC_ARGS) $(VC_EXTRA)
+		--limiter-release-ms $(VC_LIMITER_RELEASE_MS) $(VC_AGC_ARGS) \
+		$(VC_TONE_ARGS) $(VC_DENOISE_ARGS) $(VC_EXTRA)
 
 $(addprefix pulse-,$(VC_PRESETS)):
 	$(MAKE) pulse VC_PRESET=$(patsubst pulse-%,%,$@)
@@ -220,8 +270,12 @@ help:
 	@echo "  make setup-pulse / make setup-alsa  prepare the virtual device without running live"
 	@echo "  pulse routes also monitor to the AudioBox (MIXER knob -> PLAYBACK); VC_MONITOR=0 disables it"
 	@echo "  make stop-monitor  remove the headphone monitor loopback"
-	@echo "Vars: VSL_CAPTURE PULSE_SINK PULSE_PCM ALOOP_PB ALOOP_CAP VC_MODE VC_PRESET VC_AGC VC_TARGET_DBFS VC_MAX_GAIN_DB VC_CEILING_DBFS VC_ATTACK_MS VC_RELEASE_MS VC_LIMITER_RELEASE_MS VC_MONITOR VC_MONITOR_LATENCY_MS PULSE_MONITOR_SINK VC_RATE VC_CHANNELS VC_PERIOD VC_FFT VC_HOP VC_EXTRA"
+	@echo "  noise reduction is on by default: stay silent ~1.5 s at start (VC_DENOISE=0 disables)"
+	@echo "  make pulse-robot VC_NOISE_SAVE=noise.vcn  then  make pulse-robot VC_NOISE_PROFILE=noise.vcn"
+	@echo "  make pulse-robot VC_DRIVE=3 VC_RING_AMOUNT=0 (drive/ring override the preset; empty = preset value)"
+	@echo "Vars: VSL_CAPTURE PULSE_SINK PULSE_PCM ALOOP_PB ALOOP_CAP VC_MODE VC_PRESET VC_AGC VC_TARGET_DBFS VC_MAX_GAIN_DB VC_CEILING_DBFS VC_ATTACK_MS VC_RELEASE_MS VC_LIMITER_RELEASE_MS VC_DRIVE VC_RING_AMOUNT VC_RING_HZ VC_RING_WAVE VC_DENOISE VC_NOISE_LEARN_MS VC_NOISE_PROFILE VC_NOISE_SAVE VC_NOISE_REDUCTION VC_NOISE_GATE_RANGE_DB VC_MONITOR VC_MONITOR_LATENCY_MS PULSE_MONITOR_SINK VC_RATE VC_CHANNELS VC_PERIOD VC_FFT VC_HOP VC_EXTRA"
 
 clean:
 	rm -rf $(OBJDIR) $(BINS) $(TESTDIR)/test_vc_fft $(TESTDIR)/test_vc_stream \
-		$(TESTDIR)/test_vc_level $(TESTDIR)/test_vc_effects $(TESTDIR)/test_vc_presets
+		$(TESTDIR)/test_vc_level $(TESTDIR)/test_vc_effects $(TESTDIR)/test_vc_eq $(TESTDIR)/test_vc_denoise \
+		$(TESTDIR)/test_vc_presets

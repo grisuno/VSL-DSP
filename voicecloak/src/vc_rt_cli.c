@@ -6,6 +6,7 @@
 #include "vc_fft.h"
 #include "vc_crypto.h"
 #include "vc_presets.h"
+#include "vc_denoise.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,6 +67,20 @@ static void print_usage(const char *prog) {
         "  --attack-ms MS / --release-ms MS  RMS smoothing times\n"
         "  --limiter-release-ms MS  Limiter release time (default 50)\n"
         "  --no-agc       Disable RMS gain; keep peak limiter enabled\n"
+        "  --drive D      Soft saturation drive 0-8 before the limiter\n"
+        "                 (default: preset value, 0 = off)\n"
+        "  --ring-amount A  Ring modulation depth 0-1 (robot or no preset)\n"
+        "  --ring-hz F    Ring carrier frequency in Hz\n"
+        "  --ring-wave W  Ring carrier: sine | square\n"
+        "  --denoise      Remove background noise before the voice transform\n"
+        "  --noise-learn-ms MS  Noise print length at start (default 1500,\n"
+        "                 stay silent; output is muted meanwhile)\n"
+        "  --noise-profile FILE Load a saved noise print instead of learning\n"
+        "  --noise-save FILE    Save the learned noise print on exit\n"
+        "  --noise-reduction R  Over-subtraction 1-6 (default 2)\n"
+        "  --noise-floor-db DB  Lowest per-bin gain -60..0 (default -24)\n"
+        "  --noise-gate-snr-db DB   Silence threshold above the print (default 6)\n"
+        "  --noise-gate-range-db DB Silence attenuation 0-60 (default 30)\n"
         "\n"
         "Examples:\n"
         "  %s list\n"
@@ -113,7 +128,7 @@ static int cmd_selftest(void) {
                             (float)i / (float)sr);
 
     vc_stream_t *st = vc_stream_create(fft, hop, sr);
-    vc_rt_params_t p = { ratio, 1.0f, 0.0f };
+    vc_rt_params_t p = { ratio, 1.0f, 0.0f, 0 };
     vc_rt_ctx_t *ctx = vc_rt_create(fft / 2 + 1, p);
     if (!st || !ctx) {
         fprintf(stderr, "selftest: setup failed\n");
@@ -143,6 +158,7 @@ static int resolve_params(int have_fixed, float semis, float formant,
         p->pitch_ratio        = vc_rt_semitones_to_ratio(semis);
         p->formant_factor     = formant;
         p->scramble_intensity = scramble;
+        p->robotize           = 0;
         return 0;
     }
     unsigned char master[VC_TOTAL_SEED_BYTES];
@@ -170,6 +186,15 @@ static int cmd_live(int argc, char *argv[]) {
     unsigned int rate = 48000, channels = 2, period = 256;
     vc_level_config_t level_config;
     vc_effects_params_t effect_params = {0};
+    vc_eq_params_t eq_params = {0};
+    float drive = 0.0f, ring_amount = 0.0f, ring_hz = 0.0f;
+    int have_drive = 0, have_ring_amount = 0, have_ring_hz = 0;
+    int have_ring_wave = 0;
+    vc_ring_waveform_t ring_wave = VC_RING_WAVE_SINE;
+    int denoise_enabled = 0, denoise_option = 0;
+    const char *noise_profile = NULL, *noise_save = NULL;
+    vc_denoise_params_t denoise_params;
+    vc_denoise_params_defaults(&denoise_params);
     vc_level_config_defaults(&level_config);
 
     int i;
@@ -252,6 +277,72 @@ static int cmd_live(int argc, char *argv[]) {
         else if (!strcmp(argv[i], "--no-agc")) {
             level_config.agc_enabled = 0;
         }
+        else if (!strcmp(argv[i], "--drive") && i + 1 < argc) {
+            if (parse_float(argv[++i], &drive) != 0) {
+                fprintf(stderr, "Invalid --drive value\n"); return 1;
+            }
+            have_drive = 1;
+        }
+        else if (!strcmp(argv[i], "--ring-amount") && i + 1 < argc) {
+            if (parse_float(argv[++i], &ring_amount) != 0) {
+                fprintf(stderr, "Invalid --ring-amount value\n"); return 1;
+            }
+            have_ring_amount = 1;
+        }
+        else if (!strcmp(argv[i], "--ring-hz") && i + 1 < argc) {
+            if (parse_float(argv[++i], &ring_hz) != 0) {
+                fprintf(stderr, "Invalid --ring-hz value\n"); return 1;
+            }
+            have_ring_hz = 1;
+        }
+        else if (!strcmp(argv[i], "--denoise")) {
+            denoise_enabled = 1;
+        }
+        else if (!strcmp(argv[i], "--noise-profile") && i + 1 < argc) {
+            noise_profile = argv[++i];
+            denoise_option = 1;
+        }
+        else if (!strcmp(argv[i], "--noise-save") && i + 1 < argc) {
+            noise_save = argv[++i];
+            denoise_option = 1;
+        }
+        else if (!strcmp(argv[i], "--noise-learn-ms") && i + 1 < argc) {
+            if (parse_float(argv[++i], &denoise_params.learn_ms) != 0) {
+                fprintf(stderr, "Invalid --noise-learn-ms value\n"); return 1;
+            }
+            denoise_option = 1;
+        }
+        else if (!strcmp(argv[i], "--noise-reduction") && i + 1 < argc) {
+            if (parse_float(argv[++i], &denoise_params.reduction) != 0) {
+                fprintf(stderr, "Invalid --noise-reduction value\n"); return 1;
+            }
+            denoise_option = 1;
+        }
+        else if (!strcmp(argv[i], "--noise-floor-db") && i + 1 < argc) {
+            if (parse_float(argv[++i], &denoise_params.floor_db) != 0) {
+                fprintf(stderr, "Invalid --noise-floor-db value\n"); return 1;
+            }
+            denoise_option = 1;
+        }
+        else if (!strcmp(argv[i], "--noise-gate-snr-db") && i + 1 < argc) {
+            if (parse_float(argv[++i], &denoise_params.gate_snr_db) != 0) {
+                fprintf(stderr, "Invalid --noise-gate-snr-db value\n"); return 1;
+            }
+            denoise_option = 1;
+        }
+        else if (!strcmp(argv[i], "--noise-gate-range-db") && i + 1 < argc) {
+            if (parse_float(argv[++i], &denoise_params.gate_range_db) != 0) {
+                fprintf(stderr, "Invalid --noise-gate-range-db value\n"); return 1;
+            }
+            denoise_option = 1;
+        }
+        else if (!strcmp(argv[i], "--ring-wave") && i + 1 < argc) {
+            ++i;
+            if (!strcmp(argv[i], "sine")) ring_wave = VC_RING_WAVE_SINE;
+            else if (!strcmp(argv[i], "square")) ring_wave = VC_RING_WAVE_SQUARE;
+            else { fprintf(stderr, "Unknown --ring-wave: %s\n", argv[i]); return 1; }
+            have_ring_wave = 1;
+        }
         else { fprintf(stderr, "Unknown option: %s\n", argv[i]); return 1; }
     }
 
@@ -264,7 +355,7 @@ static int cmd_live(int argc, char *argv[]) {
         return 1;
     }
 
-    vc_rt_params_t p;
+    vc_rt_params_t p = {0};
     if (preset_name) {
         if (have_fixed || mode_specified) {
             fprintf(stderr, "--preset cannot be combined with --mode/voice transform options\n");
@@ -277,13 +368,81 @@ static int cmd_live(int argc, char *argv[]) {
         }
         p = preset.cloak;
         effect_params = preset.effects;
+        eq_params = preset.eq;
+        level_config.saturation_drive = preset.saturation_drive;
     } else if (resolve_params(have_fixed, semis, formant, scramble,
                               witness, &p) != 0) {
         return 1;
     }
+    if (have_drive) level_config.saturation_drive = drive;
+
+    if (have_ring_amount || have_ring_hz || have_ring_wave) {
+        if (effect_params.kind == VC_EFFECT_NONE) {
+            if (!have_ring_amount || !have_ring_hz) {
+                fprintf(stderr, "A plain ring effect needs --ring-amount and --ring-hz\n");
+                return 1;
+            }
+            effect_params.kind = VC_EFFECT_RING_MOD;
+        } else if (effect_params.kind != VC_EFFECT_RING_MOD &&
+                   effect_params.kind != VC_EFFECT_METALLIC) {
+            fprintf(stderr, "Ring options are not supported by this preset effect\n");
+            return 1;
+        }
+        if (have_ring_amount) effect_params.ring_amount = ring_amount;
+        if (have_ring_hz) effect_params.rate_hz = ring_hz;
+        if (have_ring_wave) effect_params.waveform = ring_wave;
+    }
+
+    /* Validate the sample-domain stages before any device is opened. */
+    {
+        vc_effects_t *fx_probe = vc_effects_create(rate, &effect_params);
+        vc_eq_t *eq_probe = vc_eq_create(rate, &eq_params);
+        vc_level_t *level_probe = vc_level_create(rate, &level_config);
+        int valid = fx_probe && eq_probe && level_probe;
+        vc_effects_destroy(fx_probe);
+        vc_eq_destroy(eq_probe);
+        vc_level_destroy(level_probe);
+        if (!valid) {
+            fprintf(stderr, "Effect, ring, drive, or level settings out of range\n");
+            return 1;
+        }
+    }
+
+    if (denoise_option && !denoise_enabled) {
+        fprintf(stderr, "--noise-* options require --denoise\n");
+        return 1;
+    }
+    vc_denoise_t *denoise = NULL;
+    if (denoise_enabled) {
+        denoise = vc_denoise_create(fft / 2 + 1, &denoise_params);
+        if (!denoise) {
+            fprintf(stderr, "Noise reduction settings out of range\n");
+            return 1;
+        }
+        if (noise_profile && vc_denoise_load(denoise, noise_profile) != 0) {
+            fprintf(stderr, "Invalid noise profile: %s (fft size and format must match)\n",
+                    noise_profile);
+            vc_denoise_destroy(denoise);
+            return 1;
+        }
+    }
 
     vc_rt_ctx_t *ctx = vc_rt_create(fft / 2 + 1, p);
-    if (!ctx) { fprintf(stderr, "live: engine context alloc failed\n"); return 1; }
+    if (!ctx) {
+        fprintf(stderr, "live: engine context alloc failed\n");
+        vc_denoise_destroy(denoise);
+        return 1;
+    }
+    vc_spectral_chain_t chain;
+    vc_spectral_chain_init(&chain);
+    if ((denoise && vc_spectral_chain_add(&chain, vc_denoise_transform,
+                                          denoise) != 0) ||
+        vc_spectral_chain_add(&chain, vc_rt_transform, ctx) != 0) {
+        fprintf(stderr, "live: spectral chain setup failed\n");
+        vc_rt_destroy(ctx);
+        vc_denoise_destroy(denoise);
+        return 1;
+    }
 
     printf("Mode: %s | pitch x%.3f | formant x%.3f | scramble %.3f\n",
            preset_name ? preset_name :
@@ -295,6 +454,17 @@ static int cmd_live(int argc, char *argv[]) {
            (double)level_config.target_dbfs,
            (double)level_config.max_gain_db,
            (double)level_config.ceiling_dbfs);
+    printf("Tone: drive %.2f | high-pass %.0f Hz | presence %+.1f dB @ %.0f Hz\n",
+           (double)level_config.saturation_drive, (double)eq_params.highpass_hz,
+           (double)eq_params.presence_gain_db, (double)eq_params.presence_hz);
+    if (denoise && !vc_denoise_is_ready(denoise))
+        printf("Noise reduction: learning the noise print for %.0f ms, stay silent "
+               "(output muted meanwhile)\n", (double)denoise_params.learn_ms);
+    else if (denoise)
+        printf("Noise reduction: profile loaded from %s\n", noise_profile);
+    if (p.robotize && hop > 0U)
+        printf("Robot pitch: %.2f Hz (rate / hop, set by --rate and --hop)\n",
+               (double)rate / (double)hop);
 
     struct sigaction sa;
     memset(&sa, 0, sizeof(sa));
@@ -311,14 +481,22 @@ static int cmd_live(int argc, char *argv[]) {
     cfg.period_frames = period;
     cfg.fft_size      = fft;
     cfg.hop_size      = hop;
-    cfg.fn            = vc_rt_transform;
-    cfg.user          = ctx;
+    cfg.fn            = vc_spectral_chain_run;
+    cfg.user          = &chain;
     cfg.effect_params = effect_params;
+    cfg.eq_params     = eq_params;
     cfg.level_config  = level_config;
     cfg.stop          = &g_stop;
 
     int rc = vc_alsa_run(&cfg);
+    if (noise_save) {
+        if (vc_denoise_save(denoise, noise_save) == 0)
+            printf("\nNoise print saved to %s\n", noise_save);
+        else
+            fprintf(stderr, "\nNoise print not saved (not learned yet or write error)\n");
+    }
     vc_rt_destroy(ctx);
+    vc_denoise_destroy(denoise);
     printf("\nStopped.\n");
     return rc == 0 ? 0 : 1;
 }

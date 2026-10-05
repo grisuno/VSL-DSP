@@ -15,6 +15,8 @@ struct vc_level_s {
     float gain;
     float limiter_gain;
     int agc_enabled;
+    float drive;
+    float drive_norm;
 };
 
 static int config_valid(uint32_t sample_rate, const vc_level_config_t *config) {
@@ -25,7 +27,8 @@ static int config_valid(uint32_t sample_rate, const vc_level_config_t *config) {
         !isfinite(config->ceiling_dbfs) ||
         !isfinite(config->attack_ms) ||
         !isfinite(config->release_ms) ||
-        !isfinite(config->limiter_release_ms)) return 0;
+        !isfinite(config->limiter_release_ms) ||
+        !isfinite(config->saturation_drive)) return 0;
     if (config->target_dbfs < VC_LEVEL_MIN_TARGET_DBFS ||
         config->target_dbfs > VC_LEVEL_MAX_TARGET_DBFS ||
         config->max_gain_db < 0.0f ||
@@ -38,7 +41,9 @@ static int config_valid(uint32_t sample_rate, const vc_level_config_t *config) {
         config->release_ms < VC_LEVEL_MIN_TIME_MS ||
         config->release_ms > VC_LEVEL_MAX_TIME_MS ||
         config->limiter_release_ms < VC_LEVEL_MIN_TIME_MS ||
-        config->limiter_release_ms > VC_LEVEL_MAX_TIME_MS) return 0;
+        config->limiter_release_ms > VC_LEVEL_MAX_TIME_MS ||
+        config->saturation_drive < 0.0f ||
+        config->saturation_drive > VC_LEVEL_MAX_SATURATION_DRIVE) return 0;
     return config->agc_enabled == 0 || config->agc_enabled == 1;
 }
 
@@ -56,6 +61,7 @@ void vc_level_config_defaults(vc_level_config_t *config) {
     config->release_ms = VC_LEVEL_DEFAULT_RELEASE_MS;
     config->limiter_release_ms = VC_LEVEL_DEFAULT_LIMITER_RELEASE_MS;
     config->agc_enabled = 1;
+    config->saturation_drive = VC_LEVEL_DEFAULT_SATURATION_DRIVE;
 }
 
 vc_level_t *vc_level_create(uint32_t sample_rate,
@@ -76,6 +82,8 @@ vc_level_t *vc_level_create(uint32_t sample_rate,
     level->gain = 1.0f;
     level->limiter_gain = 1.0f;
     level->agc_enabled = config->agc_enabled;
+    level->drive = config->saturation_drive;
+    if (level->drive > 0.0f) level->drive_norm = 1.0f / tanhf(level->drive);
     return level;
 }
 
@@ -136,6 +144,8 @@ int vc_level_process(vc_level_t *level, float *samples, size_t count) {
         }
 
         float gained = input * level->gain;
+        if (level->drive > 0.0f)
+            gained = tanhf(level->drive * gained) * level->drive_norm;
         float magnitude = fabsf(gained);
         float desired_limiter = magnitude > level->ceiling
                               ? level->ceiling / magnitude : 1.0f;
