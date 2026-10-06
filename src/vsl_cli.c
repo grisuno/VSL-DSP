@@ -9,7 +9,8 @@
 
 typedef enum {
     PARAM_TYPE_GAIN,
-    PARAM_TYPE_FREQ
+    PARAM_TYPE_FREQ,
+    PARAM_TYPE_DB
 } ParamType;
 
 typedef struct {
@@ -50,6 +51,8 @@ static const VSL_Parameter FREQ_HPF_COEFFS = {
 static const ParamEntry param_table[] = {
     {"gain1",  0x1A01, 1, "Gain Channel 1",   PARAM_TYPE_GAIN, GAIN_COEFFS},
     {"gain2",  0x1A02, 2, "Gain Channel 2",   PARAM_TYPE_GAIN, GAIN_COEFFS},
+    {"db1",    0x1A01, 1, "Gain dB Channel 1 (Fat Channel gain.db)", PARAM_TYPE_DB, GAIN_COEFFS},
+    {"db2",    0x1A02, 2, "Gain dB Channel 2 (Fat Channel gain.db)", PARAM_TYPE_DB, GAIN_COEFFS},
     {"hpf1",   0x2B05, 1, "HPF Frequency Ch1", PARAM_TYPE_FREQ, FREQ_HPF_COEFFS},
     {"hpf2",   0x2B06, 2, "HPF Frequency Ch2", PARAM_TYPE_FREQ, FREQ_HPF_COEFFS},
     {NULL,     0,      0, NULL,                0,              {0}}
@@ -68,6 +71,7 @@ static void print_usage(FILE *fp, const char *prog)
         "\n"
         "Commands:\n"
         "  gain <ch> <val>      Set channel gain (val in 0.0..1.0)\n"
+        "  db   <ch> <dB>       Set channel gain in decibels (e.g. -6.0, -inf mutes)\n"
         "  freq <ch> <hz>       Set HPF frequency (Hz)\n"
         "  raw  <id> <val>      Send raw param ID (hex) with linear value\n"
         "  list                 List known parameters\n"
@@ -282,8 +286,27 @@ int main(int argc, char *argv[])
         return do_send(product_id, (uint16_t)param_id_ul, user_value, coeffs);
     }
 
-    if (strcmp(argv[i], "freq") == 0) {
+    if (strcmp(argv[i], "db") == 0) {
+        float db_value;
         if (i + 2 >= argc) {
+            fprintf(stderr, "Usage: %s db <channel> <dB>\n", prog);
+            return 1;
+        }
+        ch = strtoul(argv[i + 1], NULL, 10);
+        if (ch < 1 || ch > MAX_CHANNELS) {
+            fprintf(stderr, "Channel must be 1-%d\n", MAX_CHANNELS);
+            return 1;
+        }
+        db_value = strtof(argv[i + 2], NULL);
+        user_value = VSL_DB_To_Linear(db_value);
+        param_id_ul = 0x1A00UL + ch;
+        coeffs = lookup_coeffs_by_param_id((uint16_t)param_id_ul);
+        if (!coeffs) coeffs = &GAIN_COEFFS;
+        printf("  dB value:        %.2f dB\n", db_value);
+        return do_send(product_id, (uint16_t)param_id_ul, user_value, coeffs);
+    }
+
+    if (strcmp(argv[i], "freq") == 0) {        if (i + 2 >= argc) {
             fprintf(stderr, "Usage: %s freq <channel> <freq_hz>\n", prog);
             return 1;
         }
@@ -326,7 +349,11 @@ int main(int argc, char *argv[])
         if (entry->type == PARAM_TYPE_FREQ)
             return do_send_freq(product_id, entry->param_id,
                                 user_value, &entry->coeffs);
-        else
+        else if (entry->type == PARAM_TYPE_DB) {
+            printf("  dB value:        %.2f dB\n", user_value);
+            return do_send(product_id, entry->param_id,
+                           VSL_DB_To_Linear(user_value), &entry->coeffs);
+        } else
             return do_send(product_id, entry->param_id,
                            user_value, &entry->coeffs);
     }

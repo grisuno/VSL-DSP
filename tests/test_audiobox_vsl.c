@@ -133,6 +133,25 @@ static void test_table_product_names_non_empty(void **state)
     }
 }
 
+static void test_version_string_is_release(void **state)
+{
+    (void)state;
+
+    assert_string_equal(AUDIOBOX_VERSION_STRING, "2.0.0");
+}
+
+static void test_primary_interface_announces_once(void **state)
+{
+    (void)state;
+
+    uint8_t ifnum;
+
+    assert_true(audiobox_is_primary_interface(0));
+    for (ifnum = 1; ifnum <= 5; ++ifnum) {
+        assert_false(audiobox_is_primary_interface(ifnum));
+    }
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -146,6 +165,8 @@ int main(void)
         cmocka_unit_test(test_lookup_handles_full_pid_range),
         cmocka_unit_test(test_table_pids_are_unique),
         cmocka_unit_test(test_table_product_names_non_empty),
+        cmocka_unit_test(test_version_string_is_release),
+        cmocka_unit_test(test_primary_interface_announces_once),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

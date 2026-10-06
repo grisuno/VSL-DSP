@@ -94,13 +94,15 @@ available in userspace.
 
 ### Behavior (BDD)
 
-#### Scenario: every supported model is detected
+#### Scenario: every supported model is detected exactly once
 
 ```
 Given a USB device with vendor 0x194f and product 0x0101
 When the device is plugged in
-Then dev_info "audiobox_vsl: detected 'AudioBox 22 VSL' (194f:0101) ..." is logged
+Then dev_info "audiobox_vsl: detected 'AudioBox 22 VSL' (194f:0101)" is logged once
+And the remaining five interfaces log at debug level only
 And probe returns -ENODEV
+```
 
 Given a USB device with vendor 0x194f and product 0x0102
 When the device is plugged in
@@ -132,12 +134,12 @@ Then probe is not called
 And no log line is produced
 ```
 
-#### Scenario: disconnect is logged
+#### Scenario: disconnect is logged exactly once
 
 ```
 Given a previously detected AudioBox VSL device
 When the device is unplugged
-Then dev_info "audiobox_vsl: disconnected '<model>'" is logged
+Then dev_info "audiobox_vsl: disconnected '<model>'" is logged once
 ```
 
 #### Scenario: model name lookup is total
@@ -205,7 +207,11 @@ And the function is safe to call from any context (no side effects)
 
 ### Configuration Sources
 
-The detector has exactly one configuration source: the `audiobox_models`
-table in `audiobox_vsl.h`. The kernel device table is generated from
-that table. There are no other compile-time or runtime configuration
-files, environment variables, or sysfs knobs.
+The detector has exactly two configuration sources, both with a single
+owner: the `audiobox_models` table and `AUDIOBOX_VERSION_STRING` in
+`audiobox_vsl.h`. The kernel device table is generated from the models
+table; the Makefile derives `AUDIOBOX_VERSION` from the version literal
+(never the kbuild `VERSION`, which is the kernel major) and passes it
+back with `-DAUDIOBOX_VERSION_STRING` for `MODULE_VERSION`. There are
+no other compile-time or runtime configuration files, environment
+variables, or sysfs knobs.

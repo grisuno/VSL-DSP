@@ -35,23 +35,28 @@ static const struct usb_device_id audiobox_device_table[] = {
 MODULE_DEVICE_TABLE(usb, audiobox_device_table);
 
 static int audiobox_probe(struct usb_interface *intf,
-                          const struct usb_device_id *id)
+                           const struct usb_device_id *id)
 {
     struct usb_device *udev = interface_to_usbdev(intf);
     uint16_t pid = le16_to_cpu(udev->descriptor.idProduct);
     const audiobox_model_info_t *model = audiobox_lookup_model(pid);
     const char *name = (model != NULL) ? model->product_name : "unknown";
-    const char *mfg = (udev->manufacturer != NULL) ? udev->manufacturer : "(null)";
-    const char *prod = (udev->product != NULL) ? udev->product : "(null)";
-    const char *serial = (udev->serial != NULL) ? udev->serial : "(null)";
+    uint8_t ifnum = intf->cur_altsetting->desc.bInterfaceNumber;
 
-    dev_info(&intf->dev,
-             "audiobox_vsl: detected '%s' (%04x:%04x)\n",
-             name,
-             le16_to_cpu(udev->descriptor.idVendor),
-             pid);
-    dev_info(&intf->dev, "audiobox_vsl:   manufacturer=%s product=%s serial=%s\n",
-             mfg, prod, serial);
+    if (audiobox_is_primary_interface(ifnum)) {
+        dev_info(&intf->dev,
+                 "audiobox_vsl: detected '%s' (%04x:%04x)\n",
+                 name,
+                 le16_to_cpu(udev->descriptor.idVendor),
+                 pid);
+    } else {
+        dev_dbg(&intf->dev,
+                "audiobox_vsl: interface %u of '%s' (%04x:%04x), no claim\n",
+                ifnum,
+                name,
+                le16_to_cpu(udev->descriptor.idVendor),
+                pid);
+    }
 
     return -ENODEV;
 }
@@ -62,11 +67,18 @@ static void audiobox_disconnect(struct usb_interface *intf)
     uint16_t pid = le16_to_cpu(udev->descriptor.idProduct);
     const audiobox_model_info_t *model = audiobox_lookup_model(pid);
     const char *name = (model != NULL) ? model->product_name : "unknown";
+    uint8_t ifnum = intf->cur_altsetting->desc.bInterfaceNumber;
 
-    dev_info(&intf->dev, "audiobox_vsl: disconnected '%s' (%04x:%04x)\n",
-             name,
-             le16_to_cpu(udev->descriptor.idVendor),
-             pid);
+    if (audiobox_is_primary_interface(ifnum)) {
+        dev_info(&intf->dev, "audiobox_vsl: disconnected '%s' (%04x:%04x)\n",
+                 name,
+                 le16_to_cpu(udev->descriptor.idVendor),
+                 pid);
+    } else {
+        dev_dbg(&intf->dev,
+                "audiobox_vsl: interface %u of '%s' disconnected\n",
+                ifnum, name);
+    }
 }
 
 static struct usb_driver audiobox_driver = {
@@ -81,4 +93,4 @@ module_usb_driver(audiobox_driver);
 MODULE_LICENSE(AUDIOBOX_DRIVER_LIC);
 MODULE_AUTHOR("grisuno <lazyown.redteam@gmail.com>");
 MODULE_DESCRIPTION(AUDIOBOX_DRIVER_DESC);
-MODULE_VERSION("2.0.0");
+MODULE_VERSION(AUDIOBOX_VERSION_STRING);

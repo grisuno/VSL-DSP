@@ -13,11 +13,11 @@
 # write access to the kernel source directory. Leaving the default
 # goal implicit (first target wins) keeps the build portable.
 #
-VERSION ?= 1.0
+AUDIOBOX_VERSION ?= $(or $(shell sed -n 's/^#define AUDIOBOX_VERSION_STRING "\(.*\)"/\1/p' audiobox_vsl.h),2.0.0)
 MAINTAINER ?= Unknown
 DEB_ARCH ?= $(shell dpkg --print-architecture)
 DEB_NAME ?= audiobox-vsl-dkms
-DEB_VERSION ?= $(VERSION)
+DEB_VERSION ?= $(AUDIOBOX_VERSION)
 DEB_DESCRIPTION ?= Open source Linux kernel module for the PreSonus AudioBox VSL family
 DEB_SECTION ?= kernel
 DEB_PRIORITY ?= optional
@@ -25,6 +25,11 @@ DEB_MAINTAINER ?= $(MAINTAINER)
 DEB_HOMEPAGE ?= https://github.com/grisuno/VSL-DSP
 
 obj-m += audiobox_vsl.o
+
+# Single source of truth for the release version is
+# AUDIOBOX_VERSION_STRING in audiobox_vsl.h (see above). The kernel
+# build receives it here; MODULE_VERSION consumes the same macro.
+ccflags-y += -DAUDIOBOX_VERSION_STRING='"$(AUDIOBOX_VERSION)"'
 
 KDIR     ?= /lib/modules/$(shell uname -r)/build
 PWD      := $(shell pwd)
@@ -68,7 +73,8 @@ CFLAGS_AV ?= $(CSTD) -O2 -g -Wall -Wextra -Werror -Wshadow -Wpedantic \
 LDLIBS_AV ?= $(shell pkg-config --libs alsa sdl2 SDL2_image) -lm
 
 .PHONY: all test asan clean install uninstall modprobe rmmod info help deb \
-        vsl-cli test-dsp avatar avatar-build avatar-list avatar-test avatar-asan
+        vsl-cli test-dsp avatar avatar-build avatar-list avatar-test avatar-asan \
+        bdd-driver
 
 all: modules test vsl-cli test-dsp
 
@@ -136,6 +142,13 @@ uninstall:
 
 modprobe:
 	$(MODPROBE) audiobox_vsl
+
+bdd-driver: modules
+	@if [ "$$(id -u)" != "0" ]; then \
+		echo "bdd-driver requires root (insmod/dmesg). Run: sudo make bdd-driver"; \
+		exit 2; \
+	fi
+	bash tests/bdd_driver_gate.sh
 
 rmmod:
 	$(RMMOD) audiobox_vsl || true

@@ -30,3 +30,6 @@ Module.symvers
 tests/audiobox_vsl_test
 tests/*.o
 tests/*.d
+
+# Custom
+*.apk

@@ -73,9 +73,7 @@ uint16_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param
     return (uint16_t)fmaxf(0.0f, fminf(roundf(scaled_float), (float)param->max_encoded_int));
 }
 
-float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param) {
-
-    if (param->freq_min_hz <= 0.0f || param->freq_max_hz <= 0.0f) {
+float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param) {    if (param->freq_min_hz <= 0.0f || param->freq_max_hz <= 0.0f) {
         return 0.0f;
     }
 
@@ -92,4 +90,20 @@ float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param) {
     }
 
     return (log2_current - log2_min) / log2_range;
+}
+
+float VSL_Linear_To_DB(float linear_value) {
+    float clamped = fmaxf(0.0f, fminf(linear_value, 1.0f));
+
+    if (clamped <= 0.0f) return VSL_DB_NEG_INF;
+
+    return 20.0f * log10f(clamped);
+}
+
+float VSL_DB_To_Linear(float db_value) {
+    if (db_value <= VSL_DB_NEG_INF) return 0.0f;
+
+    float linear = powf(10.0f, db_value / 20.0f);
+
+    return fmaxf(0.0f, fminf(linear, 1.0f));
 }

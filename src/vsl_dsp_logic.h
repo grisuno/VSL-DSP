@@ -8,6 +8,16 @@
 #define VSL_INV_LN2            1.442695f
 #define VSL_MAX_ENCODED_FLOAT  1000.0f
 
+/**
+ * @brief Decibel floor below which a gain is treated as negative infinity.
+ *
+ * Mirrors the vendor Fat Channel design where `db.inf` is a dedicated
+ * parameter with its own handler, separate from the `gain.db` curve
+ * (observed in libfatchannelplugins.so, _INIT_0 registry). Any dB value
+ * at or below this floor converts to a linear value of exactly 0.0.
+ */
+#define VSL_DB_NEG_INF         (-100.0f)
+
 typedef struct {
     uint32_t dsp_param_id;
     uint32_t max_encoded_int;
@@ -68,5 +78,21 @@ float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param);
  *       from the DSP scaling. Validated test: 0.75 -> 40793 (full pipeline).
  */
 uint16_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param);
+
+/**
+ * @brief Converts a linear gain [0.0, 1.0] to decibels.
+ * @param linear_value Linear gain, clamped to [0.0, 1.0].
+ * @return Gain in dB (0.0 dB at full scale); VSL_DB_NEG_INF or below
+ *         when linear_value is zero or negative (the `db.inf` domain).
+ */
+float VSL_Linear_To_DB(float linear_value);
+
+/**
+ * @brief Converts a decibel gain back to linear [0.0, 1.0].
+ * @param db_value Gain in dB.
+ * @return Linear gain clamped to [0.0, 1.0]; exactly 0.0 when db_value
+ *         is at or below VSL_DB_NEG_INF.
+ */
+float VSL_DB_To_Linear(float db_value);
 
 #endif /* VSL_DSP_LOGIC_H */

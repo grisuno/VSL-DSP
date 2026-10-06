@@ -146,6 +146,7 @@ The CLI tool sends DSP parameter changes to the device:
 ```sh
 ./src/vsl_cli --model 22vsl gain 1 0.75   # Set channel 1 gain to 75%
 ./src/vsl_cli --pid 0x0102 gain 3 0.5     # Gain ch3 on 44 VSL
+./src/vsl_cli db 1 -6.0                   # Gain ch1 at -6 dB (Fat Channel gain.db)
 ./src/vsl_cli freq 1 80                    # HPF channel 1 at 80 Hz
 ./src/vsl_cli raw 1A01 0.5                 # Raw parameter ID
 ./src/vsl_cli list                         # List known parameters
@@ -303,8 +304,9 @@ table contains one entry per supported product ID. When the USB
 core matches a device, `probe` is called. The handler:
 
 1. Looks up the product ID with `audiobox_lookup_model()`.
-2. Logs the model name, VID/PID, and USB string descriptors
-   (manufacturer, product, serial) via `dev_info`.
+2. Logs the canonical model name and VID/PID via `dev_info`,
+   once per plug (interface 0 only). Raw USB string descriptors
+   are never logged.
 3. Returns `-ENODEV` so the USB core does not bind the driver.
    The standard `snd-usb-audio` driver remains the owner and
    ALSA continues to provide full audio functionality.
@@ -312,6 +314,41 @@ core matches a device, `probe` is called. The handler:
 The detector never touches the HID control endpoint, never
 allocates memory in the hot path, and never formats untrusted
 input.
+
+## Reverse engineering with LazyOwn and REA
+
+The vendor reference findings behind the DSP improvements below
+were obtained with the LazyOwn RedTeam Framework and its `rea`
+lazyaddon, which drives REA (Reverse Engineer Anything) with
+Ghidra 12.1.4 against the vendor control application libraries.
+
+Verified findings, each with a REA evidence envelope:
+
+- The application is PreSonus Universal Control: `libucnet.so`
+  implements UCNET discovery over UDP (bind `INADDR_ANY:47809`,
+  alive/leave/query/timeout session events) with mDNS peer
+  discovery and a TCP control channel. See
+  `spec/ucnet_discovery.md`.
+- `libfatchannelplugins.so` builds a static parameter registry
+  (`_INIT_0`) of `{handler, name, channel_index, flags}` entries.
+  The `gain.db` / `gain.N` / `db.inf` split showed that decibel
+  gain and negative infinity are separate domains with dedicated
+  handlers, not points on one curve. See
+  `spec/fatchannel_registry.md`.
+
+Improvements derived from these findings:
+
+- `vsl_cli db <ch> <dB>` command and `db1`/`db2` table entries
+  following the vendor `gain.db` naming.
+- `VSL_Linear_To_DB` / `VSL_DB_To_Linear` converters with a
+  dedicated `VSL_DB_NEG_INF` floor, covered by CMocka tests.
+- The vendor mute wire code was not recovered, so no mute code
+  is invented: `-inf` maps to linear `0.0` through the existing
+  curve and is documented as not-a-mute.
+
+Thanks to the REA project (https://github.com/morluto/rea) for
+the open source reverse engineering workflow that made this
+analysis possible.
 
 ## License
 

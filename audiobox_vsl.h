@@ -45,6 +45,17 @@ typedef enum {
 } audiobox_model_pid_t;
 
 /**
+ * @brief Module release version, single source of truth.
+ *
+ * The Makefile derives VERSION from this literal and passes it to the
+ * kernel build with -DAUDIOBOX_VERSION_STRING. MODULE_VERSION consumes
+ * the same macro. Never duplicate the version anywhere else.
+ */
+#ifndef AUDIOBOX_VERSION_STRING
+#define AUDIOBOX_VERSION_STRING "2.0.0"
+#endif
+
+/**
  * @brief Pair of product ID and canonical human readable model name.
  *
  * The product_name field is a pointer to a static string literal that
@@ -103,6 +114,23 @@ audiobox_lookup_model(uint16_t pid)
         }
     }
     return NULL;
+}
+
+/**
+ * @brief Decide whether an interface announces detection at info level.
+ *
+ * @param ifnum USB interface number being probed or disconnected.
+ * @return Non-zero only for interface 0.
+ *
+ * The device exposes six interfaces; the USB core probes each one, so
+ * unconditional logging would print six lines per plug. Only interface
+ * 0 announces at info level, the rest stay at debug level. Pure
+ * function, safe to call from any context.
+ */
+static inline int
+audiobox_is_primary_interface(unsigned int ifnum)
+{
+    return ifnum == 0U;
 }
 
 #ifdef __KERNEL__
