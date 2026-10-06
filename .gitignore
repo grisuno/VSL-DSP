@@ -28,6 +28,9 @@ Module.symvers
 
 # Test build artefacts
 tests/audiobox_vsl_test
+tests/test_vsl_dsp_logic
+tests/test_vsl_dsp_transport
+tests/test_avatar_logic
 tests/*.o
 tests/*.d
 

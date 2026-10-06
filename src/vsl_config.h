@@ -13,10 +13,11 @@ extern "C" {
 #define VSL_PRODUCT_ID_44VSL  0x0102U
 #define VSL_PRODUCT_ID_1818VSL 0x0103U
 
-#define VSL_REPORT_ID         0x06U
+#define VSL_REPORT_ID         0x06U /* FIXME blocker #2: legacy hypothesis, unverified on wire/Ghidra */
 #define VSL_PACKET_SIZE       64U
 #define VSL_MIDI_IFACE        4U
 #define VSL_EP_MIDI_OUT       0x02U
+#define VSL_USB_TIMEOUT_MS    1000
 
 typedef struct {
     uint16_t    pid;

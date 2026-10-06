@@ -298,7 +298,11 @@ int main(int argc, char *argv[])
             return 1;
         }
         db_value = strtof(argv[i + 2], NULL);
-        user_value = VSL_DB_To_Linear(db_value);
+        if (!isfinite(db_value)) {
+            user_value = 0.0f;
+        } else {
+            user_value = VSL_DB_To_Linear(db_value);
+        }
         param_id_ul = 0x1A00UL + ch;
         coeffs = lookup_coeffs_by_param_id((uint16_t)param_id_ul);
         if (!coeffs) coeffs = &GAIN_COEFFS;

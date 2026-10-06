@@ -26,6 +26,21 @@ vsl_device_handle VSL_Init_Device(uint16_t vendor_id, uint16_t product_id);
 void VSL_Close_Device(vsl_device_handle handle);
 
 /**
+ * @brief Fill a VSL_PACKET_SIZE buffer with a DSP parameter datagram.
+ * @param dsp_param_id 16-bit DSP parameter identifier.
+ * @param encoded_value 16-bit encoded integer value.
+ * @param out Caller-provided VSL_PACKET_SIZE buffer.
+ * @return 0 on success, negative when out is NULL (fail closed).
+ *
+ * Pure function without I/O. Byte layout (Report ID first, id/value
+ * little-endian, zero tail) is a working hypothesis pending Ghidra/usbmon
+ * evidence (blockers #2/#3); see spec/vsl_dsp_transport.md.
+ */
+int VSL_Build_Packet(uint16_t dsp_param_id,
+                     uint16_t encoded_value,
+                     unsigned char *out);
+
+/**
  * @brief Send a DSP parameter value to the device via USB bulk transfer.
  * @param handle Handle from VSL_Init_Device.
  * @param dsp_param_id 16-bit DSP parameter identifier.

@@ -16,7 +16,8 @@
  * (observed in libfatchannelplugins.so, _INIT_0 registry). Any dB value
  * at or below this floor converts to a linear value of exactly 0.0.
  */
-#define VSL_DB_NEG_INF         (-100.0f)
+#define VSL_DB_NEG_INF         (-144.0f)
+#define VSL_DB_FLOOR_LINEAR    (6.309573e-08f)
 
 typedef struct {
     uint32_t dsp_param_id;

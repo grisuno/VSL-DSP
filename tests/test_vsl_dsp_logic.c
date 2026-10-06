@@ -333,8 +333,11 @@ static void test_VSL_Linear_To_DB(void **state)
     assert_float_equal(VSL_Linear_To_DB(1.0f), 0.0f, 1e-4f);
     assert_float_equal(VSL_Linear_To_DB(0.5f), -6.0206f, 1e-3f);
     assert_float_equal(VSL_Linear_To_DB(0.1f), -20.0f, 1e-3f);
-    assert_true(VSL_Linear_To_DB(0.0f) <= VSL_DB_NEG_INF);
-    assert_true(VSL_Linear_To_DB(-1.0f) <= VSL_DB_NEG_INF);
+    assert_float_equal(VSL_Linear_To_DB(0.0f), VSL_DB_NEG_INF, 1e-4f);
+    assert_float_equal(VSL_Linear_To_DB(-1.0f), VSL_DB_NEG_INF, 1e-4f);
+    assert_float_equal(VSL_Linear_To_DB(1e-9f), VSL_DB_NEG_INF, 1e-4f);
+    assert_float_equal(VSL_Linear_To_DB(VSL_DB_FLOOR_LINEAR),
+                        VSL_DB_NEG_INF, 5e-2f);
 }
 
 static void test_VSL_DB_To_Linear(void **state)
@@ -344,8 +347,10 @@ static void test_VSL_DB_To_Linear(void **state)
     assert_float_equal(VSL_DB_To_Linear(0.0f), 1.0f, 1e-4f);
     assert_float_equal(VSL_DB_To_Linear(-6.0206f), 0.5f, 1e-3f);
     assert_float_equal(VSL_DB_To_Linear(-20.0f), 0.1f, 1e-3f);
-    assert_float_equal(VSL_DB_To_Linear(VSL_DB_NEG_INF), 0.0f, 1e-6f);
-    assert_float_equal(VSL_DB_To_Linear(-200.0f), 0.0f, 1e-6f);
+    assert_float_equal(VSL_DB_To_Linear(VSL_DB_NEG_INF),
+                        VSL_DB_FLOOR_LINEAR, 1e-12f);
+    assert_float_equal(VSL_DB_To_Linear(-200.0f),
+                        VSL_DB_FLOOR_LINEAR, 1e-12f);
 }
 
 static void test_VSL_DB_Neg_Inf_Threshold(void **state)
@@ -354,11 +359,13 @@ static void test_VSL_DB_Neg_Inf_Threshold(void **state)
 
     float db;
 
-    for (db = -6.0f; db >= -120.0f; db -= 6.0f) {
+    for (db = -6.0f; db >= -150.0f; db -= 6.0f) {
         float back = VSL_DB_To_Linear(db);
         assert_true(back >= 0.0f && back <= 1.0f);
-        if (db > VSL_DB_NEG_INF) {
+        if (db >= VSL_DB_NEG_INF) {
             assert_float_equal(VSL_Linear_To_DB(back), db, 5e-2f);
+        } else {
+            assert_float_equal(back, VSL_DB_FLOOR_LINEAR, 1e-12f);
         }
     }
 }

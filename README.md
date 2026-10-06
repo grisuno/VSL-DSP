@@ -27,7 +27,8 @@ for compatibility with the Linux kernel module licensing.
 | AudioBox 1818 VSL | `194f:0103`             | USB 2.0   |
 
 The three models share the same UAC2 audio interface and the same
-HID control plane. Adding a new product ID is a one-line change in
+USB bulk control plane (MIDI interface; the device exposes no HID
+interface). Adding a new product ID is a one-line change in
 `audiobox_vsl.h`.
 
 ## Reverse engineering with [LazyOwn](https://github.com/grisuno/LazyOwn) and REA
@@ -55,11 +56,12 @@ Improvements derived from these findings:
 
 - `vsl_cli db <ch> <dB>` command and `db1`/`db2` table entries
   following the vendor `gain.db` naming.
-- `VSL_Linear_To_DB` / `VSL_DB_To_Linear` converters with a
-  dedicated `VSL_DB_NEG_INF` floor, covered by CMocka tests.
+- `VSL_Linear_To_DB` / `VSL_DB_To_Linear` converters with the vendor
+  floor (`VSL_DB_NEG_INF = -144.0 dB`, linear `6.309573e-08`, from
+  `FUN_0011ccfc`/`FUN_0011f5b8`), covered by CMocka tests.
 - The vendor mute wire code was not recovered, so no mute code
-  is invented: `-inf` maps to linear `0.0` through the existing
-  curve and is documented as not-a-mute.
+  is invented: a non-finite `-inf` CLI input maps to linear `0.0`
+  explicitly and is documented as not-a-mute.
 
 Thanks to the REA project (https://github.com/morluto/rea) for
 the open source reverse engineering workflow that made this
@@ -72,7 +74,7 @@ analysis possible.
 - Connection and disconnection logged to the kernel ring buffer.
 - Optional auto-load at boot via `/etc/modules-load.d/`.
 - Single source of truth in `audiobox_vsl.h` for every supported PID.
-- CMocka unit test suite (24 tests: 10 detector + 14 DSP).
+- CMocka unit test suite (34 tests: 12 detector + 17 DSP + 5 transport).
 - Hardening flags on every compile (`-Wall -Wextra -Werror
   -fstack-protector-strong -D_FORTIFY_SOURCE=2`).
 - AddressSanitizer + UndefinedBehaviorSanitizer target (`make asan`).
@@ -156,14 +158,15 @@ sudo make uninstall
 
 ```sh
 make test    # build and run the CMocka unit test suite (detector)
-make test-dsp # build and run the DSP logic unit tests (14 tests)
+make test-dsp # build and run the DSP logic unit tests (17 tests)
+make test-transport # build and run the DSP transport unit tests (5 tests)
 make asan    # build and run the test suite under ASan+UBSan
 make info    # print resolved build variables
 make deb     # build Debian package (.deb) for the kernel module
 make help    # list every available target
 ```
 
-The detector test suite covers the model lookup table: 10 tests
+The detector test suite covers the model lookup table: 12 tests
 asserting PID-to-model-name resolution, uniqueness, and NULL for
 unknown products.
 
@@ -171,6 +174,11 @@ The DSP unit test suite (`make test-dsp`) covers:
 - `VSL_Encode_Gain` and `VSL_Decode_Gain` (round-trip identity)
 - `VSL_Map_Frequency` and `VSL_Decode_Frequency`
 - `VSL_Final_Encode_To_Int` (validated test: `0.75 -> 40793`)
+
+The transport unit test suite (`make test-transport`) covers the pure
+`VSL_Build_Packet` datagram builder (layout, zero/max values, NULL
+fail-closed) and the NULL-handle `VSL_Send_Parameter` guard. The bulk
+I/O path itself needs hardware fault injection (Phase 5).
 
 All tests pass under ASan + UBSan and mutation testing.
 
@@ -261,6 +269,7 @@ VSL-DSP/
 ├── spec/
 │   ├── audiobox_vsl.md            BDD specification for the detector
 │   ├── vsl_dsp_logic.md           BDD specification for the DSP library
+│   ├── vsl_dsp_transport.md       BDD specification for the USB transport
 │   ├── vsl_config_centralization.md
 │   └── vsl_decode_gain.md
 ├── src/
@@ -271,8 +280,9 @@ VSL-DSP/
 │   ├── vsl_dsp_transport.h
 │   └── vsl_cli.c                  CLI control tool
 ├── tests/
-│   ├── test_audiobox_vsl.c        CMocka test suite (detector, 10 tests)
-│   └── test_vsl_dsp_logic.c       CMocka test suite (DSP, 14 tests)
+│   ├── test_audiobox_vsl.c        CMocka test suite (detector, 12 tests)
+│   ├── test_vsl_dsp_logic.c       CMocka test suite (DSP, 17 tests)
+│   └── test_vsl_dsp_transport.c   CMocka test suite (transport, 5 tests)
 ├── voicecloak/                    voice anonymizer sub-project
 │   ├── README.md
 │   ├── Makefile
@@ -313,7 +323,8 @@ family. The devices ship with proprietary Windows and macOS
 software only. On Linux, `snd-usb-audio` provides basic UAC2
 audio I/O, but the VSL DSP processing (Fat Channel effects,
 mixer routing, parameter control) is accessed through a
-proprietary USB-HID control plane that no other open source
+proprietary USB bulk control plane on the MIDI interface (no HID
+interface on the device) that no other open source
 project has reverse-engineered.
 
 This project provides:
@@ -346,7 +357,7 @@ core matches a device, `probe` is called. The handler:
    The standard `snd-usb-audio` driver remains the owner and
    ALSA continues to provide full audio functionality.
 
-The detector never touches the HID control endpoint, never
+The detector never touches the DSP bulk endpoint, never
 allocates memory in the hot path, and never formats untrusted
 input.
 

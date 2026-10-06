@@ -66,6 +66,8 @@ Provides pure mathematical functions for encoding and decoding DSP parameters fo
 
 ### Assumptions and Open Issues
 - The float-range divisor in `VSL_Final_Encode_To_Int` (1000.0f, `VSL_MAX_ENCODED_FLOAT`) remains a hypothesis from DSP scaling, pending extraction of the exact constant from the disassembly. The current behavior is pinned by the validated test (`0.75 -> 40793`, full pipeline).
+- The dB floor is vendor evidence, not a hypothesis: `libfatchannelplugins.so` `FUN_0011ccfc` case 6 returns `-144.0` below linear `6.309573e-08` (`20*log10` above it), and `FUN_0011f5b8` inverts with `powf(10, db*0.05)` floored at the same pair. Hence `VSL_DB_NEG_INF = -144.0f` and `VSL_DB_FLOOR_LINEAR = 6.309573e-08f`. True silence stays in the separate `db.inf` domain; sub-floor linear never means mute.
+- The input clamp of `VSL_Linear_To_DB`/`VSL_DB_To_Linear` to [0,1] linear is a project-side guard; the vendor functions operate on raw struct fields without it.
 - The `VSL_Parameter` structure fields are annotated with comments indicating their likely offsets in the original structure (from the disassembly). These annotations should be verified and updated as needed.
 
 ### Safety

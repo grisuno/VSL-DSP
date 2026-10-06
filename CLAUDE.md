@@ -3,7 +3,8 @@
 > **Mission:** build a free software open source driver (kernel module
 > plus userspace library) for the PreSonus AudioBox VSL family of USB
 > audio interfaces, by reverse engineering the disassembled Android
-> driver and exposing a USB-HID control plane to Linux. Every constant
+> driver and exposing a USB bulk control plane (MIDI interface; no
+> HID interface on the device) to Linux. Every constant
 > must be traceable to a source of evidence; assumption is the enemy
 > of reverse engineering.
 
@@ -29,7 +30,7 @@ works on this repository. **These rules override default behaviour.**
    representable. Pointer validation, `sizeof` buffer bounds, return
    code handling, no `strcpy`, no overflow. Fail closed: if a
    guarantee cannot be verified, the operation is rejected. The 64
-   byte HID packet is a hard limit, not a suggestion.
+   byte bulk packet is a hard limit, not a suggestion.
 4. **Non-Interference (the detector must not break audio).** The
    kernel module does **not** claim the USB interface: `probe`
    returns `-ENODEV` so `snd-usb-audio` (ALSA) keeps owning
@@ -363,6 +364,7 @@ VSL-DSP/
 │   ├── audiobox_vsl.md
 │   ├── avatar.md
 │   ├── vsl_dsp_logic.md
+│   ├── vsl_dsp_transport.md
 │   ├── vsl_config_centralization.md
 │   └── vsl_decode_gain.md
 ├── src/                           # userspace DSP library (active)
@@ -374,6 +376,7 @@ VSL-DSP/
 ├── tests/                         # CMocka unit test suite
 │   └── test_audiobox_vsl.c
 │   └── test_vsl_dsp_logic.c
+│   └── test_vsl_dsp_transport.c
 ├── voicecloak/                    # voice anonymizer sub-project
 │   ├── Makefile                   # build, test, OBS routes (source of truth)
 │   ├── README.md
@@ -436,10 +439,11 @@ test, never as verified.
 | Frequency mapping                    | Implemented   | `VSL_Map_Frequency` / `VSL_Decode_Frequency`, base 2 logarithm.                                                                                                |
 | Float to int conversion              | Validated     | Returns `uint16_t` (was `uint32_t`; fixed to match protocol). Scale `1000.0f -> 65535`. Test: `0.75 -> 40793` (full pipeline).                                |
 | Parameter struct                     | Confirmed     | `VSL_Parameter` (9 fields).                                                                                                                                    |
-| HID packet                           | Confirmed     | 64 bytes (`0x40`) from the disassembly.                                                                                                                        |
+| Bulk packet                          | Confirmed     | 64 bytes (`0x40`) from the disassembly.                                                                                                                        |
 | Centralized config                   | Closed        | `src/vsl_config.h`: single source of truth for VID, PIDs, Report ID, MIDI iface, endpoint. `VSL_ModelLookup()` for 3 models. No duplicated constants.           |
 | CLI tool                             | Implemented   | `vsl-cli`: `--pid`, `--model`, `gain`, `freq`, `raw`, `list` commands. Production-quality argument parsing, structured parameter table.                        |
-| DSP unit test suite                  | Closed        | `tests/test_vsl_dsp_logic.c` with CMocka: 14 tests (4 encode + 10 decode). ASan+UBSan clean. Mutation tested.                                                  |
+| DSP unit test suite                  | Closed        | `tests/test_vsl_dsp_logic.c` with CMocka: 17 tests (encode, decode round-trip, dB converters). ASan+UBSan clean. Mutation tested. |
+| DSP transport builder + hardening    | Closed        | Pure `VSL_Build_Packet` (layout, zero/max, NULL fail-closed) plus `VSL_Send_Parameter` NULL/short-write guards, claim-failure cleanup, named `VSL_USB_TIMEOUT_MS`. `tests/test_vsl_dsp_transport.c`: 5 tests, ASan+UBSan clean. Spec: `spec/vsl_dsp_transport.md`. |
 | VoiceCloak offline pipeline         | Closed        | `vc_dsp_cloak`: pitch shift, formant scaling, spectral scramble, seed-derived parameters. Mode ranges are the source of truth shared with the live path.        |
 | VoiceCloak streaming engine         | Closed        | `vc_stream` (constant rate) + `vc_rt` (constant-rate pitch shift). CMocka: passthrough identity, pitch up/down octave, bounded output, level preservation.        |
 | Live RMS compensation                | Closed        | `vc_level`: target -18 dBFS, attack 10 ms, release 250 ms, boost bounded to +12 dB, silence never amplified. Full-chain test confirms witness attenuation is restored. |
@@ -471,7 +475,7 @@ test, never as verified.
   Identified `FUN_00132c90` (Encode Gain), `FUN_00132d00` (Map
   Frequency), `FUN_00132da8` (Decode Frequency), `FUN_00412345`
   (USB Send, 64 bytes 0x40). Python PoC in `legacy/` for the
-  USB-HID protocol. Protocol analysis document in
+   USB bulk protocol. Protocol analysis document in
   `legacy/vsl_protocol_analysis.txt`.
 - **Phase 3** — DSP logic in pure C. `VSL_Encode_Gain`,
   `VSL_Decode_Gain` (inverse exponential, round-trip identity),
@@ -523,8 +527,10 @@ test, never as verified.
 - **Phase 4** — Resolve the critical blockers. Extract VID/PID
   (library), Report ID, and endianness from the disassembly or
   hardware. Options: (A) Ghidra/IDA analysis of `FUN_00412345` and
-  its caller; (B) `vsl_discover` + `usbhid-dump` with real
-  hardware; (C) `strings` / `objdump` of the Android `.so`.
+  its caller; (B) usbmon capture on EP 2 OUT during a vendor-app
+  control move with real hardware (the device has no HID interface,
+  so `usbhid-dump` does not apply); (C) `strings` / `objdump` of
+  the Android `.so`.
 - **Phase 4a** — VoiceCloak live verification on hardware. Listening
   check of `vc_level`, `vc_effects`, and `vc_presets` on the AudioBox:
   confirm the RMS target and ceiling behave as measured in tests, that
@@ -544,7 +550,7 @@ test, never as verified.
   kernel module; package for the userspace library. Integration
   with the build system.
 
-Background tasks: fuzzing the HID/DSP parser; KUnit tests of the
+Background tasks: fuzzing the DSP packet parser; KUnit tests of the
 detector; public API documentation post validation; continuous
 boy-scout mode on technical debt.
 

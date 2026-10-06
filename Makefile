@@ -59,6 +59,7 @@ LDLIBS_H ?= -lusb-1.0 -lm
 
 TEST_BIN := tests/audiobox_vsl_test
 TEST_DSP_BIN := tests/test_vsl_dsp_logic
+TEST_TRANSPORT_BIN := tests/test_vsl_dsp_transport
 VSL_CLI_BIN := src/vsl_cli
 TEST_AVATAR_BIN := tests/test_avatar_logic
 AVATAR_BIN := avatar/avatar
@@ -73,10 +74,10 @@ CFLAGS_AV ?= $(CSTD) -O2 -g -Wall -Wextra -Werror -Wshadow -Wpedantic \
 LDLIBS_AV ?= $(shell pkg-config --libs alsa sdl2 SDL2_image) -lm
 
 .PHONY: all test asan clean install uninstall modprobe rmmod info help deb \
-        vsl-cli test-dsp avatar avatar-build avatar-list avatar-test avatar-asan \
+        vsl-cli test-dsp test-transport avatar avatar-build avatar-list avatar-test avatar-asan \
         bdd-driver
 
-all: modules test vsl-cli test-dsp
+all: modules test vsl-cli test-dsp test-transport
 
 modules:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules
@@ -99,6 +100,12 @@ $(TEST_DSP_BIN): tests/test_vsl_dsp_logic.c src/vsl_dsp_logic.c src/vsl_dsp_logi
 
 test-dsp: $(TEST_DSP_BIN)
 	$(TEST_DSP_BIN)
+
+$(TEST_TRANSPORT_BIN): tests/test_vsl_dsp_transport.c src/vsl_dsp_transport.c src/vsl_dsp_transport.h src/vsl_config.h
+	$(CC) $(CFLAGS_T) -Isrc tests/test_vsl_dsp_transport.c src/vsl_dsp_transport.c -o $@ $(LDLIBS_T) -lusb-1.0
+
+test-transport: $(TEST_TRANSPORT_BIN)
+	$(TEST_TRANSPORT_BIN)
 
 $(VSL_CLI_BIN): src/vsl_cli.c src/vsl_dsp_logic.c src/vsl_dsp_logic.h \
                 src/vsl_dsp_transport.c src/vsl_dsp_transport.h src/vsl_config.h
