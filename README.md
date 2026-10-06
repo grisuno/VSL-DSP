@@ -30,6 +30,41 @@ The three models share the same UAC2 audio interface and the same
 HID control plane. Adding a new product ID is a one-line change in
 `audiobox_vsl.h`.
 
+## Reverse engineering with [LazyOwn](https://github.com/grisuno/LazyOwn) and REA
+
+The vendor reference findings behind the DSP improvements below
+were obtained with the [LazyOwn](https://github.com/grisuno/LazyOwn) RedTeam Framework and its `rea`
+lazyaddon, which drives REA (Reverse Engineer Anything) with
+Ghidra 12.1.4 against the vendor control application libraries.
+
+Verified findings, each with a REA evidence envelope:
+
+- The application is PreSonus Universal Control: `libucnet.so`
+  implements UCNET discovery over UDP (bind `INADDR_ANY:47809`,
+  alive/leave/query/timeout session events) with mDNS peer
+  discovery and a TCP control channel. See
+  `spec/ucnet_discovery.md`.
+- `libfatchannelplugins.so` builds a static parameter registry
+  (`_INIT_0`) of `{handler, name, channel_index, flags}` entries.
+  The `gain.db` / `gain.N` / `db.inf` split showed that decibel
+  gain and negative infinity are separate domains with dedicated
+  handlers, not points on one curve. See
+  `spec/fatchannel_registry.md`.
+
+Improvements derived from these findings:
+
+- `vsl_cli db <ch> <dB>` command and `db1`/`db2` table entries
+  following the vendor `gain.db` naming.
+- `VSL_Linear_To_DB` / `VSL_DB_To_Linear` converters with a
+  dedicated `VSL_DB_NEG_INF` floor, covered by CMocka tests.
+- The vendor mute wire code was not recovered, so no mute code
+  is invented: `-inf` maps to linear `0.0` through the existing
+  curve and is documented as not-a-mute.
+
+Thanks to the REA project (https://github.com/morluto/rea) for
+the open source reverse engineering workflow that made this
+analysis possible.
+
 ## Features
 
 - Automatic detection of every AudioBox VSL model via USB VID/PID.
@@ -314,41 +349,6 @@ core matches a device, `probe` is called. The handler:
 The detector never touches the HID control endpoint, never
 allocates memory in the hot path, and never formats untrusted
 input.
-
-## Reverse engineering with LazyOwn and REA
-
-The vendor reference findings behind the DSP improvements below
-were obtained with the LazyOwn RedTeam Framework and its `rea`
-lazyaddon, which drives REA (Reverse Engineer Anything) with
-Ghidra 12.1.4 against the vendor control application libraries.
-
-Verified findings, each with a REA evidence envelope:
-
-- The application is PreSonus Universal Control: `libucnet.so`
-  implements UCNET discovery over UDP (bind `INADDR_ANY:47809`,
-  alive/leave/query/timeout session events) with mDNS peer
-  discovery and a TCP control channel. See
-  `spec/ucnet_discovery.md`.
-- `libfatchannelplugins.so` builds a static parameter registry
-  (`_INIT_0`) of `{handler, name, channel_index, flags}` entries.
-  The `gain.db` / `gain.N` / `db.inf` split showed that decibel
-  gain and negative infinity are separate domains with dedicated
-  handlers, not points on one curve. See
-  `spec/fatchannel_registry.md`.
-
-Improvements derived from these findings:
-
-- `vsl_cli db <ch> <dB>` command and `db1`/`db2` table entries
-  following the vendor `gain.db` naming.
-- `VSL_Linear_To_DB` / `VSL_DB_To_Linear` converters with a
-  dedicated `VSL_DB_NEG_INF` floor, covered by CMocka tests.
-- The vendor mute wire code was not recovered, so no mute code
-  is invented: `-inf` maps to linear `0.0` through the existing
-  curve and is documented as not-a-mute.
-
-Thanks to the REA project (https://github.com/morluto/rea) for
-the open source reverse engineering workflow that made this
-analysis possible.
 
 ## License
 
