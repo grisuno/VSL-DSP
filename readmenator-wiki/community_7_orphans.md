@@ -1,10 +1,10 @@
 # orphans
 
-*Community 5 | 7 files | cohesion 0.00*
+*Community 7 | 7 files | cohesion 0.00*
 
 ## Definition
 
-This community groups 7 file(s) rooted at `legacy` with dominant language sh (cohesion 0.00). Central symbols: `VSLParameter`, `__init__`, `analyze_pcap`, `build_with_dkms`, `check_dependencies`, `check_root`, `copy_source_files`, `create_dkms_conf`. Core file: `legacy/build-dkms.sh` (19 symbols). Documented purpose: Autor: Gris Iscomeback Correo electrónico: grisiscomeback[at]gmail[dot]com Fecha de creación: xx/xx/xxxx Licencia: GPL v3  Descripción:.
+This community groups 7 file(s) rooted at `legacy` with dominant language sh (cohesion 0.00). Central symbols: `VSLParameter`, `__init__`, `analyze_pcap`, `bad`, `build_with_dkms`, `check_dependencies`, `check_root`, `copy_source_files`. Core file: `legacy/build-dkms.sh` (19 symbols). Documented purpose: Autor: Gris Iscomeback Correo electrónico: grisiscomeback[at]gmail[dot]com Fecha de creación: xx/xx/xxxx Licencia: GPL v3  Descripción:.
 
 ## Files
 
@@ -12,11 +12,11 @@ This community groups 7 file(s) rooted at `legacy` with dominant language sh (co
 |------|----------|-------|---------|-----|
 | `install.sh` | sh | utility | 0 | yes |
 | `legacy/app.py` | py | utility | 0 | yes |
-| `legacy/build-dkms.sh` | sh | presentation | 19 | yes |
+| `legacy/build-dkms.sh` | sh | utility | 19 | yes |
 | `legacy/test.sh` | sh | testing | 0 | yes |
 | `legacy/vsl_config.py` | py | infrastructure | 3 | yes |
 | `legacy/vsl_protocol_analyzer.py` | py | utility | 7 | yes |
-| `tests/test_vsl_dsp_logic.c` | c | testing | 15 | no |
+| `tests/bdd_driver_gate.sh` | sh | infrastructure | 2 | yes |
 
 ## Key Symbols
 
@@ -49,7 +49,7 @@ This community groups 7 file(s) rooted at `legacy` with dominant language sh (co
 - `get_decoded_value` (method, `legacy/vsl_protocol_analyzer.py:115`) `def get_decoded_value(encoded_value, param_id)` - Dirige la decodificación al motor DSP correcto.
 - `decode_vsl_packet` (method, `legacy/vsl_protocol_analyzer.py:140`) `def decode_vsl_packet(data)` - Decodifica el payload de 64 bytes. (Regla #3: Seguridad)
 - `analyze_pcap` (method, `legacy/vsl_protocol_analyzer.py:173`) `def analyze_pcap(pcap_file)` - Carga un archivo PCAP y filtra los paquetes USB VSL.
-- `test_VSL_Encode_Gain` (function, `tests/test_vsl_dsp_logic.c:9`) `static void test_VSL_Encode_Gain(void **state)`
+- `ok` (function, `tests/bdd_driver_gate.sh:29`)
 
 ## Internal vs External Edges
 
@@ -58,9 +58,12 @@ This community groups 7 file(s) rooted at `legacy` with dominant language sh (co
 
 ## Connections
 
-- [INFERRED] shares_context community 2 <-> 5 (strength 0.5): Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 5 (orphans).
-- [INFERRED] shares_context community 3 <-> 5 (strength 0.5): Inferred shared context (layer utility) with no import path between community 3 (src) and community 5 (orphans).
-- [INFERRED] shares_context community 4 <-> 5 (strength 0.5): Inferred shared context (layer utility) with no import path between community 4 (voicecloak/src) and community 5 (orphans).
+- [INFERRED] shares_context community 0 <-> 7 (strength 0.5): Inferred shared context (layer utility) with no import path between community 0 (voicecloak/src: vc_denoise) and community 7 (orphans).
+- [INFERRED] shares_context community 1 <-> 7 (strength 0.5): Inferred shared context (layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 7 (orphans).
+- [INFERRED] shares_context community 2 <-> 7 (strength 0.5): Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 7 (orphans).
+- [INFERRED] shares_context community 3 <-> 7 (strength 0.5): Inferred shared context (layer utility) with no import path between community 3 (voicecloak/src: vc_crypto) and community 7 (orphans).
+- [INFERRED] shares_context community 4 <-> 7 (strength 0.5): Inferred shared context (layer utility) with no import path between community 4 (src) and community 7 (orphans).
+- [INFERRED] shares_context community 5 <-> 7 (strength 0.5): Inferred shared context (layer utility) with no import path between community 5 (root) and community 7 (orphans).
 
 ## Risks
 
@@ -68,7 +71,6 @@ This community groups 7 file(s) rooted at `legacy` with dominant language sh (co
 
 ## Open Questions
 
-- Why do 1 file(s) lack file-level docs (e.g. `tests/test_vsl_dsp_logic.c`)? What purpose do they serve?
 - What would break if the most connected file in orphans changed?
 - Should orphans be split, given cohesion 0.00?
 
@@ -80,4 +82,4 @@ This community groups 7 file(s) rooted at `legacy` with dominant language sh (co
 - `legacy/test.sh`
 - `legacy/vsl_config.py`
 - `legacy/vsl_protocol_analyzer.py`
-- `tests/test_vsl_dsp_logic.c`
+- `tests/bdd_driver_gate.sh`

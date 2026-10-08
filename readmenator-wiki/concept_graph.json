@@ -1,0 +1,2888 @@
+{
+  "concepts": [
+    {
+      "name": "voicecloak",
+      "files": [
+        "voicecloak/src/vc_alsa.c",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_cli.c",
+        "voicecloak/src/vc_crypto.c",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c",
+        "voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_effects.c",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_fft.c",
+        "voicecloak/src/vc_fft.h",
+        "voicecloak/src/vc_level.c",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.c",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt.c",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c",
+        "voicecloak/src/vc_rt_seed.c",
+        "voicecloak/src/vc_stft.c",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.c",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_wav.c",
+        "voicecloak/src/vc_wav.h",
+        "voicecloak/tests/test_vc_denoise.c",
+        "voicecloak/tests/test_vc_effects.c",
+        "voicecloak/tests/test_vc_eq.c",
+        "voicecloak/tests/test_vc_fft.c",
+        "voicecloak/tests/test_vc_level.c",
+        "voicecloak/tests/test_vc_presets.c",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 37,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "vsl",
+      "files": [
+        "audiobox_vsl.c",
+        "audiobox_vsl.h",
+        "install.sh",
+        "legacy/build-dkms.sh",
+        "legacy/test.sh",
+        "legacy/vsl_config.h",
+        "legacy/vsl_config.py",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c",
+        "legacy/vsl_dsp_transport.h",
+        "legacy/vsl_hid_io.py",
+        "legacy/vsl_poc_main.py",
+        "legacy/vsl_protocol_analyzer.py",
+        "legacy/vsl_transport.py",
+        "src/vsl_cli.c",
+        "src/vsl_config.h",
+        "src/vsl_dsp_logic.c",
+        "src/vsl_dsp_logic.h",
+        "src/vsl_dsp_transport.c",
+        "src/vsl_dsp_transport.h",
+        "tests/bdd_driver_gate.sh",
+        "tests/test_audiobox_vsl.c",
+        "voicecloak/src/vc_alsa.h"
+      ],
+      "mentions": 187,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "brief",
+      "files": [
+        "audiobox_vsl.h",
+        "avatar/avatar_logic.h",
+        "avatar/avatar_main.c",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c",
+        "src/vsl_dsp_logic.h",
+        "src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_wav.h"
+      ],
+      "mentions": 107,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "dsp",
+      "files": [
+        "legacy/test.sh",
+        "legacy/vsl_config.h",
+        "legacy/vsl_config.py",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c",
+        "legacy/vsl_dsp_transport.h",
+        "legacy/vsl_hid_io.py",
+        "legacy/vsl_poc_main.py",
+        "legacy/vsl_protocol_analyzer.py",
+        "legacy/vsl_transport.py",
+        "src/vsl_dsp_logic.c",
+        "src/vsl_dsp_logic.h",
+        "src/vsl_dsp_transport.c",
+        "src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_dsp.c",
+        "voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_rt.h"
+      ],
+      "mentions": 76,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "create",
+      "files": [
+        "legacy/build-dkms.sh",
+        "legacy/mixer_quirks.c",
+        "voicecloak/src/vc_crypto.c",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.c",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.c",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt.c",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.c",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.c",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 89,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "return",
+      "files": [
+        "avatar/avatar_logic.h",
+        "avatar/avatar_main.c",
+        "legacy/mixer_quirks.c",
+        "legacy/vsl_dsp_logic.h",
+        "src/vsl_dsp_logic.h",
+        "src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_crypto.c",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_wav.h",
+        "voicecloak/tests/test_vc_denoise.c"
+      ],
+      "mentions": 78,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "rate",
+      "files": [
+        "avatar/avatar_config.h",
+        "avatar/avatar_logic.h",
+        "legacy/mixer_quirks.c",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_wav.h",
+        "voicecloak/tests/test_vc_denoise.c",
+        "voicecloak/tests/test_vc_effects.c",
+        "voicecloak/tests/test_vc_eq.c",
+        "voicecloak/tests/test_vc_level.c",
+        "voicecloak/tests/test_vc_presets.c",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 47,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "legacy",
+      "files": [
+        "legacy/app.py",
+        "legacy/build-dkms.sh",
+        "legacy/main.c",
+        "legacy/mixer_quirks.c",
+        "legacy/test.sh",
+        "legacy/test_connection.c",
+        "legacy/vsl_config.h",
+        "legacy/vsl_config.py",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c",
+        "legacy/vsl_dsp_transport.h",
+        "legacy/vsl_hid_io.py",
+        "legacy/vsl_poc_main.py",
+        "legacy/vsl_protocol_analyzer.py",
+        "legacy/vsl_transport.py"
+      ],
+      "mentions": 17,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "float",
+      "files": [
+        "avatar/avatar_logic.h",
+        "avatar/avatar_main.c",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_protocol_analyzer.py",
+        "src/vsl_dsp_logic.h",
+        "voicecloak/src/vc_crypto.c",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt_cli.c",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_wav.c",
+        "voicecloak/src/vc_wav.h",
+        "voicecloak/tests/test_vc_denoise.c"
+      ],
+      "mentions": 52,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "destroy",
+      "files": [
+        "voicecloak/src/vc_crypto.c",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.c",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.c",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt.c",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.c",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.c",
+        "voicecloak/src/vc_stream.h"
+      ],
+      "mentions": 18,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "gain",
+      "files": [
+        "legacy/mixer_quirks.c",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_poc_main.py",
+        "legacy/vsl_protocol_analyzer.py",
+        "src/vsl_dsp_logic.c",
+        "src/vsl_dsp_logic.h",
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.c",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_eq.c",
+        "voicecloak/tests/test_vc_level.c"
+      ],
+      "mentions": 49,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "max",
+      "files": [
+        "legacy/mixer_quirks.c",
+        "legacy/vsl_config.h",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_protocol_analyzer.py",
+        "src/vsl_cli.c",
+        "src/vsl_dsp_logic.h",
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.c",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stream.h"
+      ],
+      "mentions": 44,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "null",
+      "files": [
+        "avatar/avatar_logic.h",
+        "avatar/avatar_main.c",
+        "legacy/mixer_quirks.c",
+        "src/vsl_dsp_transport.h",
+        "tests/test_audiobox_vsl.c",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 47,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "success",
+      "files": [
+        "audiobox_vsl.h",
+        "legacy/build-dkms.sh",
+        "src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_wav.h"
+      ],
+      "mentions": 23,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "cplusplus",
+      "files": [
+        "audiobox_vsl.h",
+        "avatar/avatar_logic.h",
+        "src/vsl_config.h",
+        "src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h"
+      ],
+      "mentions": 13,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "ifdef",
+      "files": [
+        "audiobox_vsl.h",
+        "avatar/avatar_logic.h",
+        "src/vsl_config.h",
+        "src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h"
+      ],
+      "mentions": 13,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "param",
+      "files": [
+        "avatar/avatar_logic.h",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_transport.py",
+        "src/vsl_cli.c",
+        "src/vsl_dsp_logic.h",
+        "src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_wav.h"
+      ],
+      "mentions": 123,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "invalid",
+      "files": [
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c",
+        "voicecloak/tests/test_vc_effects.c",
+        "voicecloak/tests/test_vc_eq.c",
+        "voicecloak/tests/test_vc_level.c",
+        "voicecloak/tests/test_vc_presets.c"
+      ],
+      "mentions": 30,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "packet",
+      "files": [
+        "legacy/vsl_config.h",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_dsp_transport.c",
+        "legacy/vsl_dsp_transport.h",
+        "legacy/vsl_hid_io.py",
+        "legacy/vsl_poc_main.py",
+        "legacy/vsl_protocol_analyzer.py",
+        "legacy/vsl_transport.py",
+        "src/vsl_config.h",
+        "src/vsl_dsp_logic.h",
+        "src/vsl_dsp_transport.c",
+        "src/vsl_dsp_transport.h"
+      ],
+      "mentions": 18,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "size",
+      "files": [
+        "legacy/vsl_config.h",
+        "src/vsl_config.h",
+        "src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_crypto.c",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c"
+      ],
+      "mentions": 54,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "int",
+      "files": [
+        "legacy/mixer_quirks.c",
+        "legacy/vsl_config.h",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_dsp_logic.h",
+        "src/vsl_dsp_logic.c",
+        "src/vsl_dsp_logic.h",
+        "voicecloak/src/vc_crypto.c",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_denoise.c"
+      ],
+      "mentions": 40,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "samples",
+      "files": [
+        "avatar/avatar_config.h",
+        "voicecloak/src/vc_effects.c",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.c",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_wav.h",
+        "voicecloak/tests/test_vc_denoise.c",
+        "voicecloak/tests/test_vc_eq.c"
+      ],
+      "mentions": 34,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "out",
+      "files": [
+        "legacy/mixer_quirks.c",
+        "src/vsl_config.h",
+        "src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c",
+        "voicecloak/src/vc_dsp.c",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_wav.h",
+        "voicecloak/tests/test_vc_denoise.c"
+      ],
+      "mentions": 31,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "frequency",
+      "files": [
+        "avatar/avatar_logic.h",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_poc_main.py",
+        "legacy/vsl_protocol_analyzer.py",
+        "src/vsl_dsp_logic.c",
+        "src/vsl_dsp_logic.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h"
+      ],
+      "mentions": 30,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "params",
+      "files": [
+        "avatar/avatar_main.c",
+        "voicecloak/src/vc_denoise.c",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.c",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c",
+        "voicecloak/tests/test_vc_denoise.c",
+        "voicecloak/tests/test_vc_eq.c"
+      ],
+      "mentions": 30,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "release",
+      "files": [
+        "avatar/avatar_logic.h",
+        "src/vsl_dsp_transport.h",
+        "tests/test_audiobox_vsl.c",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h"
+      ],
+      "mentions": 19,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "real",
+      "files": [
+        "install.sh",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c",
+        "legacy/vsl_hid_io.py",
+        "legacy/vsl_protocol_analyzer.py",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stream.h"
+      ],
+      "mentions": 13,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "spectral",
+      "files": [
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c",
+        "voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stream.c",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 36,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "sample",
+      "files": [
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_wav.c",
+        "voicecloak/src/vc_wav.h"
+      ],
+      "mentions": 34,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "rms",
+      "files": [
+        "avatar/avatar_logic.c",
+        "avatar/avatar_logic.h",
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_dsp.c",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_denoise.c",
+        "voicecloak/tests/test_vc_effects.c",
+        "voicecloak/tests/test_vc_level.c",
+        "voicecloak/tests/test_vc_presets.c",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 26,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "state",
+      "files": [
+        "avatar/avatar_logic.c",
+        "avatar/avatar_logic.h",
+        "legacy/mixer_quirks.c",
+        "tests/bdd_driver_gate.sh",
+        "voicecloak/src/vc_effects.c",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stream.h"
+      ],
+      "mentions": 26,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "error",
+      "files": [
+        "legacy/build-dkms.sh",
+        "legacy/vsl_config.py",
+        "legacy/vsl_core.py",
+        "legacy/vsl_transport.py",
+        "src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_wav.h"
+      ],
+      "mentions": 22,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "process",
+      "files": [
+        "voicecloak/src/vc_dsp.c",
+        "voicecloak/src/vc_effects.c",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.c",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_stream.c",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c"
+      ],
+      "mentions": 21,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "output",
+      "files": [
+        "avatar/avatar_logic.h",
+        "legacy/mixer_quirks.c",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_wav.h",
+        "voicecloak/tests/test_vc_presets.c",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 19,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "run",
+      "files": [
+        "legacy/vsl_poc_main.py",
+        "tests/bdd_driver_gate.sh",
+        "voicecloak/src/vc_alsa.c",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_eq.c",
+        "voicecloak/src/vc_stream.c",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c",
+        "voicecloak/tests/test_vc_level.c",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 16,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "time",
+      "files": [
+        "install.sh",
+        "legacy/mixer_quirks.c",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_level.c",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h"
+      ],
+      "mentions": 12,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "value",
+      "files": [
+        "avatar/avatar_logic.h",
+        "legacy/mixer_quirks.c",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_protocol_analyzer.py",
+        "legacy/vsl_transport.py",
+        "src/vsl_dsp_logic.h",
+        "src/vsl_dsp_transport.h",
+        "voicecloak/tests/test_vc_denoise.c"
+      ],
+      "mentions": 38,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "context",
+      "files": [
+        "legacy/vsl_hid_io.py",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h"
+      ],
+      "mentions": 36,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "config",
+      "files": [
+        "avatar/avatar_config.h",
+        "legacy/mixer_quirks.c",
+        "legacy/vsl_config.h",
+        "legacy/vsl_config.py",
+        "src/vsl_config.h",
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.c",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_level.c"
+      ],
+      "mentions": 24,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "frame",
+      "files": [
+        "avatar/avatar_config.h",
+        "avatar/avatar_logic.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.c",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 21,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "transform",
+      "files": [
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_denoise.c",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt.c",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 17,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "print",
+      "files": [
+        "legacy/build-dkms.sh",
+        "legacy/vsl_config.py",
+        "legacy/vsl_poc_main.py",
+        "src/vsl_cli.c",
+        "tests/bdd_driver_gate.sh",
+        "voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_cli.c",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt_cli.c"
+      ],
+      "mentions": 16,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "level",
+      "files": [
+        "avatar/avatar_logic.h",
+        "install.sh",
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.c",
+        "voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.h",
+        "voicecloak/tests/test_vc_level.c",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 54,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "usb",
+      "files": [
+        "audiobox_vsl.h",
+        "legacy/mixer_quirks.c",
+        "legacy/test.sh",
+        "legacy/vsl_protocol_analyzer.py",
+        "src/vsl_config.h",
+        "src/vsl_dsp_logic.h",
+        "src/vsl_dsp_transport.h",
+        "tests/bdd_driver_gate.sh"
+      ],
+      "mentions": 42,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "stream",
+      "files": [
+        "tests/bdd_driver_gate.sh",
+        "voicecloak/src/vc_alsa.c",
+        "voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stream.c",
+        "voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c",
+        "voicecloak/tests/test_vc_stream.c"
+      ],
+      "mentions": 35,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "audio",
+      "files": [
+        "audiobox_vsl.h",
+        "legacy/build-dkms.sh",
+        "legacy/mixer_quirks.c",
+        "legacy/test.sh",
+        "tests/bdd_driver_gate.sh",
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_stream.h"
+      ],
+      "mentions": 25,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "encoded",
+      "files": [
+        "legacy/vsl_config.h",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.c",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_protocol_analyzer.py",
+        "legacy/vsl_transport.py",
+        "src/vsl_dsp_logic.h",
+        "src/vsl_dsp_transport.h"
+      ],
+      "mentions": 23,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "con",
+      "files": [
+        "legacy/vsl_config.py",
+        "legacy/vsl_core.py",
+        "legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c",
+        "legacy/vsl_hid_io.py",
+        "legacy/vsl_poc_main.py",
+        "legacy/vsl_protocol_analyzer.py",
+        "legacy/vsl_transport.py"
+      ],
+      "mentions": 21,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "mono",
+      "files": [
+        "avatar/avatar_logic.h",
+        "avatar/avatar_main.c",
+        "legacy/mixer_quirks.c",
+        "voicecloak/src/vc_alsa.c",
+        "voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_wav.h"
+      ],
+      "mentions": 21,
+      "confidence": "EXTRACTED"
+    },
+    {
+      "name": "min",
+      "files": [
+        "legacy/mixer_quirks.c",
+        "legacy/vsl_protocol_analyzer.py",
+        "src/vsl_dsp_logic.h",
+        "voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.c",
+        "voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_rt.h"
+      ],
+      "mentions": 19,
+      "confidence": "EXTRACTED"
+    }
+  ],
+  "relations": [
+    {
+      "source": "voicecloak",
+      "target": "brief",
+      "verb": "depends_on",
+      "strength": 1.0,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "return",
+      "verb": "depends_on",
+      "strength": 0.91,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "success",
+      "verb": "depends_on",
+      "strength": 0.85,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "sample",
+      "verb": "depends_on",
+      "strength": 0.81,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "rate",
+      "verb": "depends_on",
+      "strength": 0.79,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "cplusplus",
+      "verb": "depends_on",
+      "strength": 0.77,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "create",
+      "verb": "depends_on",
+      "strength": 0.77,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "destroy",
+      "verb": "depends_on",
+      "strength": 0.77,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "ifdef",
+      "verb": "depends_on",
+      "strength": 0.77,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "release",
+      "verb": "depends_on",
+      "strength": 0.77,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "context",
+      "verb": "depends_on",
+      "strength": 0.7,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "invalid",
+      "verb": "depends_on",
+      "strength": 0.68,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.c->voicecloak/src/vc_presets.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "null",
+      "verb": "depends_on",
+      "strength": 0.66,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "max",
+      "verb": "depends_on",
+      "strength": 0.62,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "time",
+      "verb": "depends_on",
+      "strength": 0.62,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "spectral",
+      "verb": "depends_on",
+      "strength": 0.55,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_presets.c->voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "state",
+      "verb": "depends_on",
+      "strength": 0.55,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "output",
+      "verb": "depends_on",
+      "strength": 0.53,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "samples",
+      "verb": "depends_on",
+      "strength": 0.51,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "transform",
+      "verb": "depends_on",
+      "strength": 0.49,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_presets.c->voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "out",
+      "verb": "depends_on",
+      "strength": 0.47,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "param",
+      "verb": "depends_on",
+      "strength": 0.47,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "size",
+      "verb": "depends_on",
+      "strength": 0.47,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "brief",
+      "verb": "depends_on",
+      "strength": 0.45,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/mixer_quirks.c->audiobox_vsl.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.45,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "sample",
+      "verb": "depends_on",
+      "strength": 0.43,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "process",
+      "verb": "depends_on",
+      "strength": 0.43,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "return",
+      "target": "brief",
+      "verb": "depends_on",
+      "strength": 0.38,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_main.c->avatar/avatar_logic.h",
+        "legacy/mixer_quirks.c->audiobox_vsl.h",
+        "src/vsl_dsp_transport.h->src/vsl_dsp_logic.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "frame",
+      "verb": "depends_on",
+      "strength": 0.38,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_rt_seed.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "min",
+      "verb": "depends_on",
+      "strength": 0.38,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "params",
+      "verb": "depends_on",
+      "strength": 0.38,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "real",
+      "verb": "depends_on",
+      "strength": 0.38,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_presets.c->voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_stream.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "stream",
+      "verb": "depends_on",
+      "strength": 0.38,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_stream.h"
+      ]
+    },
+    {
+      "source": "create",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "invalid",
+      "target": "brief",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h"
+      ]
+    },
+    {
+      "source": "invalid",
+      "target": "sample",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h"
+      ]
+    },
+    {
+      "source": "invalid",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h"
+      ]
+    },
+    {
+      "source": "legacy",
+      "target": "vsl",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/main.c->legacy/vsl_dsp_logic.h",
+        "legacy/main.c->legacy/vsl_dsp_transport.h",
+        "legacy/mixer_quirks.c->audiobox_vsl.h",
+        "legacy/test_connection.c->legacy/vsl_config.h",
+        "legacy/test_connection.c->legacy/vsl_dsp_transport.h",
+        "legacy/vsl_core.py->legacy/vsl_config.h",
+        "legacy/vsl_dsp_logic.c->legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_dsp_transport.h",
+        "legacy/vsl_dsp_transport.h->legacy/vsl_config.h"
+      ]
+    },
+    {
+      "source": "params",
+      "target": "brief",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_main.c->avatar/avatar_logic.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h"
+      ]
+    },
+    {
+      "source": "params",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_fft.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "cplusplus",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/mixer_quirks.c->audiobox_vsl.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "ifdef",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/mixer_quirks.c->audiobox_vsl.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "max",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "error",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h"
+      ]
+    },
+    {
+      "source": "vsl",
+      "target": "dsp",
+      "verb": "depends_on",
+      "strength": 0.36,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/vsl_core.py->legacy/vsl_config.h",
+        "legacy/vsl_dsp_logic.c->legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_dsp_transport.h",
+        "legacy/vsl_dsp_transport.h->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_core.py",
+        "legacy/vsl_hid_io.py->legacy/vsl_transport.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_config.h",
+        "legacy/vsl_poc_main.py->legacy/vsl_core.py"
+      ]
+    },
+    {
+      "source": "dsp",
+      "target": "vsl",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/vsl_core.py->legacy/vsl_config.h",
+        "legacy/vsl_dsp_logic.c->legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_dsp_transport.h",
+        "legacy/vsl_dsp_transport.h->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_core.py",
+        "legacy/vsl_hid_io.py->legacy/vsl_transport.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_config.h",
+        "legacy/vsl_poc_main.py->legacy/vsl_core.py"
+      ]
+    },
+    {
+      "source": "invalid",
+      "target": "rate",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h"
+      ]
+    },
+    {
+      "source": "legacy",
+      "target": "dsp",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/main.c->legacy/vsl_dsp_logic.h",
+        "legacy/main.c->legacy/vsl_dsp_transport.h",
+        "legacy/test_connection.c->legacy/vsl_config.h",
+        "legacy/test_connection.c->legacy/vsl_dsp_transport.h",
+        "legacy/vsl_core.py->legacy/vsl_config.h",
+        "legacy/vsl_dsp_logic.c->legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_dsp_transport.h",
+        "legacy/vsl_dsp_transport.h->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_config.h"
+      ]
+    },
+    {
+      "source": "params",
+      "target": "rate",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_main.c->avatar/avatar_config.h",
+        "avatar/avatar_main.c->avatar/avatar_logic.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "invalid",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "return",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "success",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/mixer_quirks.c->audiobox_vsl.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "return",
+      "target": "rate",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_main.c->avatar/avatar_config.h",
+        "avatar/avatar_main.c->avatar/avatar_logic.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h"
+      ]
+    },
+    {
+      "source": "rms",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "run",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_stream.c->voicecloak/src/vc_fft.h",
+        "voicecloak/src/vc_stream.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "audio",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_stream.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "float",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h"
+      ]
+    },
+    {
+      "source": "voicecloak",
+      "target": "gain",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "vsl",
+      "target": "encoded",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/vsl_core.py->legacy/vsl_config.h",
+        "legacy/vsl_dsp_logic.c->legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.h->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_core.py",
+        "legacy/vsl_hid_io.py->legacy/vsl_transport.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_config.h",
+        "legacy/vsl_poc_main.py->legacy/vsl_core.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_transport.py"
+      ]
+    },
+    {
+      "source": "vsl",
+      "target": "packet",
+      "verb": "depends_on",
+      "strength": 0.34,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/vsl_core.py->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_dsp_transport.h",
+        "legacy/vsl_dsp_transport.h->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_transport.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_config.h",
+        "legacy/vsl_poc_main.py->legacy/vsl_transport.py",
+        "legacy/vsl_transport.py->legacy/vsl_config.h",
+        "src/vsl_cli.c->src/vsl_config.h"
+      ]
+    },
+    {
+      "source": "create",
+      "target": "brief",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/mixer_quirks.c->audiobox_vsl.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h"
+      ]
+    },
+    {
+      "source": "float",
+      "target": "brief",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_main.c->avatar/avatar_logic.h",
+        "legacy/vsl_dsp_logic.c->legacy/vsl_dsp_logic.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "print",
+      "target": "brief",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "src/vsl_cli.c->src/vsl_dsp_logic.h",
+        "src/vsl_cli.c->src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h"
+      ]
+    },
+    {
+      "source": "print",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "context",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "create",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "destroy",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "null",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "release",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "return",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h"
+      ]
+    },
+    {
+      "source": "rms",
+      "target": "brief",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_logic.c->avatar/avatar_logic.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "spectral",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.32,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_stream.c->voicecloak/src/vc_fft.h",
+        "voicecloak/src/vc_stream.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h"
+      ]
+    },
+    {
+      "source": "destroy",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_rt.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "dsp",
+      "target": "encoded",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/vsl_core.py->legacy/vsl_config.h",
+        "legacy/vsl_dsp_logic.c->legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.h->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_core.py",
+        "legacy/vsl_hid_io.py->legacy/vsl_transport.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_config.h",
+        "legacy/vsl_poc_main.py->legacy/vsl_core.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_transport.py"
+      ]
+    },
+    {
+      "source": "float",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_fft.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_stream.h"
+      ]
+    },
+    {
+      "source": "invalid",
+      "target": "max",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "packet",
+      "target": "vsl",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/vsl_dsp_logic.c->legacy/vsl_dsp_logic.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_dsp_transport.h",
+        "legacy/vsl_dsp_transport.h->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_core.py",
+        "legacy/vsl_hid_io.py->legacy/vsl_transport.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_config.h",
+        "legacy/vsl_poc_main.py->legacy/vsl_core.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_transport.py"
+      ]
+    },
+    {
+      "source": "params",
+      "target": "return",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_main.c->avatar/avatar_logic.h",
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_stream.h"
+      ]
+    },
+    {
+      "source": "params",
+      "target": "sample",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_stream.h"
+      ]
+    },
+    {
+      "source": "print",
+      "target": "return",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "src/vsl_cli.c->src/vsl_dsp_logic.h",
+        "src/vsl_cli.c->src/vsl_dsp_transport.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_cli.c->voicecloak/src/vc_wav.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h"
+      ]
+    },
+    {
+      "source": "process",
+      "target": "voicecloak",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/src/vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_stream.c->voicecloak/src/vc_fft.h"
+      ]
+    },
+    {
+      "source": "rate",
+      "target": "state",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "return",
+      "target": "sample",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "rms",
+      "target": "cplusplus",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_logic.c->avatar/avatar_logic.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "rms",
+      "target": "ifdef",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_logic.c->avatar/avatar_logic.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_dsp.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "rms",
+      "target": "return",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_logic.c->avatar/avatar_logic.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_dsp.c->voicecloak/src/vc_stft.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_level.h"
+      ]
+    },
+    {
+      "source": "run",
+      "target": "brief",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_stream.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "run",
+      "target": "context",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_stream.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "run",
+      "target": "max",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/vsl_poc_main.py->legacy/vsl_config.h",
+        "legacy/vsl_poc_main.py->legacy/vsl_core.py",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_stream.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "run",
+      "target": "rate",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_stream.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "run",
+      "target": "return",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_stream.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "run",
+      "target": "success",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_alsa.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_stream.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h"
+      ]
+    },
+    {
+      "source": "vsl",
+      "target": "max",
+      "verb": "depends_on",
+      "strength": 0.3,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/vsl_core.py->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.h->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_core.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_config.h",
+        "legacy/vsl_poc_main.py->legacy/vsl_core.py",
+        "legacy/vsl_transport.py->legacy/vsl_config.h",
+        "src/vsl_cli.c->src/vsl_dsp_logic.h",
+        "src/vsl_dsp_logic.c->src/vsl_dsp_logic.h"
+      ]
+    },
+    {
+      "source": "brief",
+      "target": "rate",
+      "verb": "depends_on",
+      "strength": 0.28,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_main.c->avatar/avatar_config.h",
+        "avatar/avatar_main.c->avatar/avatar_logic.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_level.h",
+        "voicecloak/src/vc_alsa.h->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_denoise.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_effects.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_eq.h->voicecloak/src/vc_audio_config.h",
+        "voicecloak/src/vc_level.h->voicecloak/src/vc_audio_config.h"
+      ]
+    },
+    {
+      "source": "dsp",
+      "target": "max",
+      "verb": "depends_on",
+      "strength": 0.28,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/vsl_core.py->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.h->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_core.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_config.h",
+        "legacy/vsl_poc_main.py->legacy/vsl_core.py",
+        "legacy/vsl_transport.py->legacy/vsl_config.h",
+        "src/vsl_dsp_logic.c->src/vsl_dsp_logic.h",
+        "src/vsl_dsp_transport.h->src/vsl_dsp_logic.h"
+      ]
+    },
+    {
+      "source": "dsp",
+      "target": "packet",
+      "verb": "depends_on",
+      "strength": 0.28,
+      "confidence": "INFERRED",
+      "evidence": [
+        "legacy/vsl_core.py->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_config.h",
+        "legacy/vsl_dsp_transport.c->legacy/vsl_dsp_transport.h",
+        "legacy/vsl_dsp_transport.h->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_config.h",
+        "legacy/vsl_hid_io.py->legacy/vsl_transport.py",
+        "legacy/vsl_poc_main.py->legacy/vsl_config.h",
+        "legacy/vsl_poc_main.py->legacy/vsl_transport.py",
+        "legacy/vsl_transport.py->legacy/vsl_config.h",
+        "src/vsl_dsp_logic.c->src/vsl_dsp_logic.h"
+      ]
+    },
+    {
+      "source": "float",
+      "target": "return",
+      "verb": "depends_on",
+      "strength": 0.28,
+      "confidence": "INFERRED",
+      "evidence": [
+        "avatar/avatar_main.c->avatar/avatar_logic.h",
+        "legacy/vsl_dsp_logic.c->legacy/vsl_dsp_logic.h",
+        "voicecloak/src/vc_crypto.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_alsa.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_crypto.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_presets.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_rt.h",
+        "voicecloak/src/vc_rt_cli.c->voicecloak/src/vc_stream.h",
+        "voicecloak/src/vc_wav.c->voicecloak/src/vc_wav.h"
+      ]
+    },
+    {
+      "source": "invalid",
+      "target": "cplusplus",
+      "verb": "depends_on",
+      "strength": 0.28,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "invalid",
+      "target": "ifdef",
+      "verb": "depends_on",
+      "strength": 0.28,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_eq.h"
+      ]
+    },
+    {
+      "source": "invalid",
+      "target": "return",
+      "verb": "depends_on",
+      "strength": 0.28,
+      "confidence": "INFERRED",
+      "evidence": [
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_effects.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_eq.h",
+        "voicecloak/src/vc_presets.h->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_denoise.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_rt.h",
+        "voicecloak/tests/test_vc_denoise.c->voicecloak/src/vc_stream.h",
+        "voicecloak/tests/test_vc_effects.c->voicecloak/src/vc_effects.h",
+        "voicecloak/tests/test_vc_eq.c->voicecloak/src/vc_eq.h",
+        "voicecloak/tests/test_vc_level.c->voicecloak/src/vc_level.h",
+        "voicecloak/tests/test_vc_presets.c->voicecloak/src/vc_eq.h"
+      ]
+    }
+  ],
+  "dialectic": [
+    "Thesis: `audio` centralizes 8 files; Antithesis: `usb` pulls 8 files with 4 shared (Jaccard 0.33); Synthesis: should they merge, split by layer, or keep `bridges` explicit?",
+    "Thesis: `brief` centralizes 20 files; Antithesis: `context` pulls 9 files with 8 shared (Jaccard 0.38); Synthesis: should they merge, split by layer, or keep `bridges` explicit?",
+    "Thesis: `brief` centralizes 20 files; Antithesis: `cplusplus` pulls 13 files with 11 shared (Jaccard 0.50); Synthesis: should they merge, split by layer, or keep `bridges` explicit?",
+    "Thesis: `brief` centralizes 20 files; Antithesis: `float` pulls 16 files with 10 shared (Jaccard 0.38); Synthesis: should they merge, split by layer, or keep `depends_on` explicit?",
+    "Thesis: `brief` centralizes 20 files; Antithesis: `ifdef` pulls 13 files with 11 shared (Jaccard 0.50); Synthesis: should they merge, split by layer, or keep `bridges` explicit?",
+    "Thesis: `brief` centralizes 20 files; Antithesis: `max` pulls 14 files with 8 shared (Jaccard 0.31); Synthesis: should they merge, split by layer, or keep `bridges` explicit?",
+    "Thesis: `brief` centralizes 20 files; Antithesis: `null` pulls 13 files with 10 shared (Jaccard 0.43); Synthesis: should they merge, split by layer, or keep `bridges` explicit?",
+    "Thesis: `brief` centralizes 20 files; Antithesis: `output` pulls 10 files with 7 shared (Jaccard 0.30); Synthesis: should they merge, split by layer, or keep `bridges` explicit?",
+    "Thesis: `brief` centralizes 20 files; Antithesis: `param` pulls 12 files with 9 shared (Jaccard 0.39); Synthesis: should they merge, split by layer, or keep `bridges` explicit?",
+    "Thesis: `brief` centralizes 20 files; Antithesis: `rate` pulls 18 files with 10 shared (Jaccard 0.36); Synthesis: should they merge, split by layer, or keep `depends_on` explicit?"
+  ]
+}
