@@ -5,28 +5,43 @@
 These files have the most connections. Changes here have high blast radius.
 
 - `legacy/mixer_quirks.c` (score: 32.90)
-- `voicecloak/src/vc_stream.h` (score: 15.30)
+- `voicecloak/src/vc_stream.h` (score: 15.30, imported by 7 files)
 - `voicecloak/src/vc_rt_cli.c` (score: 15.00)
-- `legacy/vsl_config.h` (score: 14.80)
-- `voicecloak/src/vc_rt.h` (score: 13.70)
-- `voicecloak/src/vc_eq.h` (score: 13.00)
-- `voicecloak/src/vc_alsa.h` (score: 12.50)
-- `voicecloak/src/vc_presets.h` (score: 12.40)
-- `voicecloak/src/vc_fft.h` (score: 12.20)
-- `voicecloak/src/vc_crypto.h` (score: 11.60)
+- `legacy/vsl_config.h` (score: 14.80, imported by 7 files)
+- `voicecloak/src/vc_rt.h` (score: 13.70, imported by 6 files)
+- `voicecloak/src/vc_eq.h` (score: 13.00, imported by 5 files)
+- `voicecloak/src/vc_alsa.h` (score: 12.50, imported by 2 files)
+- `voicecloak/src/vc_presets.h` (score: 12.40, imported by 3 files)
+- `voicecloak/src/vc_fft.h` (score: 12.20, imported by 6 files)
+- `voicecloak/src/vc_crypto.h` (score: 11.60, imported by 5 files)
+
+## Blast Radius (change impact)
+
+Editing these files can break the listed number of dependents. Run their tests after any change.
+
+- `voicecloak/src/vc_audio_config.h` -- 4 direct, 18 total dependents
+- `legacy/vsl_config.h` -- 7 direct, 8 total dependents
+- `voicecloak/src/vc_effects.h` -- 4 direct, 8 total dependents
+- `voicecloak/src/vc_eq.h` -- 5 direct, 8 total dependents
+- `voicecloak/src/vc_rt.h` -- 6 direct, 8 total dependents
+- `voicecloak/src/vc_stream.h` -- 7 direct, 7 total dependents
+- `voicecloak/src/vc_fft.h` -- 6 direct, 6 total dependents
+- `voicecloak/src/vc_level.h` -- 4 direct, 6 total dependents
+- `voicecloak/src/vc_crypto.h` -- 5 direct, 5 total dependents
+- `src/vsl_dsp_logic.h` -- 3 direct, 4 total dependents
 
 ## Hotspots (complexity + centrality)
 
 - `legacy/mixer_quirks.c` -- complexity: 1.0, centrality: 1.0, combined: 1.0
 - `voicecloak/src/vc_rt_cli.c` -- complexity: 0.0, centrality: 0.8, combined: 0.5
-- `voicecloak/tests/test_vc_denoise.c` -- complexity: 0.1, centrality: 0.6, combined: 0.4
-- `voicecloak/tests/test_vc_presets.c` -- complexity: 0.0, centrality: 0.6, combined: 0.4
-- `voicecloak/tests/test_vc_stream.c` -- complexity: 0.1, centrality: 0.5, combined: 0.3
 - `avatar/avatar_main.c` -- complexity: 0.0, centrality: 0.5, combined: 0.3
 - `voicecloak/src/vc_alsa.h` -- complexity: 0.0, centrality: 0.5, combined: 0.3
 - `legacy/vsl_hid_io.py` -- complexity: 0.0, centrality: 0.5, combined: 0.3
 - `src/vsl_cli.c` -- complexity: 0.0, centrality: 0.4, combined: 0.3
 - `voicecloak/src/vc_crypto.c` -- complexity: 0.0, centrality: 0.4, combined: 0.3
+- `legacy/vsl_config.h` -- complexity: 0.0, centrality: 0.4, combined: 0.3
+- `voicecloak/src/vc_dsp.c` -- complexity: 0.0, centrality: 0.4, combined: 0.2
+- `voicecloak/src/vc_alsa.c` -- complexity: 0.0, centrality: 0.4, combined: 0.2
 
 ## Dataflow Issues (INFERRED, review each lead)
 

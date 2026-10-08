@@ -1,2795 +1,492 @@
-# API
+# API (page 1 of 2)
+Pages: [API.md](API.md), [API_p2.md](API_p2.md)
 
 ## audiobox_vsl.c
-
-### audiobox_probe (function) `static int audiobox_probe(struct usb_interface *intf,
-                          const struct usb_...`
-- Defined: `audiobox_vsl.c:37`
-- Depends on: `audiobox_vsl.h`
-
-### audiobox_disconnect (function) `static void audiobox_disconnect(struct usb_interface *intf)`
-- Defined: `audiobox_vsl.c:59`
-- Depends on: `audiobox_vsl.h`
+Depends on: `audiobox_vsl.h`
+- `audiobox_probe` (function) `audiobox_vsl.c:37` `static int audiobox_probe(struct usb_interface *intf,
+                           const struct usb...`
+- `audiobox_disconnect` (function) `audiobox_vsl.c:64` `static void audiobox_disconnect(struct usb_interface *intf)`
 
 ## audiobox_vsl.h
-
-### audiobox_lookup_model (function) `static inline const audiobox_model_info_t *
+Imported by: `audiobox_vsl.c`, `legacy/mixer_quirks.c`, `tests/test_audiobox_vsl.c`
+- `audiobox_lookup_model` (function) `audiobox_vsl.h:107` `static inline const audiobox_model_info_t *
 audiobox_lookup_model(uint16_t pid)`
-- Defined: `audiobox_vsl.h:96`
-- Imported by: `audiobox_vsl.c`, `legacy/mixer_quirks.c`, `tests/test_audiobox_vsl.c`
-
-### snd_audiobox_vsl_init (function) `int snd_audiobox_vsl_init(struct usb_mixer_interface *mixer);`
-- Defined: `audiobox_vsl.h:122`
-- Doc: @brief ALSA mixer init hook for AudioBox VSL devices.  Optional entry point used by the upstream sound/usb/mixer_quirks.
-- Imported by: `audiobox_vsl.c`, `legacy/mixer_quirks.c`, `tests/test_audiobox_vsl.c`
+- `audiobox_is_primary_interface` (function) `audiobox_vsl.h:131` `static inline int
+audiobox_is_primary_interface(unsigned int ifnum)`
+- `snd_audiobox_vsl_init` (function) `audiobox_vsl.h:150` `int snd_audiobox_vsl_init(struct usb_mixer_interface *mixer);` -- @brief ALSA mixer init hook for AudioBox VSL devices.
 
 ## avatar/avatar_logic.c
-
-### avatar_rms_f32 (function) `float avatar_rms_f32(const float *x, size_t n)`
-- Defined: `avatar/avatar_logic.c:5`
-- Depends on: `avatar/avatar_logic.h`
-
-### avatar_rms_to_dbfs (function) `float avatar_rms_to_dbfs(float rms)`
-- Defined: `avatar/avatar_logic.c:27`
-- Depends on: `avatar/avatar_logic.h`
-
-### avatar_zcr_f32 (function) `float avatar_zcr_f32(const float *x, size_t n)`
-- Defined: `avatar/avatar_logic.c:41`
-- Depends on: `avatar/avatar_logic.h`
-
-### avatar_hf_ratio_f32 (function) `float avatar_hf_ratio_f32(const float *x, size_t n)`
-- Defined: `avatar/avatar_logic.c:68`
-- Depends on: `avatar/avatar_logic.h`
-
-### avatar_classify (function) `avatar_state_t avatar_classify(float rms_db, float zcr, float hf,
+Depends on: `avatar/avatar_logic.h`
+- `avatar_rms_f32` (function) `avatar/avatar_logic.c:5` `float avatar_rms_f32(const float *x, size_t n)`
+- `avatar_rms_to_dbfs` (function) `avatar/avatar_logic.c:27` `float avatar_rms_to_dbfs(float rms)`
+- `avatar_zcr_f32` (function) `avatar/avatar_logic.c:41` `float avatar_zcr_f32(const float *x, size_t n)`
+- `avatar_hf_ratio_f32` (function) `avatar/avatar_logic.c:68` `float avatar_hf_ratio_f32(const float *x, size_t n)`
+- `avatar_classify` (function) `avatar/avatar_logic.c:107` `avatar_state_t avatar_classify(float rms_db, float zcr, float hf,
                                ...`
-- Defined: `avatar/avatar_logic.c:107`
-- Depends on: `avatar/avatar_logic.h`
-
-### avatar_smooth_init (function) `void avatar_smooth_init(avatar_smooth_t *s, avatar_state_t init, uint64_t now_ms,
+- `avatar_smooth_init` (function) `avatar/avatar_logic.c:125` `void avatar_smooth_init(avatar_smooth_t *s, avatar_state_t init, uint64_t now_ms,
                ...`
-- Defined: `avatar/avatar_logic.c:125`
-- Depends on: `avatar/avatar_logic.h`
-
-### avatar_smooth (function) `avatar_state_t avatar_smooth(avatar_smooth_t *s, avatar_state_t inst,
+- `avatar_smooth` (function) `avatar/avatar_logic.c:136` `avatar_state_t avatar_smooth(avatar_smooth_t *s, avatar_state_t inst,
                            ...`
-- Defined: `avatar/avatar_logic.c:136`
-- Depends on: `avatar/avatar_logic.h`
-
-### avatar_state_name (function) `const char *avatar_state_name(avatar_state_t st)`
-- Defined: `avatar/avatar_logic.c:161`
-- Depends on: `avatar/avatar_logic.h`
+- `avatar_state_name` (function) `avatar/avatar_logic.c:161` `const char *avatar_state_name(avatar_state_t st)`
 
 ## avatar/avatar_logic.h
-
-### avatar_rms_f32 (function) `float avatar_rms_f32(const float *x, size_t n);`
-- Defined: `avatar/avatar_logic.h:45`
-- Doc: @brief RMS of a mono float frame, 0..1. @param x frame or NULL. @param n frame length. @return RMS, 0 on NULL/empty/non-
-- Imported by: `avatar/avatar_logic.c`, `avatar/avatar_main.c`, `tests/test_avatar_logic.c`
-
-### avatar_rms_to_dbfs (function) `float avatar_rms_to_dbfs(float rms);`
-- Defined: `avatar/avatar_logic.h:52`
-- Doc: @brief Convert RMS to dBFS with -120 dB floor. @param rms linear RMS. @return dBFS value.
-- Imported by: `avatar/avatar_logic.c`, `avatar/avatar_main.c`, `tests/test_avatar_logic.c`
-
-### avatar_zcr_f32 (function) `float avatar_zcr_f32(const float *x, size_t n);`
-- Defined: `avatar/avatar_logic.h:60`
-- Doc: @brief Zero-crossing rate 0..1. @param x frame or NULL. @param n frame length. @return crossing count / (n-1), 0 on NULL
-- Imported by: `avatar/avatar_logic.c`, `avatar/avatar_main.c`, `tests/test_avatar_logic.c`
-
-### avatar_hf_ratio_f32 (function) `float avatar_hf_ratio_f32(const float *x, size_t n);`
-- Defined: `avatar/avatar_logic.h:68`
-- Doc: @brief High-frequency ratio RMS(diff)/RMS, clamped 0..2. @param x frame or NULL. @param n frame length. @return ratio, 0
-- Imported by: `avatar/avatar_logic.c`, `avatar/avatar_main.c`, `tests/test_avatar_logic.c`
-
-### avatar_classify (function) `avatar_state_t avatar_classify(float rms_db, float zcr, float hf, const avatar_cfg_t *c);`
-- Defined: `avatar/avatar_logic.h:78`
-- Doc: @brief Instantaneous state without hysteresis, fail-closed. @param rms_db frame level in dBFS. @param zcr zero-crossing 
-- Imported by: `avatar/avatar_logic.c`, `avatar/avatar_main.c`, `tests/test_avatar_logic.c`
-
-### avatar_smooth_init (function) `void avatar_smooth_init(avatar_smooth_t *s, avatar_state_t init, uint64_t now_ms, unsigned int hold_ms);`
-- Defined: `avatar/avatar_logic.h:85`
-- Doc: @brief Init hysteresis holder. @param hold_ms release delay for CLOSED in ms.
-- Imported by: `avatar/avatar_logic.c`, `avatar/avatar_main.c`, `tests/test_avatar_logic.c`
-
-### avatar_smooth (function) `avatar_state_t avatar_smooth(avatar_smooth_t *s, avatar_state_t inst, uint64_t now_ms);`
-- Defined: `avatar/avatar_logic.h:95`
-- Doc: @brief Hysteresis: instant attack, delayed release to CLOSED. @param s holder or NULL (NULL yields CLOSED). @param inst 
-- Imported by: `avatar/avatar_logic.c`, `avatar/avatar_main.c`, `tests/test_avatar_logic.c`
-
-### avatar_state_name (function) `const char *avatar_state_name(avatar_state_t st);`
-- Defined: `avatar/avatar_logic.h:103`
-- Doc: @brief State label for window title and headless output. @param st state value. @return static string, never NULL.
-- Imported by: `avatar/avatar_logic.c`, `avatar/avatar_main.c`, `tests/test_avatar_logic.c`
+Imported by: `avatar/avatar_logic.c`, `avatar/avatar_main.c`
+- `avatar_rms_f32` (function) `avatar/avatar_logic.h:45` `float avatar_rms_f32(const float *x, size_t n);` -- @brief RMS of a mono float frame, 0..1. @param x frame or NULL. @param n frame length. @return RMS, 0 on...
+- `avatar_rms_to_dbfs` (function) `avatar/avatar_logic.h:52` `float avatar_rms_to_dbfs(float rms);` -- @brief Convert RMS to dBFS with -120 dB floor. @param rms linear RMS. @return dBFS value.
+- `avatar_zcr_f32` (function) `avatar/avatar_logic.h:60` `float avatar_zcr_f32(const float *x, size_t n);` -- @brief Zero-crossing rate 0..1. @param x frame or NULL. @param n frame length. @return crossing count / (n-1), 0 on...
+- `avatar_hf_ratio_f32` (function) `avatar/avatar_logic.h:68` `float avatar_hf_ratio_f32(const float *x, size_t n);` -- @brief High-frequency ratio RMS(diff)/RMS, clamped 0..2. @param x frame or NULL. @param n frame length. @return...
+- `avatar_classify` (function) `avatar/avatar_logic.h:78` `avatar_state_t avatar_classify(float rms_db, float zcr, float hf, const avatar_cfg_t *c);` -- @brief Instantaneous state without hysteresis, fail-closed. @param rms_db frame level in dBFS. @param zcr...
+- `avatar_smooth_init` (function) `avatar/avatar_logic.h:85` `void avatar_smooth_init(avatar_smooth_t *s, avatar_state_t init, uint64_t now_ms, unsigned int hold_ms);` -- @brief Init hysteresis holder. @param hold_ms release delay for CLOSED in ms.
+- `avatar_smooth` (function) `avatar/avatar_logic.h:95` `avatar_state_t avatar_smooth(avatar_smooth_t *s, avatar_state_t inst, uint64_t now_ms);` -- @brief Hysteresis: instant attack, delayed release to CLOSED. @param s holder or NULL (NULL yields CLOSED). @param...
+- `avatar_state_name` (function) `avatar/avatar_logic.h:103` `const char *avatar_state_name(avatar_state_t st);` -- @brief State label for window title and headless output. @param st state value. @return static string, never NULL.
 
 ## avatar/avatar_main.c
-
-### on_sigint (function) `static void on_sigint(int sig)`
-- Defined: `avatar/avatar_main.c:24`
-- Depends on: `avatar/avatar_config.h`, `avatar/avatar_logic.h`
-
-### usage (function) `static void usage(const char *argv0)`
-- Defined: `avatar/avatar_main.c:30`
-- Depends on: `avatar/avatar_config.h`, `avatar/avatar_logic.h`
-
-### list_pcms (function) `static int list_pcms(void)`
-- Defined: `avatar/avatar_main.c:54`
-- Depends on: `avatar/avatar_config.h`, `avatar/avatar_logic.h`
-
-### env_or (function) `static const char *env_or(const char *name, const char *fallback)`
-- Defined: `avatar/avatar_main.c:79`
-- Depends on: `avatar/avatar_config.h`, `avatar/avatar_logic.h`
-
-### open_capture (function) `static snd_pcm_t *open_capture(const char *dev, unsigned int rate,
+Depends on: `avatar/avatar_config.h`, `avatar/avatar_logic.h`
+- `on_sigint` (function) `avatar/avatar_main.c:24` `static void on_sigint(int sig)`
+- `usage` (function) `avatar/avatar_main.c:30` `static void usage(const char *argv0)`
+- `list_pcms` (function) `avatar/avatar_main.c:54` `static int list_pcms(void)`
+- `env_or` (function) `avatar/avatar_main.c:79` `static const char *env_or(const char *name, const char *fallback)`
+- `open_capture` (function) `avatar/avatar_main.c:85` `static snd_pcm_t *open_capture(const char *dev, unsigned int rate,
                               ...`
-- Defined: `avatar/avatar_main.c:85`
-- Depends on: `avatar/avatar_config.h`, `avatar/avatar_logic.h`
-
-### to_mono_f32 (function) `static void to_mono_f32(const uint8_t *raw, float *out, size_t frames,
-                        un...`
-- Defined: `avatar/avatar_main.c:156`
-- Doc: if (snd_pcm_hw_params(pcm, hw) < 0) { fprintf(stderr, "avatar: '%s' cannot apply hw params\n", dev); snd_pcm_close(pcm);
-- Depends on: `avatar/avatar_config.h`, `avatar/avatar_logic.h`
-
-### main (function) `int main(int argc, char **argv)`
-- Defined: `avatar/avatar_main.c:191`
-- Depends on: `avatar/avatar_config.h`, `avatar/avatar_logic.h`
+- `to_mono_f32` (function) `avatar/avatar_main.c:156` `static void to_mono_f32(const uint8_t *raw, float *out, size_t frames,
+                        un...` -- if (snd_pcm_hw_params(pcm, hw) < 0) { fprintf(stderr, "avatar: '%s' cannot apply hw params\n", dev)...
+- `main` (function) `avatar/avatar_main.c:191` `int main(int argc, char **argv)`
 
 ## legacy/build-dkms.sh
-
-### print_header (function)
-- Defined: `legacy/build-dkms.sh:40`
-
-### print_success (function)
-- Defined: `legacy/build-dkms.sh:48`
-
-### print_error (function)
-- Defined: `legacy/build-dkms.sh:52`
-
-### print_warning (function)
-- Defined: `legacy/build-dkms.sh:56`
-
-### print_info (function)
-- Defined: `legacy/build-dkms.sh:60`
-
-### check_root (function)
-- Defined: `legacy/build-dkms.sh:64`
-
-### check_dependencies (function)
-- Defined: `legacy/build-dkms.sh:72`
-
-### detect_audiobox (function)
-- Defined: `legacy/build-dkms.sh:101`
-
-### create_source_structure (function)
-- Defined: `legacy/build-dkms.sh:123`
-
-### copy_source_files (function)
-- Defined: `legacy/build-dkms.sh:138`
-
-### create_dkms_conf (function)
-- Defined: `legacy/build-dkms.sh:174`
-
-### create_makefile (function)
-- Defined: `legacy/build-dkms.sh:193`
-
-### verify_mixer_quirks (function)
-- Defined: `legacy/build-dkms.sh:252`
-
-### build_with_dkms (function)
-- Defined: `legacy/build-dkms.sh:295`
-
-### install_module (function)
-- Defined: `legacy/build-dkms.sh:309`
-
-### reload_module (function)
-- Defined: `legacy/build-dkms.sh:323`
-
-### verify_installation (function)
-- Defined: `legacy/build-dkms.sh:344`
-
-### show_usage_info (function)
-- Defined: `legacy/build-dkms.sh:394`
-
-### main (function)
-- Defined: `legacy/build-dkms.sh:452`
+- `print_header` (function) `legacy/build-dkms.sh:40`
+- `print_success` (function) `legacy/build-dkms.sh:48`
+- `print_error` (function) `legacy/build-dkms.sh:52`
+- `print_warning` (function) `legacy/build-dkms.sh:56`
+- `print_info` (function) `legacy/build-dkms.sh:60`
+- `check_root` (function) `legacy/build-dkms.sh:64`
+- `check_dependencies` (function) `legacy/build-dkms.sh:72`
+- `detect_audiobox` (function) `legacy/build-dkms.sh:101`
+- `create_source_structure` (function) `legacy/build-dkms.sh:123`
+- `copy_source_files` (function) `legacy/build-dkms.sh:138`
+- `create_dkms_conf` (function) `legacy/build-dkms.sh:174`
+- `create_makefile` (function) `legacy/build-dkms.sh:193`
+- `verify_mixer_quirks` (function) `legacy/build-dkms.sh:252`
+- `build_with_dkms` (function) `legacy/build-dkms.sh:295`
+- `install_module` (function) `legacy/build-dkms.sh:309`
+- `reload_module` (function) `legacy/build-dkms.sh:323`
+- `verify_installation` (function) `legacy/build-dkms.sh:344`
+- `show_usage_info` (function) `legacy/build-dkms.sh:394`
+- `main` (function) `legacy/build-dkms.sh:452`
 
 ## legacy/main.c
-
-### main (function) `int main()`
-- Defined: `legacy/main.c:5`
-- Depends on: `legacy/vsl_dsp_logic.h`, `legacy/vsl_dsp_transport.h`
+Depends on: `legacy/vsl_dsp_logic.h`, `legacy/vsl_dsp_transport.h`
+- `main` (function) `legacy/main.c:5` `int main()`
 
 ## legacy/mixer_quirks.c
-
-### snd_create_std_mono_ctl_offset (function) `static int snd_create_std_mono_ctl_offset(struct usb_mixer_interface *mixer,
-					  unsigned int ...`
-- Defined: `legacy/mixer_quirks.c:59`
-- Doc: This function allows for the creation of standard UAC controls. See the quirks for M-Audio FTUs or Ebox-44. If you don't
-- Depends on: `audiobox_vsl.h`
-
-### snd_create_std_mono_ctl (function) `static int snd_create_std_mono_ctl(struct usb_mixer_interface *mixer,
+Depends on: `audiobox_vsl.h`
+- `snd_create_std_mono_ctl_offset` (function) `legacy/mixer_quirks.c:59` `static int snd_create_std_mono_ctl_offset(struct usb_mixer_interface *mixer,
+					  unsigned int ...` -- This function allows for the creation of standard UAC controls.
+- `snd_create_std_mono_ctl` (function) `legacy/mixer_quirks.c:113` `static int snd_create_std_mono_ctl(struct usb_mixer_interface *mixer,
 				   unsigned int unitid,...`
-- Defined: `legacy/mixer_quirks.c:113`
-- Depends on: `audiobox_vsl.h`
-
-### snd_create_std_mono_table (function) `static int snd_create_std_mono_table(struct usb_mixer_interface *mixer,
-				     const struct std...`
-- Defined: `legacy/mixer_quirks.c:129`
-- Doc: Create a set of standard UAC controls from a table
-- Depends on: `audiobox_vsl.h`
-
-### add_single_ctl_with_resume (function) `static int add_single_ctl_with_resume(struct usb_mixer_interface *mixer,
+- `snd_create_std_mono_table` (function) `legacy/mixer_quirks.c:129` `static int snd_create_std_mono_table(struct usb_mixer_interface *mixer,
+				     const struct std...` -- Create a set of standard UAC controls from a table
+- `add_single_ctl_with_resume` (function) `legacy/mixer_quirks.c:146` `static int add_single_ctl_with_resume(struct usb_mixer_interface *mixer,
 				      int id,
 				  ...`
-- Defined: `legacy/mixer_quirks.c:146`
-- Depends on: `audiobox_vsl.h`
-
-### snd_usb_soundblaster_remote_complete (function) `static void snd_usb_soundblaster_remote_complete(struct urb *urb)`
-- Defined: `legacy/mixer_quirks.c:200`
-- Depends on: `audiobox_vsl.h`
-
-### snd_usb_sbrc_hwdep_read (function) `static long snd_usb_sbrc_hwdep_read(struct snd_hwdep *hw, char __user *buf,
+- `snd_usb_soundblaster_remote_complete` (function) `legacy/mixer_quirks.c:200` `static void snd_usb_soundblaster_remote_complete(struct urb *urb)`
+- `snd_usb_sbrc_hwdep_read` (function) `legacy/mixer_quirks.c:220` `static long snd_usb_sbrc_hwdep_read(struct snd_hwdep *hw, char __user *buf,
 				    long count, l...`
-- Defined: `legacy/mixer_quirks.c:220`
-- Depends on: `audiobox_vsl.h`
-
-### snd_usb_sbrc_hwdep_poll (function) `static __poll_t snd_usb_sbrc_hwdep_poll(struct snd_hwdep *hw, struct file *file,
+- `snd_usb_sbrc_hwdep_poll` (function) `legacy/mixer_quirks.c:240` `static __poll_t snd_usb_sbrc_hwdep_poll(struct snd_hwdep *hw, struct file *file,
 					poll_table ...`
-- Defined: `legacy/mixer_quirks.c:240`
-- Depends on: `audiobox_vsl.h`
-
-### snd_usb_soundblaster_remote_init (function) `static int snd_usb_soundblaster_remote_init(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:249`
-- Depends on: `audiobox_vsl.h`
-
-### snd_audigy2nx_led_get (function) `static int snd_audigy2nx_led_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)`
-- Defined: `legacy/mixer_quirks.c:299`
-- Depends on: `audiobox_vsl.h`
-
-### snd_audigy2nx_led_update (function) `static int snd_audigy2nx_led_update(struct usb_mixer_interface *mixer,
+- `snd_usb_soundblaster_remote_init` (function) `legacy/mixer_quirks.c:249` `static int snd_usb_soundblaster_remote_init(struct usb_mixer_interface *mixer)`
+- `snd_audigy2nx_led_get` (function) `legacy/mixer_quirks.c:299` `static int snd_audigy2nx_led_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)`
+- `snd_audigy2nx_led_update` (function) `legacy/mixer_quirks.c:305` `static int snd_audigy2nx_led_update(struct usb_mixer_interface *mixer,
 				    int value, int index)`
-- Defined: `legacy/mixer_quirks.c:305`
-- Depends on: `audiobox_vsl.h`
-
-### snd_audigy2nx_led_put (function) `static int snd_audigy2nx_led_put(struct snd_kcontrol *kcontrol,
+- `snd_audigy2nx_led_put` (function) `legacy/mixer_quirks.c:334` `static int snd_audigy2nx_led_put(struct snd_kcontrol *kcontrol,
 				 struct snd_ctl_elem_value *u...`
-- Defined: `legacy/mixer_quirks.c:334`
-- Depends on: `audiobox_vsl.h`
-
-### snd_audigy2nx_led_resume (function) `static int snd_audigy2nx_led_resume(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:353`
-- Depends on: `audiobox_vsl.h`
-
-### snd_audigy2nx_controls_create (function) `static int snd_audigy2nx_controls_create(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:375`
-- Depends on: `audiobox_vsl.h`
-
-### snd_audigy2nx_proc_read (function) `static void snd_audigy2nx_proc_read(struct snd_info_entry *entry,
+- `snd_audigy2nx_led_resume` (function) `legacy/mixer_quirks.c:353` `static int snd_audigy2nx_led_resume(struct usb_mixer_elem_list *list)`
+- `snd_audigy2nx_controls_create` (function) `legacy/mixer_quirks.c:375` `static int snd_audigy2nx_controls_create(struct usb_mixer_interface *mixer)`
+- `snd_audigy2nx_proc_read` (function) `legacy/mixer_quirks.c:407` `static void snd_audigy2nx_proc_read(struct snd_info_entry *entry,
 				    struct snd_info_buffer ...`
-- Defined: `legacy/mixer_quirks.c:407`
-- Depends on: `audiobox_vsl.h`
-
-### snd_emu0204_ch_switch_info (function) `static int snd_emu0204_ch_switch_info(struct snd_kcontrol *kcontrol,
-				      struct snd_ctl_ele...`
-- Defined: `legacy/mixer_quirks.c:457`
-- Doc: return; err = snd_usb_ctl_msg(mixer->chip->dev, usb_rcvctrlpipe(mixer->chip->dev, 0), UAC_GET_MEM, USB_DIR_IN | USB_TYPE
-- Depends on: `audiobox_vsl.h`
-
-### snd_emu0204_ch_switch_get (function) `static int snd_emu0204_ch_switch_get(struct snd_kcontrol *kcontrol,
+- `snd_emu0204_ch_switch_info` (function) `legacy/mixer_quirks.c:457` `static int snd_emu0204_ch_switch_info(struct snd_kcontrol *kcontrol,
+				      struct snd_ctl_ele...` -- return; err = snd_usb_ctl_msg(mixer->chip->dev, usb_rcvctrlpipe(mixer->chip->dev, 0), UAC_GET_MEM, USB_DIR_IN |...
+- `snd_emu0204_ch_switch_get` (function) `legacy/mixer_quirks.c:465` `static int snd_emu0204_ch_switch_get(struct snd_kcontrol *kcontrol,
 				     struct snd_ctl_elem_...`
-- Defined: `legacy/mixer_quirks.c:465`
-- Depends on: `audiobox_vsl.h`
-
-### snd_emu0204_ch_switch_update (function) `static int snd_emu0204_ch_switch_update(struct usb_mixer_interface *mixer,
+- `snd_emu0204_ch_switch_update` (function) `legacy/mixer_quirks.c:472` `static int snd_emu0204_ch_switch_update(struct usb_mixer_interface *mixer,
 					int value)`
-- Defined: `legacy/mixer_quirks.c:472`
-- Depends on: `audiobox_vsl.h`
-
-### snd_emu0204_ch_switch_put (function) `static int snd_emu0204_ch_switch_put(struct snd_kcontrol *kcontrol,
+- `snd_emu0204_ch_switch_put` (function) `legacy/mixer_quirks.c:490` `static int snd_emu0204_ch_switch_put(struct snd_kcontrol *kcontrol,
 				     struct snd_ctl_elem_...`
-- Defined: `legacy/mixer_quirks.c:490`
-- Depends on: `audiobox_vsl.h`
-
-### snd_emu0204_ch_switch_resume (function) `static int snd_emu0204_ch_switch_resume(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:509`
-- Depends on: `audiobox_vsl.h`
-
-### snd_emu0204_controls_create (function) `static int snd_emu0204_controls_create(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:524`
-- Depends on: `audiobox_vsl.h`
-
-### snd_dualsense_ih_event (function) `static void snd_dualsense_ih_event(struct input_handle *handle,
+- `snd_emu0204_ch_switch_resume` (function) `legacy/mixer_quirks.c:509` `static int snd_emu0204_ch_switch_resume(struct usb_mixer_elem_list *list)`
+- `snd_emu0204_controls_create` (function) `legacy/mixer_quirks.c:524` `static int snd_emu0204_controls_create(struct usb_mixer_interface *mixer)`
+- `snd_dualsense_ih_event` (function) `legacy/mixer_quirks.c:550` `static void snd_dualsense_ih_event(struct input_handle *handle,
 				   unsigned int type, unsigne...`
-- Defined: `legacy/mixer_quirks.c:550`
-- Depends on: `audiobox_vsl.h`
-
-### snd_dualsense_ih_match (function) `static bool snd_dualsense_ih_match(struct input_handler *handler,
+- `snd_dualsense_ih_match` (function) `legacy/mixer_quirks.c:571` `static bool snd_dualsense_ih_match(struct input_handler *handler,
 				   struct input_dev *dev)`
-- Defined: `legacy/mixer_quirks.c:571`
-- Depends on: `audiobox_vsl.h`
-
-### snd_dualsense_ih_connect (function) `static int snd_dualsense_ih_connect(struct input_handler *handler,
+- `snd_dualsense_ih_connect` (function) `legacy/mixer_quirks.c:618` `static int snd_dualsense_ih_connect(struct input_handler *handler,
 				    struct input_dev *dev,...`
-- Defined: `legacy/mixer_quirks.c:618`
-- Depends on: `audiobox_vsl.h`
-
-### snd_dualsense_ih_disconnect (function) `static void snd_dualsense_ih_disconnect(struct input_handle *handle)`
-- Defined: `legacy/mixer_quirks.c:650`
-- Depends on: `audiobox_vsl.h`
-
-### snd_dualsense_ih_start (function) `static void snd_dualsense_ih_start(struct input_handle *handle)`
-- Defined: `legacy/mixer_quirks.c:657`
-- Depends on: `audiobox_vsl.h`
-
-### snd_dualsense_jack_get (function) `static int snd_dualsense_jack_get(struct snd_kcontrol *kctl,
+- `snd_dualsense_ih_disconnect` (function) `legacy/mixer_quirks.c:650` `static void snd_dualsense_ih_disconnect(struct input_handle *handle)`
+- `snd_dualsense_ih_start` (function) `legacy/mixer_quirks.c:657` `static void snd_dualsense_ih_start(struct input_handle *handle)`
+- `snd_dualsense_jack_get` (function) `legacy/mixer_quirks.c:680` `static int snd_dualsense_jack_get(struct snd_kcontrol *kctl,
 				  struct snd_ctl_elem_value *uco...`
-- Defined: `legacy/mixer_quirks.c:680`
-- Depends on: `audiobox_vsl.h`
-
-### snd_dualsense_resume_jack (function) `static int snd_dualsense_resume_jack(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:697`
-- Depends on: `audiobox_vsl.h`
-
-### snd_dualsense_mixer_elem_free (function) `static void snd_dualsense_mixer_elem_free(struct snd_kcontrol *kctl)`
-- Defined: `legacy/mixer_quirks.c:704`
-- Depends on: `audiobox_vsl.h`
-
-### snd_dualsense_jack_create (function) `static int snd_dualsense_jack_create(struct usb_mixer_interface *mixer,
+- `snd_dualsense_resume_jack` (function) `legacy/mixer_quirks.c:697` `static int snd_dualsense_resume_jack(struct usb_mixer_elem_list *list)`
+- `snd_dualsense_mixer_elem_free` (function) `legacy/mixer_quirks.c:704` `static void snd_dualsense_mixer_elem_free(struct snd_kcontrol *kctl)`
+- `snd_dualsense_jack_create` (function) `legacy/mixer_quirks.c:714` `static int snd_dualsense_jack_create(struct usb_mixer_interface *mixer,
 				     const char *name...`
-- Defined: `legacy/mixer_quirks.c:714`
-- Depends on: `audiobox_vsl.h`
-
-### snd_dualsense_controls_create (function) `static int snd_dualsense_controls_create(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:778`
-- Depends on: `audiobox_vsl.h`
-
-### snd_xonar_u1_switch_get (function) `static int snd_xonar_u1_switch_get(struct snd_kcontrol *kcontrol,
+- `snd_dualsense_controls_create` (function) `legacy/mixer_quirks.c:778` `static int snd_dualsense_controls_create(struct usb_mixer_interface *mixer)`
+- `snd_xonar_u1_switch_get` (function) `legacy/mixer_quirks.c:792` `static int snd_xonar_u1_switch_get(struct snd_kcontrol *kcontrol,
 				   struct snd_ctl_elem_valu...`
-- Defined: `legacy/mixer_quirks.c:792`
-- Depends on: `audiobox_vsl.h`
-
-### snd_xonar_u1_switch_update (function) `static int snd_xonar_u1_switch_update(struct usb_mixer_interface *mixer,
+- `snd_xonar_u1_switch_update` (function) `legacy/mixer_quirks.c:799` `static int snd_xonar_u1_switch_update(struct usb_mixer_interface *mixer,
 				      unsigned char ...`
-- Defined: `legacy/mixer_quirks.c:799`
-- Depends on: `audiobox_vsl.h`
-
-### snd_xonar_u1_switch_put (function) `static int snd_xonar_u1_switch_put(struct snd_kcontrol *kcontrol,
+- `snd_xonar_u1_switch_put` (function) `legacy/mixer_quirks.c:813` `static int snd_xonar_u1_switch_put(struct snd_kcontrol *kcontrol,
 				   struct snd_ctl_elem_valu...`
-- Defined: `legacy/mixer_quirks.c:813`
-- Depends on: `audiobox_vsl.h`
-
-### snd_xonar_u1_switch_resume (function) `static int snd_xonar_u1_switch_resume(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:833`
-- Depends on: `audiobox_vsl.h`
-
-### snd_xonar_u1_controls_create (function) `static int snd_xonar_u1_controls_create(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:848`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_is_spdif_synced (function) `static int snd_mbox1_is_spdif_synced(struct snd_usb_audio *chip)`
-- Defined: `legacy/mixer_quirks.c:857`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_set_clk_source (function) `static int snd_mbox1_set_clk_source(struct snd_usb_audio *chip, int rate_or_zero)`
-- Defined: `legacy/mixer_quirks.c:877`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_is_spdif_input (function) `static int snd_mbox1_is_spdif_input(struct snd_usb_audio *chip)`
-- Defined: `legacy/mixer_quirks.c:895`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_set_input_source (function) `static int snd_mbox1_set_input_source(struct snd_usb_audio *chip, int is_spdif)`
-- Defined: `legacy/mixer_quirks.c:915`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_clk_switch_get (function) `static int snd_mbox1_clk_switch_get(struct snd_kcontrol *kctl,
+- `snd_xonar_u1_switch_resume` (function) `legacy/mixer_quirks.c:833` `static int snd_xonar_u1_switch_resume(struct usb_mixer_elem_list *list)`
+- `snd_xonar_u1_controls_create` (function) `legacy/mixer_quirks.c:848` `static int snd_xonar_u1_controls_create(struct usb_mixer_interface *mixer)`
+- `snd_mbox1_is_spdif_synced` (function) `legacy/mixer_quirks.c:857` `static int snd_mbox1_is_spdif_synced(struct snd_usb_audio *chip)`
+- `snd_mbox1_set_clk_source` (function) `legacy/mixer_quirks.c:877` `static int snd_mbox1_set_clk_source(struct snd_usb_audio *chip, int rate_or_zero)`
+- `snd_mbox1_is_spdif_input` (function) `legacy/mixer_quirks.c:895` `static int snd_mbox1_is_spdif_input(struct snd_usb_audio *chip)`
+- `snd_mbox1_set_input_source` (function) `legacy/mixer_quirks.c:915` `static int snd_mbox1_set_input_source(struct snd_usb_audio *chip, int is_spdif)`
+- `snd_mbox1_clk_switch_get` (function) `legacy/mixer_quirks.c:934` `static int snd_mbox1_clk_switch_get(struct snd_kcontrol *kctl,
 				    struct snd_ctl_elem_value ...`
-- Defined: `legacy/mixer_quirks.c:934`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_clk_switch_update (function) `static int snd_mbox1_clk_switch_update(struct usb_mixer_interface *mixer, int is_spdif_sync)`
-- Defined: `legacy/mixer_quirks.c:954`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_clk_switch_put (function) `static int snd_mbox1_clk_switch_put(struct snd_kcontrol *kctl,
+- `snd_mbox1_clk_switch_update` (function) `legacy/mixer_quirks.c:954` `static int snd_mbox1_clk_switch_update(struct usb_mixer_interface *mixer, int is_spdif_sync)`
+- `snd_mbox1_clk_switch_put` (function) `legacy/mixer_quirks.c:979` `static int snd_mbox1_clk_switch_put(struct snd_kcontrol *kctl,
 				    struct snd_ctl_elem_value ...`
-- Defined: `legacy/mixer_quirks.c:979`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_clk_switch_info (function) `static int snd_mbox1_clk_switch_info(struct snd_kcontrol *kcontrol,
+- `snd_mbox1_clk_switch_info` (function) `legacy/mixer_quirks.c:997` `static int snd_mbox1_clk_switch_info(struct snd_kcontrol *kcontrol,
 				     struct snd_ctl_elem_...`
-- Defined: `legacy/mixer_quirks.c:997`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_clk_switch_resume (function) `static int snd_mbox1_clk_switch_resume(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:1008`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_src_switch_get (function) `static int snd_mbox1_src_switch_get(struct snd_kcontrol *kctl,
+- `snd_mbox1_clk_switch_resume` (function) `legacy/mixer_quirks.c:1008` `static int snd_mbox1_clk_switch_resume(struct usb_mixer_elem_list *list)`
+- `snd_mbox1_src_switch_get` (function) `legacy/mixer_quirks.c:1015` `static int snd_mbox1_src_switch_get(struct snd_kcontrol *kctl,
 				    struct snd_ctl_elem_value ...`
-- Defined: `legacy/mixer_quirks.c:1015`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_src_switch_update (function) `static int snd_mbox1_src_switch_update(struct usb_mixer_interface *mixer, int is_spdif_input)`
-- Defined: `legacy/mixer_quirks.c:1022`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_src_switch_put (function) `static int snd_mbox1_src_switch_put(struct snd_kcontrol *kctl,
+- `snd_mbox1_src_switch_update` (function) `legacy/mixer_quirks.c:1022` `static int snd_mbox1_src_switch_update(struct usb_mixer_interface *mixer, int is_spdif_input)`
+- `snd_mbox1_src_switch_put` (function) `legacy/mixer_quirks.c:1046` `static int snd_mbox1_src_switch_put(struct snd_kcontrol *kctl,
 				    struct snd_ctl_elem_value ...`
-- Defined: `legacy/mixer_quirks.c:1046`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_src_switch_info (function) `static int snd_mbox1_src_switch_info(struct snd_kcontrol *kcontrol,
+- `snd_mbox1_src_switch_info` (function) `legacy/mixer_quirks.c:1064` `static int snd_mbox1_src_switch_info(struct snd_kcontrol *kcontrol,
 				     struct snd_ctl_elem_...`
-- Defined: `legacy/mixer_quirks.c:1064`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_src_switch_resume (function) `static int snd_mbox1_src_switch_resume(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:1075`
-- Depends on: `audiobox_vsl.h`
-
-### snd_mbox1_controls_create (function) `static int snd_mbox1_controls_create(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1102`
-- Depends on: `audiobox_vsl.h`
-
-### snd_ni_control_init_val (function) `static int snd_ni_control_init_val(struct usb_mixer_interface *mixer,
+- `snd_mbox1_src_switch_resume` (function) `legacy/mixer_quirks.c:1075` `static int snd_mbox1_src_switch_resume(struct usb_mixer_elem_list *list)`
+- `snd_mbox1_controls_create` (function) `legacy/mixer_quirks.c:1102` `static int snd_mbox1_controls_create(struct usb_mixer_interface *mixer)`
+- `snd_ni_control_init_val` (function) `legacy/mixer_quirks.c:1121` `static int snd_ni_control_init_val(struct usb_mixer_interface *mixer,
 				   struct snd_kcontrol ...`
-- Defined: `legacy/mixer_quirks.c:1121`
-- Depends on: `audiobox_vsl.h`
-
-### snd_nativeinstruments_control_get (function) `static int snd_nativeinstruments_control_get(struct snd_kcontrol *kcontrol,
+- `snd_nativeinstruments_control_get` (function) `legacy/mixer_quirks.c:1143` `static int snd_nativeinstruments_control_get(struct snd_kcontrol *kcontrol,
 					     struct snd_...`
-- Defined: `legacy/mixer_quirks.c:1143`
-- Depends on: `audiobox_vsl.h`
-
-### snd_ni_update_cur_val (function) `static int snd_ni_update_cur_val(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:1150`
-- Depends on: `audiobox_vsl.h`
-
-### snd_nativeinstruments_control_put (function) `static int snd_nativeinstruments_control_put(struct snd_kcontrol *kcontrol,
+- `snd_ni_update_cur_val` (function) `legacy/mixer_quirks.c:1150` `static int snd_ni_update_cur_val(struct usb_mixer_elem_list *list)`
+- `snd_nativeinstruments_control_put` (function) `legacy/mixer_quirks.c:1164` `static int snd_nativeinstruments_control_put(struct snd_kcontrol *kcontrol,
 					     struct snd_...`
-- Defined: `legacy/mixer_quirks.c:1164`
-- Depends on: `audiobox_vsl.h`
-
-### snd_nativeinstruments_create_mixer (function) `static int snd_nativeinstruments_create_mixer(struct usb_mixer_interface *mixer,
+- `snd_nativeinstruments_create_mixer` (function) `legacy/mixer_quirks.c:1235` `static int snd_nativeinstruments_create_mixer(struct usb_mixer_interface *mixer,
 					      const...`
-- Defined: `legacy/mixer_quirks.c:1235`
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_eff_switch_info (function) `static int snd_ftu_eff_switch_info(struct snd_kcontrol *kcontrol,
-				   struct snd_ctl_elem_info...`
-- Defined: `legacy/mixer_quirks.c:1267`
-- Doc: err = add_single_ctl_with_resume(mixer, 0, snd_ni_update_cur_val, &template, &list); if (err < 0) break; snd_ni_control_
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_eff_switch_init (function) `static int snd_ftu_eff_switch_init(struct usb_mixer_interface *mixer,
+- `snd_ftu_eff_switch_info` (function) `legacy/mixer_quirks.c:1267` `static int snd_ftu_eff_switch_info(struct snd_kcontrol *kcontrol,
+				   struct snd_ctl_elem_info...` -- err = add_single_ctl_with_resume(mixer, 0, snd_ni_update_cur_val, &template, &list); if (err < 0) break...
+- `snd_ftu_eff_switch_init` (function) `legacy/mixer_quirks.c:1278` `static int snd_ftu_eff_switch_init(struct usb_mixer_interface *mixer,
 				   struct snd_kcontrol ...`
-- Defined: `legacy/mixer_quirks.c:1278`
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_eff_switch_get (function) `static int snd_ftu_eff_switch_get(struct snd_kcontrol *kctl,
+- `snd_ftu_eff_switch_get` (function) `legacy/mixer_quirks.c:1301` `static int snd_ftu_eff_switch_get(struct snd_kcontrol *kctl,
 				  struct snd_ctl_elem_value *uco...`
-- Defined: `legacy/mixer_quirks.c:1301`
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_eff_switch_update (function) `static int snd_ftu_eff_switch_update(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:1308`
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_eff_switch_put (function) `static int snd_ftu_eff_switch_put(struct snd_kcontrol *kctl,
+- `snd_ftu_eff_switch_update` (function) `legacy/mixer_quirks.c:1308` `static int snd_ftu_eff_switch_update(struct usb_mixer_elem_list *list)`
+- `snd_ftu_eff_switch_put` (function) `legacy/mixer_quirks.c:1329` `static int snd_ftu_eff_switch_put(struct snd_kcontrol *kctl,
 				  struct snd_ctl_elem_value *uco...`
-- Defined: `legacy/mixer_quirks.c:1329`
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_create_effect_switch (function) `static int snd_ftu_create_effect_switch(struct usb_mixer_interface *mixer,
+- `snd_ftu_create_effect_switch` (function) `legacy/mixer_quirks.c:1347` `static int snd_ftu_create_effect_switch(struct usb_mixer_interface *mixer,
 					int validx, int b...`
-- Defined: `legacy/mixer_quirks.c:1347`
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_create_volume_ctls (function) `static int snd_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1373`
-- Doc: struct usb_mixer_elem_list *list; int err; err = add_single_ctl_with_resume(mixer, bUnitID, snd_ftu_eff_switch_update, &
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_create_effect_volume_ctl (function) `static int snd_ftu_create_effect_volume_ctl(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1412`
-- Doc: "DIn%d - Out%d Playback Volume", in - 7, out + 1); err = snd_create_std_mono_ctl(mixer, id, control, cmask, val_type, na
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_create_effect_duration_ctl (function) `static int snd_ftu_create_effect_duration_ctl(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1425`
-- Doc: /* This control needs a volume quirk, see mixer.c static int snd_ftu_create_effect_volume_ctl(struct usb_mixer_interface
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_create_effect_feedback_ctl (function) `static int snd_ftu_create_effect_feedback_ctl(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1438`
-- Doc: /* This control needs a volume quirk, see mixer.c static int snd_ftu_create_effect_duration_ctl(struct usb_mixer_interfa
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_create_effect_return_ctls (function) `static int snd_ftu_create_effect_return_ctls(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1450`
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_create_effect_send_ctls (function) `static int snd_ftu_create_effect_send_ctls(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1474`
-- Depends on: `audiobox_vsl.h`
-
-### snd_ftu_create_mixer (function) `static int snd_ftu_create_mixer(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1507`
-- Depends on: `audiobox_vsl.h`
-
-### snd_emuusb_set_samplerate (function) `void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
+- `snd_ftu_create_volume_ctls` (function) `legacy/mixer_quirks.c:1373` `static int snd_ftu_create_volume_ctls(struct usb_mixer_interface *mixer)` -- struct usb_mixer_elem_list *list; int err; err = add_single_ctl_with_resume(mixer, bUnitID...
+- `snd_ftu_create_effect_volume_ctl` (function) `legacy/mixer_quirks.c:1412` `static int snd_ftu_create_effect_volume_ctl(struct usb_mixer_interface *mixer)` -- "DIn%d - Out%d Playback Volume", in - 7, out + 1); err = snd_create_std_mono_ctl(mixer, id, control, cmask...
+- `snd_ftu_create_effect_duration_ctl` (function) `legacy/mixer_quirks.c:1425` `static int snd_ftu_create_effect_duration_ctl(struct usb_mixer_interface *mixer)` -- /* This control needs a volume quirk, see mixer.c static int snd_ftu_create_effect_volume_ctl(struct...
+- `snd_ftu_create_effect_feedback_ctl` (function) `legacy/mixer_quirks.c:1438` `static int snd_ftu_create_effect_feedback_ctl(struct usb_mixer_interface *mixer)` -- /* This control needs a volume quirk, see mixer.c static int snd_ftu_create_effect_duration_ctl(struct...
+- `snd_ftu_create_effect_return_ctls` (function) `legacy/mixer_quirks.c:1450` `static int snd_ftu_create_effect_return_ctls(struct usb_mixer_interface *mixer)`
+- `snd_ftu_create_effect_send_ctls` (function) `legacy/mixer_quirks.c:1474` `static int snd_ftu_create_effect_send_ctls(struct usb_mixer_interface *mixer)`
+- `snd_ftu_create_mixer` (function) `legacy/mixer_quirks.c:1507` `static int snd_ftu_create_mixer(struct usb_mixer_interface *mixer)`
+- `snd_emuusb_set_samplerate` (function) `legacy/mixer_quirks.c:1542` `void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
 			       unsigned char samplerate_id)`
-- Defined: `legacy/mixer_quirks.c:1542`
-- Depends on: `audiobox_vsl.h`
-
-### list_for_each_entry (function) `list_for_each_entry(mixer, &chip->mixer_list, list)`
-- Defined: `legacy/mixer_quirks.c:1549`
-- Depends on: `audiobox_vsl.h`
-
-### snd_c400_create_vol_ctls (function) `static int snd_c400_create_vol_ctls(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1563`
-- Doc: list_for_each_entry(mixer, &chip->mixer_list, list) { if (mixer->id_elems[unitid]) { cval = mixer_elem_list_to_info(mixe
-- Depends on: `audiobox_vsl.h`
-
-### snd_c400_create_effect_volume_ctl (function) `static int snd_c400_create_effect_volume_ctl(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1612`
-- Doc: cmask = (out == 0) ? 0 : BIT(out - 1); offset = chan * num_outs; err = snd_create_std_mono_ctl_offset(mixer, id, control
-- Depends on: `audiobox_vsl.h`
-
-### snd_c400_create_effect_duration_ctl (function) `static int snd_c400_create_effect_duration_ctl(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1625`
-- Doc: /* This control needs a volume quirk, see mixer.c static int snd_c400_create_effect_volume_ctl(struct usb_mixer_interfac
-- Depends on: `audiobox_vsl.h`
-
-### snd_c400_create_effect_feedback_ctl (function) `static int snd_c400_create_effect_feedback_ctl(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1638`
-- Doc: /* This control needs a volume quirk, see mixer.c static int snd_c400_create_effect_duration_ctl(struct usb_mixer_interf
-- Depends on: `audiobox_vsl.h`
-
-### snd_c400_create_effect_vol_ctls (function) `static int snd_c400_create_effect_vol_ctls(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1650`
-- Depends on: `audiobox_vsl.h`
-
-### snd_c400_create_effect_ret_vol_ctls (function) `static int snd_c400_create_effect_ret_vol_ctls(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1695`
-- Depends on: `audiobox_vsl.h`
-
-### snd_c400_create_mixer (function) `static int snd_c400_create_mixer(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:1737`
-- Depends on: `audiobox_vsl.h`
-
-### snd_microii_spdif_info (function) `static int snd_microii_spdif_info(struct snd_kcontrol *kcontrol,
-				  struct snd_ctl_elem_info *...`
-- Defined: `legacy/mixer_quirks.c:1869`
-- Doc: power on values: r2: 0x10 r3: 0x20 (b7 is zeroed just before playback (except IEC61937) and set just after it to 0xa0, p
-- Depends on: `audiobox_vsl.h`
-
-### snd_microii_spdif_default_get (function) `static int snd_microii_spdif_default_get(struct snd_kcontrol *kcontrol,
+- `list_for_each_entry` (function) `legacy/mixer_quirks.c:1549` `list_for_each_entry(mixer, &chip->mixer_list, list)`
+- `snd_c400_create_vol_ctls` (function) `legacy/mixer_quirks.c:1563` `static int snd_c400_create_vol_ctls(struct usb_mixer_interface *mixer)` -- list_for_each_entry(mixer, &chip->mixer_list, list) { if (mixer->id_elems[unitid]) { cval =...
+- `snd_c400_create_effect_volume_ctl` (function) `legacy/mixer_quirks.c:1612` `static int snd_c400_create_effect_volume_ctl(struct usb_mixer_interface *mixer)` -- cmask = (out == 0) ?
+- `snd_c400_create_effect_duration_ctl` (function) `legacy/mixer_quirks.c:1625` `static int snd_c400_create_effect_duration_ctl(struct usb_mixer_interface *mixer)` -- /* This control needs a volume quirk, see mixer.c static int snd_c400_create_effect_volume_ctl(struct...
+- `snd_c400_create_effect_feedback_ctl` (function) `legacy/mixer_quirks.c:1638` `static int snd_c400_create_effect_feedback_ctl(struct usb_mixer_interface *mixer)` -- /* This control needs a volume quirk, see mixer.c static int snd_c400_create_effect_duration_ctl(struct...
+- `snd_c400_create_effect_vol_ctls` (function) `legacy/mixer_quirks.c:1650` `static int snd_c400_create_effect_vol_ctls(struct usb_mixer_interface *mixer)`
+- `snd_c400_create_effect_ret_vol_ctls` (function) `legacy/mixer_quirks.c:1695` `static int snd_c400_create_effect_ret_vol_ctls(struct usb_mixer_interface *mixer)`
+- `snd_c400_create_mixer` (function) `legacy/mixer_quirks.c:1737` `static int snd_c400_create_mixer(struct usb_mixer_interface *mixer)`
+- `snd_microii_spdif_info` (function) `legacy/mixer_quirks.c:1869` `static int snd_microii_spdif_info(struct snd_kcontrol *kcontrol,
+				  struct snd_ctl_elem_info *...` -- power on values: r2: 0x10 r3: 0x20 (b7 is zeroed just before playback (except IEC61937) and set just after it to...
+- `snd_microii_spdif_default_get` (function) `legacy/mixer_quirks.c:1877` `static int snd_microii_spdif_default_get(struct snd_kcontrol *kcontrol,
 					 struct snd_ctl_elem...`
-- Defined: `legacy/mixer_quirks.c:1877`
-- Depends on: `audiobox_vsl.h`
-
-### snd_microii_spdif_default_update (function) `static int snd_microii_spdif_default_update(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:1924`
-- Depends on: `audiobox_vsl.h`
-
-### snd_microii_spdif_default_put (function) `static int snd_microii_spdif_default_put(struct snd_kcontrol *kcontrol,
+- `snd_microii_spdif_default_update` (function) `legacy/mixer_quirks.c:1924` `static int snd_microii_spdif_default_update(struct usb_mixer_elem_list *list)`
+- `snd_microii_spdif_default_put` (function) `legacy/mixer_quirks.c:1960` `static int snd_microii_spdif_default_put(struct snd_kcontrol *kcontrol,
 					 struct snd_ctl_elem...`
-- Defined: `legacy/mixer_quirks.c:1960`
-- Depends on: `audiobox_vsl.h`
-
-### snd_microii_spdif_mask_get (function) `static int snd_microii_spdif_mask_get(struct snd_kcontrol *kcontrol,
+- `snd_microii_spdif_mask_get` (function) `legacy/mixer_quirks.c:1988` `static int snd_microii_spdif_mask_get(struct snd_kcontrol *kcontrol,
 				      struct snd_ctl_ele...`
-- Defined: `legacy/mixer_quirks.c:1988`
-- Depends on: `audiobox_vsl.h`
-
-### snd_microii_spdif_switch_get (function) `static int snd_microii_spdif_switch_get(struct snd_kcontrol *kcontrol,
+- `snd_microii_spdif_switch_get` (function) `legacy/mixer_quirks.c:1999` `static int snd_microii_spdif_switch_get(struct snd_kcontrol *kcontrol,
 					struct snd_ctl_elem_v...`
-- Defined: `legacy/mixer_quirks.c:1999`
-- Depends on: `audiobox_vsl.h`
-
-### snd_microii_spdif_switch_update (function) `static int snd_microii_spdif_switch_update(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:2007`
-- Depends on: `audiobox_vsl.h`
-
-### snd_microii_spdif_switch_put (function) `static int snd_microii_spdif_switch_put(struct snd_kcontrol *kcontrol,
+- `snd_microii_spdif_switch_update` (function) `legacy/mixer_quirks.c:2007` `static int snd_microii_spdif_switch_update(struct usb_mixer_elem_list *list)`
+- `snd_microii_spdif_switch_put` (function) `legacy/mixer_quirks.c:2026` `static int snd_microii_spdif_switch_put(struct snd_kcontrol *kcontrol,
 					struct snd_ctl_elem_v...`
-- Defined: `legacy/mixer_quirks.c:2026`
-- Depends on: `audiobox_vsl.h`
-
-### snd_microii_controls_create (function) `static int snd_microii_controls_create(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:2068`
-- Depends on: `audiobox_vsl.h`
-
-### snd_soundblaster_e1_switch_get (function) `static int snd_soundblaster_e1_switch_get(struct snd_kcontrol *kcontrol,
+- `snd_microii_controls_create` (function) `legacy/mixer_quirks.c:2068` `static int snd_microii_controls_create(struct usb_mixer_interface *mixer)`
+- `snd_soundblaster_e1_switch_get` (function) `legacy/mixer_quirks.c:2091` `static int snd_soundblaster_e1_switch_get(struct snd_kcontrol *kcontrol,
 					  struct snd_ctl_el...`
-- Defined: `legacy/mixer_quirks.c:2091`
-- Depends on: `audiobox_vsl.h`
-
-### snd_soundblaster_e1_switch_update (function) `static int snd_soundblaster_e1_switch_update(struct usb_mixer_interface *mixer,
+- `snd_soundblaster_e1_switch_update` (function) `legacy/mixer_quirks.c:2098` `static int snd_soundblaster_e1_switch_update(struct usb_mixer_interface *mixer,
 					     unsigne...`
-- Defined: `legacy/mixer_quirks.c:2098`
-- Depends on: `audiobox_vsl.h`
-
-### snd_soundblaster_e1_switch_put (function) `static int snd_soundblaster_e1_switch_put(struct snd_kcontrol *kcontrol,
+- `snd_soundblaster_e1_switch_put` (function) `legacy/mixer_quirks.c:2116` `static int snd_soundblaster_e1_switch_put(struct snd_kcontrol *kcontrol,
 					  struct snd_ctl_el...`
-- Defined: `legacy/mixer_quirks.c:2116`
-- Depends on: `audiobox_vsl.h`
-
-### snd_soundblaster_e1_switch_resume (function) `static int snd_soundblaster_e1_switch_resume(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:2130`
-- Depends on: `audiobox_vsl.h`
-
-### snd_soundblaster_e1_switch_info (function) `static int snd_soundblaster_e1_switch_info(struct snd_kcontrol *kcontrol,
+- `snd_soundblaster_e1_switch_resume` (function) `legacy/mixer_quirks.c:2130` `static int snd_soundblaster_e1_switch_resume(struct usb_mixer_elem_list *list)`
+- `snd_soundblaster_e1_switch_info` (function) `legacy/mixer_quirks.c:2136` `static int snd_soundblaster_e1_switch_info(struct snd_kcontrol *kcontrol,
 					   struct snd_ctl_...`
-- Defined: `legacy/mixer_quirks.c:2136`
-- Depends on: `audiobox_vsl.h`
-
-### snd_soundblaster_e1_switch_create (function) `static int snd_soundblaster_e1_switch_create(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:2155`
-- Depends on: `audiobox_vsl.h`
-
-### realtek_hda_set (function) `static int realtek_hda_set(struct snd_usb_audio *chip, u32 cmd)`
-- Defined: `legacy/mixer_quirks.c:2192`
-- Depends on: `audiobox_vsl.h`
-
-### realtek_hda_get (function) `static int realtek_hda_get(struct snd_usb_audio *chip, u32 cmd, u32 *value)`
-- Defined: `legacy/mixer_quirks.c:2202`
-- Depends on: `audiobox_vsl.h`
-
-### realtek_ctl_connector_get (function) `static int realtek_ctl_connector_get(struct snd_kcontrol *kcontrol,
+- `snd_soundblaster_e1_switch_create` (function) `legacy/mixer_quirks.c:2155` `static int snd_soundblaster_e1_switch_create(struct usb_mixer_interface *mixer)`
+- `realtek_hda_set` (function) `legacy/mixer_quirks.c:2192` `static int realtek_hda_set(struct snd_usb_audio *chip, u32 cmd)`
+- `realtek_hda_get` (function) `legacy/mixer_quirks.c:2202` `static int realtek_hda_get(struct snd_usb_audio *chip, u32 cmd, u32 *value)`
+- `realtek_ctl_connector_get` (function) `legacy/mixer_quirks.c:2223` `static int realtek_ctl_connector_get(struct snd_kcontrol *kcontrol,
 				     struct snd_ctl_elem_...`
-- Defined: `legacy/mixer_quirks.c:2223`
-- Depends on: `audiobox_vsl.h`
-
-### realtek_resume_jack (function) `static int realtek_resume_jack(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:2273`
-- Depends on: `audiobox_vsl.h`
-
-### realtek_add_jack (function) `static int realtek_add_jack(struct usb_mixer_interface *mixer,
+- `realtek_resume_jack` (function) `legacy/mixer_quirks.c:2273` `static int realtek_resume_jack(struct usb_mixer_elem_list *list)`
+- `realtek_add_jack` (function) `legacy/mixer_quirks.c:2280` `static int realtek_add_jack(struct usb_mixer_interface *mixer,
 			    char *name, u32 val)`
-- Defined: `legacy/mixer_quirks.c:2280`
-- Depends on: `audiobox_vsl.h`
-
-### dell_dock_mixer_create (function) `static int dell_dock_mixer_create(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:2307`
-- Depends on: `audiobox_vsl.h`
-
-### dell_dock_init_vol (function) `static void dell_dock_init_vol(struct usb_mixer_interface *mixer, int ch, int id)`
-- Defined: `legacy/mixer_quirks.c:2339`
-- Depends on: `audiobox_vsl.h`
-
-### dell_dock_mixer_init (function) `static int dell_dock_mixer_init(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:2351`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_read_value (function) `static int snd_rme_read_value(struct snd_usb_audio *chip,
+- `dell_dock_mixer_create` (function) `legacy/mixer_quirks.c:2307` `static int dell_dock_mixer_create(struct usb_mixer_interface *mixer)`
+- `dell_dock_init_vol` (function) `legacy/mixer_quirks.c:2339` `static void dell_dock_init_vol(struct usb_mixer_interface *mixer, int ch, int id)`
+- `dell_dock_mixer_init` (function) `legacy/mixer_quirks.c:2351` `static int dell_dock_mixer_init(struct usb_mixer_interface *mixer)`
+- `snd_rme_read_value` (function) `legacy/mixer_quirks.c:2419` `static int snd_rme_read_value(struct snd_usb_audio *chip,
 			      unsigned int item,
 			      u3...`
-- Defined: `legacy/mixer_quirks.c:2419`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_get_status1 (function) `static int snd_rme_get_status1(struct snd_kcontrol *kcontrol,
+- `snd_rme_get_status1` (function) `legacy/mixer_quirks.c:2438` `static int snd_rme_get_status1(struct snd_kcontrol *kcontrol,
 			       u32 *status1)`
-- Defined: `legacy/mixer_quirks.c:2438`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_rate_get (function) `static int snd_rme_rate_get(struct snd_kcontrol *kcontrol,
+- `snd_rme_rate_get` (function) `legacy/mixer_quirks.c:2450` `static int snd_rme_rate_get(struct snd_kcontrol *kcontrol,
 			    struct snd_ctl_elem_value *ucon...`
-- Defined: `legacy/mixer_quirks.c:2450`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_sync_state_get (function) `static int snd_rme_sync_state_get(struct snd_kcontrol *kcontrol,
+- `snd_rme_sync_state_get` (function) `legacy/mixer_quirks.c:2484` `static int snd_rme_sync_state_get(struct snd_kcontrol *kcontrol,
 				  struct snd_ctl_elem_value ...`
-- Defined: `legacy/mixer_quirks.c:2484`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_spdif_if_get (function) `static int snd_rme_spdif_if_get(struct snd_kcontrol *kcontrol,
+- `snd_rme_spdif_if_get` (function) `legacy/mixer_quirks.c:2514` `static int snd_rme_spdif_if_get(struct snd_kcontrol *kcontrol,
 				struct snd_ctl_elem_value *uco...`
-- Defined: `legacy/mixer_quirks.c:2514`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_spdif_format_get (function) `static int snd_rme_spdif_format_get(struct snd_kcontrol *kcontrol,
+- `snd_rme_spdif_format_get` (function) `legacy/mixer_quirks.c:2527` `static int snd_rme_spdif_format_get(struct snd_kcontrol *kcontrol,
 				    struct snd_ctl_elem_va...`
-- Defined: `legacy/mixer_quirks.c:2527`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_sync_source_get (function) `static int snd_rme_sync_source_get(struct snd_kcontrol *kcontrol,
+- `snd_rme_sync_source_get` (function) `legacy/mixer_quirks.c:2540` `static int snd_rme_sync_source_get(struct snd_kcontrol *kcontrol,
 				   struct snd_ctl_elem_valu...`
-- Defined: `legacy/mixer_quirks.c:2540`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_current_freq_get (function) `static int snd_rme_current_freq_get(struct snd_kcontrol *kcontrol,
+- `snd_rme_current_freq_get` (function) `legacy/mixer_quirks.c:2553` `static int snd_rme_current_freq_get(struct snd_kcontrol *kcontrol,
 				    struct snd_ctl_elem_va...`
-- Defined: `legacy/mixer_quirks.c:2553`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_rate_info (function) `static int snd_rme_rate_info(struct snd_kcontrol *kcontrol,
+- `snd_rme_rate_info` (function) `legacy/mixer_quirks.c:2579` `static int snd_rme_rate_info(struct snd_kcontrol *kcontrol,
 			     struct snd_ctl_elem_info *uinfo)`
-- Defined: `legacy/mixer_quirks.c:2579`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_sync_state_info (function) `static int snd_rme_sync_state_info(struct snd_kcontrol *kcontrol,
+- `snd_rme_sync_state_info` (function) `legacy/mixer_quirks.c:2599` `static int snd_rme_sync_state_info(struct snd_kcontrol *kcontrol,
 				   struct snd_ctl_elem_info...`
-- Defined: `legacy/mixer_quirks.c:2599`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_spdif_if_info (function) `static int snd_rme_spdif_if_info(struct snd_kcontrol *kcontrol,
+- `snd_rme_spdif_if_info` (function) `legacy/mixer_quirks.c:2610` `static int snd_rme_spdif_if_info(struct snd_kcontrol *kcontrol,
 				 struct snd_ctl_elem_info *ui...`
-- Defined: `legacy/mixer_quirks.c:2610`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_spdif_format_info (function) `static int snd_rme_spdif_format_info(struct snd_kcontrol *kcontrol,
+- `snd_rme_spdif_format_info` (function) `legacy/mixer_quirks.c:2621` `static int snd_rme_spdif_format_info(struct snd_kcontrol *kcontrol,
 				     struct snd_ctl_elem_...`
-- Defined: `legacy/mixer_quirks.c:2621`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_sync_source_info (function) `static int snd_rme_sync_source_info(struct snd_kcontrol *kcontrol,
+- `snd_rme_sync_source_info` (function) `legacy/mixer_quirks.c:2632` `static int snd_rme_sync_source_info(struct snd_kcontrol *kcontrol,
 				    struct snd_ctl_elem_in...`
-- Defined: `legacy/mixer_quirks.c:2632`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_controls_create (function) `static int snd_rme_controls_create(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:2714`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_ctl_update (function) `static int snd_bbfpro_ctl_update(struct usb_mixer_interface *mixer, u8 reg,
+- `snd_rme_controls_create` (function) `legacy/mixer_quirks.c:2714` `static int snd_rme_controls_create(struct usb_mixer_interface *mixer)`
+- `snd_bbfpro_ctl_update` (function) `legacy/mixer_quirks.c:2780` `static int snd_bbfpro_ctl_update(struct usb_mixer_interface *mixer, u8 reg,
 				 u8 index, u8 value)`
-- Defined: `legacy/mixer_quirks.c:2780`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_ctl_get (function) `static int snd_bbfpro_ctl_get(struct snd_kcontrol *kcontrol,
+- `snd_bbfpro_ctl_get` (function) `legacy/mixer_quirks.c:2811` `static int snd_bbfpro_ctl_get(struct snd_kcontrol *kcontrol,
 			      struct snd_ctl_elem_value *...`
-- Defined: `legacy/mixer_quirks.c:2811`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_ctl_info (function) `static int snd_bbfpro_ctl_info(struct snd_kcontrol *kcontrol,
+- `snd_bbfpro_ctl_info` (function) `legacy/mixer_quirks.c:2834` `static int snd_bbfpro_ctl_info(struct snd_kcontrol *kcontrol,
 			       struct snd_ctl_elem_info ...`
-- Defined: `legacy/mixer_quirks.c:2834`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_ctl_put (function) `static int snd_bbfpro_ctl_put(struct snd_kcontrol *kcontrol,
+- `snd_bbfpro_ctl_put` (function) `legacy/mixer_quirks.c:2868` `static int snd_bbfpro_ctl_put(struct snd_kcontrol *kcontrol,
 			      struct snd_ctl_elem_value *...`
-- Defined: `legacy/mixer_quirks.c:2868`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_ctl_resume (function) `static int snd_bbfpro_ctl_resume(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:2907`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_gain_update (function) `static int snd_bbfpro_gain_update(struct usb_mixer_interface *mixer,
+- `snd_bbfpro_ctl_resume` (function) `legacy/mixer_quirks.c:2907` `static int snd_bbfpro_ctl_resume(struct usb_mixer_elem_list *list)`
+- `snd_bbfpro_gain_update` (function) `legacy/mixer_quirks.c:2920` `static int snd_bbfpro_gain_update(struct usb_mixer_interface *mixer,
 				  u8 channel, u8 gain)`
-- Defined: `legacy/mixer_quirks.c:2920`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_gain_get (function) `static int snd_bbfpro_gain_get(struct snd_kcontrol *kcontrol,
+- `snd_bbfpro_gain_get` (function) `legacy/mixer_quirks.c:2944` `static int snd_bbfpro_gain_get(struct snd_kcontrol *kcontrol,
 			       struct snd_ctl_elem_value...`
-- Defined: `legacy/mixer_quirks.c:2944`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_gain_info (function) `static int snd_bbfpro_gain_info(struct snd_kcontrol *kcontrol,
+- `snd_bbfpro_gain_info` (function) `legacy/mixer_quirks.c:2953` `static int snd_bbfpro_gain_info(struct snd_kcontrol *kcontrol,
 				struct snd_ctl_elem_info *uinfo)`
-- Defined: `legacy/mixer_quirks.c:2953`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_gain_put (function) `static int snd_bbfpro_gain_put(struct snd_kcontrol *kcontrol,
+- `snd_bbfpro_gain_put` (function) `legacy/mixer_quirks.c:2974` `static int snd_bbfpro_gain_put(struct snd_kcontrol *kcontrol,
 			       struct snd_ctl_elem_value...`
-- Defined: `legacy/mixer_quirks.c:2974`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_gain_resume (function) `static int snd_bbfpro_gain_resume(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:3011`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_vol_update (function) `static int snd_bbfpro_vol_update(struct usb_mixer_interface *mixer, u16 index,
+- `snd_bbfpro_gain_resume` (function) `legacy/mixer_quirks.c:3011` `static int snd_bbfpro_gain_resume(struct usb_mixer_elem_list *list)`
+- `snd_bbfpro_vol_update` (function) `legacy/mixer_quirks.c:3024` `static int snd_bbfpro_vol_update(struct usb_mixer_interface *mixer, u16 index,
 				 u32 value)`
-- Defined: `legacy/mixer_quirks.c:3024`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_vol_get (function) `static int snd_bbfpro_vol_get(struct snd_kcontrol *kcontrol,
+- `snd_bbfpro_vol_get` (function) `legacy/mixer_quirks.c:3050` `static int snd_bbfpro_vol_get(struct snd_kcontrol *kcontrol,
 			      struct snd_ctl_elem_value *...`
-- Defined: `legacy/mixer_quirks.c:3050`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_vol_info (function) `static int snd_bbfpro_vol_info(struct snd_kcontrol *kcontrol,
+- `snd_bbfpro_vol_info` (function) `legacy/mixer_quirks.c:3058` `static int snd_bbfpro_vol_info(struct snd_kcontrol *kcontrol,
 			       struct snd_ctl_elem_info ...`
-- Defined: `legacy/mixer_quirks.c:3058`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_vol_put (function) `static int snd_bbfpro_vol_put(struct snd_kcontrol *kcontrol,
+- `snd_bbfpro_vol_put` (function) `legacy/mixer_quirks.c:3068` `static int snd_bbfpro_vol_put(struct snd_kcontrol *kcontrol,
 			      struct snd_ctl_elem_value *...`
-- Defined: `legacy/mixer_quirks.c:3068`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_vol_resume (function) `static int snd_bbfpro_vol_resume(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:3096`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_ctl_add (function) `static int snd_bbfpro_ctl_add(struct usb_mixer_interface *mixer, u8 reg,
+- `snd_bbfpro_vol_resume` (function) `legacy/mixer_quirks.c:3096` `static int snd_bbfpro_vol_resume(struct usb_mixer_elem_list *list)`
+- `snd_bbfpro_ctl_add` (function) `legacy/mixer_quirks.c:3133` `static int snd_bbfpro_ctl_add(struct usb_mixer_interface *mixer, u8 reg,
 			      u8 index, char ...`
-- Defined: `legacy/mixer_quirks.c:3133`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_gain_add (function) `static int snd_bbfpro_gain_add(struct usb_mixer_interface *mixer, u8 channel,
+- `snd_bbfpro_gain_add` (function) `legacy/mixer_quirks.c:3147` `static int snd_bbfpro_gain_add(struct usb_mixer_interface *mixer, u8 channel,
 			       char *name)`
-- Defined: `legacy/mixer_quirks.c:3147`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_vol_add (function) `static int snd_bbfpro_vol_add(struct usb_mixer_interface *mixer, u16 index,
+- `snd_bbfpro_vol_add` (function) `legacy/mixer_quirks.c:3159` `static int snd_bbfpro_vol_add(struct usb_mixer_interface *mixer, u16 index,
 			      char *name)`
-- Defined: `legacy/mixer_quirks.c:3159`
-- Depends on: `audiobox_vsl.h`
-
-### snd_bbfpro_controls_create (function) `static int snd_bbfpro_controls_create(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:3171`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_write_reg (function) `static int snd_rme_digiface_write_reg(struct snd_kcontrol *kcontrol, int item, u16 mask, u16 val)`
-- Defined: `legacy/mixer_quirks.c:3319`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_read_status (function) `static int snd_rme_digiface_read_status(struct snd_kcontrol *kcontrol, u32 status[4])`
-- Defined: `legacy/mixer_quirks.c:3337`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_get_status_val (function) `static int snd_rme_digiface_get_status_val(struct snd_kcontrol *kcontrol)`
-- Defined: `legacy/mixer_quirks.c:3361`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_rate_get (function) `static int snd_rme_digiface_rate_get(struct snd_kcontrol *kcontrol,
+- `snd_bbfpro_controls_create` (function) `legacy/mixer_quirks.c:3171` `static int snd_bbfpro_controls_create(struct usb_mixer_interface *mixer)`
+- `snd_rme_digiface_write_reg` (function) `legacy/mixer_quirks.c:3319` `static int snd_rme_digiface_write_reg(struct snd_kcontrol *kcontrol, int item, u16 mask, u16 val)`
+- `snd_rme_digiface_read_status` (function) `legacy/mixer_quirks.c:3337` `static int snd_rme_digiface_read_status(struct snd_kcontrol *kcontrol, u32 status[4])`
+- `snd_rme_digiface_get_status_val` (function) `legacy/mixer_quirks.c:3361` `static int snd_rme_digiface_get_status_val(struct snd_kcontrol *kcontrol)`
+- `snd_rme_digiface_rate_get` (function) `legacy/mixer_quirks.c:3399` `static int snd_rme_digiface_rate_get(struct snd_kcontrol *kcontrol,
 				     struct snd_ctl_elem_...`
-- Defined: `legacy/mixer_quirks.c:3399`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_enum_get (function) `static int snd_rme_digiface_enum_get(struct snd_kcontrol *kcontrol,
+- `snd_rme_digiface_enum_get` (function) `legacy/mixer_quirks.c:3413` `static int snd_rme_digiface_enum_get(struct snd_kcontrol *kcontrol,
 				     struct snd_ctl_elem_...`
-- Defined: `legacy/mixer_quirks.c:3413`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_enum_put (function) `static int snd_rme_digiface_enum_put(struct snd_kcontrol *kcontrol,
+- `snd_rme_digiface_enum_put` (function) `legacy/mixer_quirks.c:3425` `static int snd_rme_digiface_enum_put(struct snd_kcontrol *kcontrol,
 				     struct snd_ctl_elem_...`
-- Defined: `legacy/mixer_quirks.c:3425`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_current_sync_get (function) `static int snd_rme_digiface_current_sync_get(struct snd_kcontrol *kcontrol,
+- `snd_rme_digiface_current_sync_get` (function) `legacy/mixer_quirks.c:3439` `static int snd_rme_digiface_current_sync_get(struct snd_kcontrol *kcontrol,
 					     struct snd_...`
-- Defined: `legacy/mixer_quirks.c:3439`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_sync_state_get (function) `static int snd_rme_digiface_sync_state_get(struct snd_kcontrol *kcontrol,
+- `snd_rme_digiface_sync_state_get` (function) `legacy/mixer_quirks.c:3451` `static int snd_rme_digiface_sync_state_get(struct snd_kcontrol *kcontrol,
 					   struct snd_ctl_...`
-- Defined: `legacy/mixer_quirks.c:3451`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_format_info (function) `static int snd_rme_digiface_format_info(struct snd_kcontrol *kcontrol,
+- `snd_rme_digiface_format_info` (function) `legacy/mixer_quirks.c:3474` `static int snd_rme_digiface_format_info(struct snd_kcontrol *kcontrol,
 					struct snd_ctl_elem_i...`
-- Defined: `legacy/mixer_quirks.c:3474`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_sync_source_info (function) `static int snd_rme_digiface_sync_source_info(struct snd_kcontrol *kcontrol,
+- `snd_rme_digiface_sync_source_info` (function) `legacy/mixer_quirks.c:3485` `static int snd_rme_digiface_sync_source_info(struct snd_kcontrol *kcontrol,
 					     struct snd_...`
-- Defined: `legacy/mixer_quirks.c:3485`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_rate_info (function) `static int snd_rme_digiface_rate_info(struct snd_kcontrol *kcontrol,
+- `snd_rme_digiface_rate_info` (function) `legacy/mixer_quirks.c:3496` `static int snd_rme_digiface_rate_info(struct snd_kcontrol *kcontrol,
 				      struct snd_ctl_ele...`
-- Defined: `legacy/mixer_quirks.c:3496`
-- Depends on: `audiobox_vsl.h`
-
-### snd_rme_digiface_controls_create (function) `static int snd_rme_digiface_controls_create(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:3685`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_get_label_caplevel_common (function) `static const char *snd_djm_get_label_caplevel_common(u16 wvalue)`
-- Defined: `legacy/mixer_quirks.c:3792`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_get_label_caplevel_high (function) `static const char *snd_djm_get_label_caplevel_high(u16 wvalue)`
-- Defined: `legacy/mixer_quirks.c:3804`
-- Doc: Models like DJM-A9 or DJM-V10 have different capture levels than others
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_get_label_cap_common (function) `static const char *snd_djm_get_label_cap_common(u16 wvalue)`
-- Defined: `legacy/mixer_quirks.c:3817`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_get_label_cap_850 (function) `static const char *snd_djm_get_label_cap_850(u16 wvalue)`
-- Defined: `legacy/mixer_quirks.c:3849`
-- Doc: The DJM-850 has different values for CD/LINE and LINE capture control options than the other DJM declared in this file.
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_get_label_caplevel (function) `static const char *snd_djm_get_label_caplevel(u8 device_idx, u16 wvalue)`
-- Defined: `legacy/mixer_quirks.c:3858`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_get_label_cap (function) `static const char *snd_djm_get_label_cap(u8 device_idx, u16 wvalue)`
-- Defined: `legacy/mixer_quirks.c:3867`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_get_label_pb (function) `static const char *snd_djm_get_label_pb(u16 wvalue)`
-- Defined: `legacy/mixer_quirks.c:3875`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_get_label (function) `static const char *snd_djm_get_label(u8 device_idx, u16 wvalue, u16 windex)`
-- Defined: `legacy/mixer_quirks.c:3885`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_controls_info (function) `static int snd_djm_controls_info(struct snd_kcontrol *kctl,
+- `snd_rme_digiface_controls_create` (function) `legacy/mixer_quirks.c:3685` `static int snd_rme_digiface_controls_create(struct usb_mixer_interface *mixer)`
+- `snd_djm_get_label_caplevel_common` (function) `legacy/mixer_quirks.c:3792` `static const char *snd_djm_get_label_caplevel_common(u16 wvalue)`
+- `snd_djm_get_label_caplevel_high` (function) `legacy/mixer_quirks.c:3804` `static const char *snd_djm_get_label_caplevel_high(u16 wvalue)` -- Models like DJM-A9 or DJM-V10 have different capture levels than others
+- `snd_djm_get_label_cap_common` (function) `legacy/mixer_quirks.c:3817` `static const char *snd_djm_get_label_cap_common(u16 wvalue)`
+- `snd_djm_get_label_cap_850` (function) `legacy/mixer_quirks.c:3849` `static const char *snd_djm_get_label_cap_850(u16 wvalue)` -- The DJM-850 has different values for CD/LINE and LINE capture control options than the other DJM declared in this file.
+- `snd_djm_get_label_caplevel` (function) `legacy/mixer_quirks.c:3858` `static const char *snd_djm_get_label_caplevel(u8 device_idx, u16 wvalue)`
+- `snd_djm_get_label_cap` (function) `legacy/mixer_quirks.c:3867` `static const char *snd_djm_get_label_cap(u8 device_idx, u16 wvalue)`
+- `snd_djm_get_label_pb` (function) `legacy/mixer_quirks.c:3875` `static const char *snd_djm_get_label_pb(u16 wvalue)`
+- `snd_djm_get_label` (function) `legacy/mixer_quirks.c:3885` `static const char *snd_djm_get_label(u8 device_idx, u16 wvalue, u16 windex)`
+- `snd_djm_controls_info` (function) `legacy/mixer_quirks.c:4117` `static int snd_djm_controls_info(struct snd_kcontrol *kctl,
 				 struct snd_ctl_elem_info *info)`
-- Defined: `legacy/mixer_quirks.c:4117`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_controls_update (function) `static int snd_djm_controls_update(struct usb_mixer_interface *mixer,
+- `snd_djm_controls_update` (function) `legacy/mixer_quirks.c:4149` `static int snd_djm_controls_update(struct usb_mixer_interface *mixer,
 				   u8 device_idx, u8 gr...`
-- Defined: `legacy/mixer_quirks.c:4149`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_controls_get (function) `static int snd_djm_controls_get(struct snd_kcontrol *kctl,
+- `snd_djm_controls_get` (function) `legacy/mixer_quirks.c:4170` `static int snd_djm_controls_get(struct snd_kcontrol *kctl,
 				struct snd_ctl_elem_value *elem)`
-- Defined: `legacy/mixer_quirks.c:4170`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_controls_put (function) `static int snd_djm_controls_put(struct snd_kcontrol *kctl, struct snd_ctl_elem_value *elem)`
-- Defined: `legacy/mixer_quirks.c:4177`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_controls_resume (function) `static int snd_djm_controls_resume(struct usb_mixer_elem_list *list)`
-- Defined: `legacy/mixer_quirks.c:4194`
-- Depends on: `audiobox_vsl.h`
-
-### snd_djm_controls_create (function) `static int snd_djm_controls_create(struct usb_mixer_interface *mixer,
+- `snd_djm_controls_put` (function) `legacy/mixer_quirks.c:4177` `static int snd_djm_controls_put(struct snd_kcontrol *kctl, struct snd_ctl_elem_value *elem)`
+- `snd_djm_controls_resume` (function) `legacy/mixer_quirks.c:4194` `static int snd_djm_controls_resume(struct usb_mixer_elem_list *list)`
+- `snd_djm_controls_create` (function) `legacy/mixer_quirks.c:4204` `static int snd_djm_controls_create(struct usb_mixer_interface *mixer,
 				   const u8 device_idx)`
-- Defined: `legacy/mixer_quirks.c:4204`
-- Depends on: `audiobox_vsl.h`
-
-### snd_usb_mixer_apply_create_quirk (function) `int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:4239`
-- Depends on: `audiobox_vsl.h`
-
-### snd_usb_mixer_resume_quirk (function) `void snd_usb_mixer_resume_quirk(struct usb_mixer_interface *mixer)`
-- Defined: `legacy/mixer_quirks.c:4421`
-- Depends on: `audiobox_vsl.h`
-
-### snd_usb_mixer_rc_memory_change (function) `void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
+- `snd_usb_mixer_apply_create_quirk` (function) `legacy/mixer_quirks.c:4239` `int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)`
+- `snd_usb_mixer_resume_quirk` (function) `legacy/mixer_quirks.c:4421` `void snd_usb_mixer_resume_quirk(struct usb_mixer_interface *mixer)`
+- `snd_usb_mixer_rc_memory_change` (function) `legacy/mixer_quirks.c:4430` `void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
 				    int unitid)`
-- Defined: `legacy/mixer_quirks.c:4430`
-- Depends on: `audiobox_vsl.h`
-
-### snd_dragonfly_quirk_db_scale (function) `static void snd_dragonfly_quirk_db_scale(struct usb_mixer_interface *mixer,
+- `snd_dragonfly_quirk_db_scale` (function) `legacy/mixer_quirks.c:4458` `static void snd_dragonfly_quirk_db_scale(struct usb_mixer_interface *mixer,
 					 struct usb_mixe...`
-- Defined: `legacy/mixer_quirks.c:4458`
-- Depends on: `audiobox_vsl.h`
-
-### snd_fix_plt_name (function) `static void snd_fix_plt_name(struct snd_usb_audio *chip,
-			     struct snd_ctl_elem_id *id)`
-- Defined: `legacy/mixer_quirks.c:4509`
-- Doc: standards. This function fixes nonstandard source names. By the time this function is called the control name should loo
-- Depends on: `audiobox_vsl.h`
-
-### snd_usb_mixer_fu_apply_quirk (function) `void snd_usb_mixer_fu_apply_quirk(struct usb_mixer_interface *mixer,
+- `DECLARE_TLV_DB_RANGE` (function) `legacy/mixer_quirks.c:4465` `static const DECLARE_TLV_DB_RANGE(scale, 0, 1, TLV_DB_MINMAX_ITEM(-5300, -4970), 2, 5, TLV_DB_MINMAX_ITEM(-4710...` -- Approximation using 10 ranges based on output measurement on hw v1.2.
+- `snd_fix_plt_name` (function) `legacy/mixer_quirks.c:4509` `static void snd_fix_plt_name(struct snd_usb_audio *chip,
+			     struct snd_ctl_elem_id *id)` -- standards.
+- `snd_usb_mixer_fu_apply_quirk` (function) `legacy/mixer_quirks.c:4539` `void snd_usb_mixer_fu_apply_quirk(struct usb_mixer_interface *mixer,
 				  struct usb_mixer_elem_...`
-- Defined: `legacy/mixer_quirks.c:4539`
-- Depends on: `audiobox_vsl.h`
-
-### DECLARE_TLV_DB_RANGE (function) `static const DECLARE_TLV_DB_RANGE(scale, 0, 1, TLV_DB_MINMAX_ITEM(-5300, -4970), 2, 5, TLV_DB_MINMAX_ITEM(-4710, -4160), 6, 7, TLV_DB_MINMAX_ITEM(-3884, -3710), 8, 14, TLV_DB_MINMAX_ITEM(-3443, -2560)`
-- Defined: `legacy/mixer_quirks.c:4465`
-- Doc: Approximation using 10 ranges based on output measurement on hw v1.2. This seems close to the cubic mapping e.g. alsamix
-- Depends on: `audiobox_vsl.h`
-
-## legacy/test_connection.c
-
-### main (function) `int main()`
-- Defined: `legacy/test_connection.c:7`
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_dsp_transport.h`
 
 ## legacy/vsl_config.py
-
-### validate_configuration (method) `def validate_configuration()`
-- Defined: `legacy/vsl_config.py:92`
-- Doc: Valida que todos los valores críticos estén configurados.
-
-### print_configuration_status (method) `def print_configuration_status()`
-- Defined: `legacy/vsl_config.py:116`
-- Doc: Imprime el estado de la configuración con formato.
+- `VSLParameter.validate_configuration` (method) `legacy/vsl_config.py:92` `def validate_configuration()` -- Valida que todos los valores críticos estén configurados.
+- `VSLParameter.print_configuration_status` (method) `legacy/vsl_config.py:116` `def print_configuration_status()` -- Imprime el estado de la configuración con formato.
 
 ## legacy/vsl_core.py
-
-### vsl_encode_gain (function) `def vsl_encode_gain(linear_value, param)`
-- Defined: `legacy/vsl_core.py:16`
-- Doc: Traducción de FUN_00132c90 (VSL_Encode_Gain en C).
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
-
-### vsl_map_frequency (function) `def vsl_map_frequency(linear_position, param)`
-- Defined: `legacy/vsl_core.py:58`
-- Doc: Traducción de FUN_00132d00 (VSL_Map_Frequency en C).
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
-
-### vsl_final_encode_to_int (function) `def vsl_final_encode_to_int(encoded_float, param)`
-- Defined: `legacy/vsl_core.py:94`
-- Doc: Traducción de VSL_Final_Encode_To_Int en C.
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
-
-### vsl_decode_frequency (function) `def vsl_decode_frequency(freq_hz_value, param)`
-- Defined: `legacy/vsl_core.py:127`
-- Doc: Traducción de FUN_00132da8 (VSL_Decode_Frequency en C).
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
-
-### validate_parameter (function) `def validate_parameter(param)`
-- Defined: `legacy/vsl_core.py:170`
-- Doc: Valida la integridad de un VSLParameter.
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
+Depends on: `legacy/vsl_config.h`
+Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
+- `vsl_encode_gain` (function) `legacy/vsl_core.py:16` `def vsl_encode_gain(linear_value, param)` -- Traducción de FUN_00132c90 (VSL_Encode_Gain en C).
+- `vsl_map_frequency` (function) `legacy/vsl_core.py:58` `def vsl_map_frequency(linear_position, param)` -- Traducción de FUN_00132d00 (VSL_Map_Frequency en C).
+- `vsl_final_encode_to_int` (function) `legacy/vsl_core.py:94` `def vsl_final_encode_to_int(encoded_float, param)` -- Traducción de VSL_Final_Encode_To_Int en C.
+- `vsl_decode_frequency` (function) `legacy/vsl_core.py:127` `def vsl_decode_frequency(freq_hz_value, param)` -- Traducción de FUN_00132da8 (VSL_Decode_Frequency en C).
+- `validate_parameter` (function) `legacy/vsl_core.py:170` `def validate_parameter(param)` -- Valida la integridad de un VSLParameter.
 
 ## legacy/vsl_dsp_logic.c
-
-### VSL_Encode_Gain (function) `float VSL_Encode_Gain(float linear_value, const VSL_Parameter *param)`
-- Defined: `legacy/vsl_dsp_logic.c:11`
-- Doc: Implementación de FUN_00132c90
-- Depends on: `legacy/vsl_dsp_logic.h`
-
-### VSL_Map_Frequency (function) `float VSL_Map_Frequency(float linear_position, const VSL_Parameter *param)`
-- Defined: `legacy/vsl_dsp_logic.c:29`
-- Doc: Implementación de FUN_00132d00
-- Depends on: `legacy/vsl_dsp_logic.h`
-
-### VSL_Final_Encode_To_Int (function) `uint32_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param)`
-- Defined: `legacy/vsl_dsp_logic.c:58`
-- Doc: @brief Convierte el valor codificado en float a un entero sin signo para el firmware. @note Basado en la hipótesis común
-- Depends on: `legacy/vsl_dsp_logic.h`
-
-### VSL_Decode_Frequency (function) `float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param)`
-- Defined: `legacy/vsl_dsp_logic.c:78`
-- Doc: Implementación de FUN_00132da8
-- Depends on: `legacy/vsl_dsp_logic.h`
-
-### VSL_Build_And_Send_Packet (function) `void VSL_Build_And_Send_Packet(uint16_t dsp_param_id, float encoded_float);`
-- Defined: `legacy/vsl_dsp_logic.c:4`
-- Doc: Declaración de la nueva función de envío
-- Depends on: `legacy/vsl_dsp_logic.h`
+Depends on: `legacy/vsl_dsp_logic.h`
+- `VSL_Build_And_Send_Packet` (function) `legacy/vsl_dsp_logic.c:4` `void VSL_Build_And_Send_Packet(uint16_t dsp_param_id, float encoded_float);` -- Declaración de la nueva función de envío
+- `VSL_Encode_Gain` (function) `legacy/vsl_dsp_logic.c:11` `float VSL_Encode_Gain(float linear_value, const VSL_Parameter *param)` -- Implementación de FUN_00132c90
+- `VSL_Map_Frequency` (function) `legacy/vsl_dsp_logic.c:29` `float VSL_Map_Frequency(float linear_position, const VSL_Parameter *param)` -- Implementación de FUN_00132d00
+- `VSL_Final_Encode_To_Int` (function) `legacy/vsl_dsp_logic.c:58` `uint32_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param)` -- @brief Convierte el valor codificado en float a un entero sin signo para el firmware. @note Basado en la hipótesis...
+- `VSL_Decode_Frequency` (function) `legacy/vsl_dsp_logic.c:78` `float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param)` -- Implementación de FUN_00132da8
 
 ## legacy/vsl_dsp_logic.h
-
-### VSL_Encode_Gain (function) `float VSL_Encode_Gain(float linear_value, const VSL_Parameter *param);`
-- Defined: `legacy/vsl_dsp_logic.h:42`
-- Doc: @brief Codifica un valor lineal (ej. 0.5) a la escala exponencial/logarítmica del DSP (Ganancia/Volumen). @param linear_
-- Imported by: `legacy/main.c`, `legacy/vsl_dsp_logic.c`
-
-### VSL_Map_Frequency (function) `float VSL_Map_Frequency(float linear_position, const VSL_Parameter *param);`
-- Defined: `legacy/vsl_dsp_logic.h:50`
-- Doc: @brief Convierte una posición lineal (ej. 0.5) a su frecuencia logarítmica (Hz) real. @param linear_position La posición
-- Imported by: `legacy/main.c`, `legacy/vsl_dsp_logic.c`
-
-### VSL_Final_Encode_To_Int (function) `uint32_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param);`
-- Defined: `legacy/vsl_dsp_logic.h:60`
-- Doc: @brief Convierte el valor codificado en float a un entero sin signo para el firmware. @note ESTA FUNCIÓN ES UN MARCADOR 
-- Imported by: `legacy/main.c`, `legacy/vsl_dsp_logic.c`
-
-### VSL_Decode_Frequency (function) `float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param);`
-- Defined: `legacy/vsl_dsp_logic.h:73`
-- Doc: @brief Decodifica una frecuencia real (Hz) del DSP a su posición lineal de control (0.0 a 1.0). @param freq_hz_value La 
-- Imported by: `legacy/main.c`, `legacy/vsl_dsp_logic.c`
+Imported by: `legacy/main.c`, `legacy/vsl_dsp_logic.c`
+- `VSL_Encode_Gain` (function) `legacy/vsl_dsp_logic.h:42` `float VSL_Encode_Gain(float linear_value, const VSL_Parameter *param);` -- @brief Codifica un valor lineal (ej.
+- `VSL_Map_Frequency` (function) `legacy/vsl_dsp_logic.h:50` `float VSL_Map_Frequency(float linear_position, const VSL_Parameter *param);` -- @brief Convierte una posición lineal (ej.
+- `VSL_Final_Encode_To_Int` (function) `legacy/vsl_dsp_logic.h:60` `uint32_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param);` -- @brief Convierte el valor codificado en float a un entero sin signo para el firmware. @note ESTA FUNCIÓN ES UN...
+- `VSL_Decode_Frequency` (function) `legacy/vsl_dsp_logic.h:73` `float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param);` -- @brief Decodifica una frecuencia real (Hz) del DSP a su posición lineal de control (0.0 a 1.0). @param freq_hz_value...
 
 ## legacy/vsl_dsp_transport.c
-
-### VSL_Init_Device (function) `int VSL_Init_Device(uint16_t vendor_id, uint16_t product_id)`
-- Defined: `legacy/vsl_dsp_transport.c:23`
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_dsp_transport.h`
-
-### VSL_Close_Device (function) `void VSL_Close_Device(void)`
-- Defined: `legacy/vsl_dsp_transport.c:70`
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_dsp_transport.h`
-
-### VSL_Get_Device_Handle (function) `hid_device* VSL_Get_Device_Handle(void)`
-- Defined: `legacy/vsl_dsp_transport.c:79`
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_dsp_transport.h`
-
-### FUN_Send_Packet (function) `void FUN_Send_Packet(const VSL_DSP_Packet *packet, size_t packet_length)`
-- Defined: `legacy/vsl_dsp_transport.c:97`
-- Doc: @brief Función de I/O real usando HIDAPI. @note DEBE SER REEMPLAZADA con la lógica específica de tu dispositivo (Report 
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_dsp_transport.h`
-
-### VSL_Build_And_Send_Packet (function) `void VSL_Build_And_Send_Packet(uint16_t dsp_param_id, float encoded_float)`
-- Defined: `legacy/vsl_dsp_transport.c:140`
-- Doc: Implementación de la función de construcción y envío
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_dsp_transport.h`
+Depends on: `legacy/vsl_config.h`, `legacy/vsl_dsp_transport.h`
+- `VSL_Init_Device` (function) `legacy/vsl_dsp_transport.c:23` `int VSL_Init_Device(uint16_t vendor_id, uint16_t product_id)`
+- `VSL_Close_Device` (function) `legacy/vsl_dsp_transport.c:70` `void VSL_Close_Device(void)`
+- `VSL_Get_Device_Handle` (function) `legacy/vsl_dsp_transport.c:79` `hid_device* VSL_Get_Device_Handle(void)`
+- `FUN_Send_Packet` (function) `legacy/vsl_dsp_transport.c:97` `void FUN_Send_Packet(const VSL_DSP_Packet *packet, size_t packet_length)` -- @brief Función de I/O real usando HIDAPI. @note DEBE SER REEMPLAZADA con la lógica específica de tu dispositivo...
+- `VSL_Build_And_Send_Packet` (function) `legacy/vsl_dsp_transport.c:140` `void VSL_Build_And_Send_Packet(uint16_t dsp_param_id, float encoded_float)` -- Implementación de la función de construcción y envío
 
 ## legacy/vsl_dsp_transport.h
-
-### VSL_Init_Device (function) `int VSL_Init_Device(uint16_t vendor_id, uint16_t product_id);`
-- Defined: `legacy/vsl_dsp_transport.h:19`
-- Doc: 1. Funciones de Inicialización y Cierre (¡Ambas declaradas!)
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/main.c`, `legacy/test_connection.c`, `legacy/vsl_dsp_transport.c`
-
-### VSL_Close_Device (function) `void VSL_Close_Device(void);`
-- Defined: `legacy/vsl_dsp_transport.h:20`
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/main.c`, `legacy/test_connection.c`, `legacy/vsl_dsp_transport.c`
-
-### VSL_Get_Device_Handle (function) `hid_device* VSL_Get_Device_Handle(void);`
-- Defined: `legacy/vsl_dsp_transport.h:21`
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/main.c`, `legacy/test_connection.c`, `legacy/vsl_dsp_transport.c`
-
-### FUN_Send_Packet (function) `void FUN_Send_Packet(const VSL_DSP_Packet *packet, size_t packet_length);`
-- Defined: `legacy/vsl_dsp_transport.h:24`
-- Doc: 2. Funciones de Envío
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/main.c`, `legacy/test_connection.c`, `legacy/vsl_dsp_transport.c`
-
-### VSL_Build_And_Send_Packet (function) `void VSL_Build_And_Send_Packet(uint16_t dsp_param_id, float encoded_float);`
-- Defined: `legacy/vsl_dsp_transport.h:25`
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/main.c`, `legacy/test_connection.c`, `legacy/vsl_dsp_transport.c`
+Depends on: `legacy/vsl_config.h`
+Imported by: `legacy/main.c`, `legacy/test_connection.c`, `legacy/vsl_dsp_transport.c`
+- `VSL_Init_Device` (function) `legacy/vsl_dsp_transport.h:19` `int VSL_Init_Device(uint16_t vendor_id, uint16_t product_id);` -- 1.
+- `VSL_Close_Device` (function) `legacy/vsl_dsp_transport.h:20` `void VSL_Close_Device(void);`
+- `VSL_Get_Device_Handle` (function) `legacy/vsl_dsp_transport.h:21` `hid_device* VSL_Get_Device_Handle(void);`
+- `FUN_Send_Packet` (function) `legacy/vsl_dsp_transport.h:24` `void FUN_Send_Packet(const VSL_DSP_Packet *packet, size_t packet_length);` -- 2.
+- `VSL_Build_And_Send_Packet` (function) `legacy/vsl_dsp_transport.h:25` `void VSL_Build_And_Send_Packet(uint16_t dsp_param_id, float encoded_float);`
 
 ## legacy/vsl_hid_io.py
-
-### enumerate_vsl_devices (method) `def enumerate_vsl_devices()`
-- Defined: `legacy/vsl_hid_io.py:149`
-- Doc: Enumera todos los dispositivos HID conectados.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### __new__ (method) `def __new__(cls)`
-- Defined: `legacy/vsl_hid_io.py:39`
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### __init__ (method) `def __init__(self)`
-- Defined: `legacy/vsl_hid_io.py:45`
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### open (method) `def open(self)`
-- Defined: `legacy/vsl_hid_io.py:59`
-- Doc: Abre la conexión con el dispositivo VSL.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### close (method) `def close(self)`
-- Defined: `legacy/vsl_hid_io.py:90`
-- Doc: Cierra la conexión con el dispositivo.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### send_packet (method) `def send_packet(self, packet)`
-- Defined: `legacy/vsl_hid_io.py:101`
-- Doc: Envía un paquete VSL al dispositivo.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### __enter__ (method) `def __enter__(self)`
-- Defined: `legacy/vsl_hid_io.py:139`
-- Doc: Context manager entry.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### __exit__ (method) `def __exit__(self, exc_type, exc_val, exc_tb)`
-- Defined: `legacy/vsl_hid_io.py:144`
-- Doc: Context manager exit.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
+Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
+- `VSLDevice.__init__` (method) `legacy/vsl_hid_io.py:45` `def __init__(self)`
+- `VSLDevice.open` (method) `legacy/vsl_hid_io.py:59` `def open(self)` -- Abre la conexión con el dispositivo VSL.
+- `VSLDevice.close` (method) `legacy/vsl_hid_io.py:90` `def close(self)` -- Cierra la conexión con el dispositivo.
+- `VSLDevice.send_packet` (method) `legacy/vsl_hid_io.py:101` `def send_packet(self, packet)` -- Envía un paquete VSL al dispositivo.
+- `VSLDevice.enumerate_vsl_devices` (method) `legacy/vsl_hid_io.py:149` `def enumerate_vsl_devices()` -- Enumera todos los dispositivos HID conectados. Útil para descubrir VID/PID del hardware.
 
 ## legacy/vsl_poc_main.py
-
-### test_gain_encoding (function) `def test_gain_encoding()`
-- Defined: `legacy/vsl_poc_main.py:43`
-- Doc: Test de codificación de ganancia con tabla de validación.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### test_frequency_mapping (function) `def test_frequency_mapping()`
-- Defined: `legacy/vsl_poc_main.py:72`
-- Doc: Test de mapeo logarítmico de frecuencias.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### test_packet_construction (function) `def test_packet_construction()`
-- Defined: `legacy/vsl_poc_main.py:92`
-- Doc: Test de construcción de paquetes HID.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### test_edge_cases (function) `def test_edge_cases()`
-- Defined: `legacy/vsl_poc_main.py:150`
-- Doc: Test de casos extremos y validación de errores.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### run_full_workflow (function) `def run_full_workflow()`
-- Defined: `legacy/vsl_poc_main.py:197`
-- Doc: Simula el flujo completo: Usuario → Encoding → Paquete.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### print_summary (function) `def print_summary()`
-- Defined: `legacy/vsl_poc_main.py:229`
-- Doc: Imprime resumen del estado del proyecto.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
-
-### main (function) `def main()`
-- Defined: `legacy/vsl_poc_main.py:266`
-- Doc: Función principal de la PoC.
-- Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
+Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
+- `test_gain_encoding` (function) `legacy/vsl_poc_main.py:43` `def test_gain_encoding()` -- Test de codificación de ganancia con tabla de validación.
+- `test_frequency_mapping` (function) `legacy/vsl_poc_main.py:72` `def test_frequency_mapping()` -- Test de mapeo logarítmico de frecuencias.
+- `test_packet_construction` (function) `legacy/vsl_poc_main.py:92` `def test_packet_construction()` -- Test de construcción de paquetes HID.
+- `test_edge_cases` (function) `legacy/vsl_poc_main.py:150` `def test_edge_cases()` -- Test de casos extremos y validación de errores.
+- `run_full_workflow` (function) `legacy/vsl_poc_main.py:197` `def run_full_workflow()` -- Simula el flujo completo: Usuario → Encoding → Paquete.
+- `print_summary` (function) `legacy/vsl_poc_main.py:229` `def print_summary()` -- Imprime resumen del estado del proyecto.
+- `main` (function) `legacy/vsl_poc_main.py:266` `def main()` -- Función principal de la PoC.
 
 ## legacy/vsl_protocol_analyzer.py
-
-### reverse_map_gain (method) `def reverse_map_gain(encoded_value, param)`
-- Defined: `legacy/vsl_protocol_analyzer.py:67`
-- Doc: Simula VSL_Decode_Gain. Convierte un entero a un valor de usuario (dB).
-
-### reverse_map_frequency (method) `def reverse_map_frequency(encoded_value, param)`
-- Defined: `legacy/vsl_protocol_analyzer.py:95`
-- Doc: Simula VSL_Decode_Frequency. Convierte un entero a frecuencia (Hz).
-
-### get_decoded_value (method) `def get_decoded_value(encoded_value, param_id)`
-- Defined: `legacy/vsl_protocol_analyzer.py:115`
-- Doc: Dirige la decodificación al motor DSP correcto.
-
-### decode_vsl_packet (method) `def decode_vsl_packet(data)`
-- Defined: `legacy/vsl_protocol_analyzer.py:140`
-- Doc: Decodifica el payload de 64 bytes. (Regla #3: Seguridad)
-
-### analyze_pcap (method) `def analyze_pcap(pcap_file)`
-- Defined: `legacy/vsl_protocol_analyzer.py:173`
-- Doc: Carga un archivo PCAP y filtra los paquetes USB VSL.
-
-### __init__ (method) `def __init__(self, dsp_id, name, type_unit, min_map, max_map, coeff_A, coeff_C1, log_factor)`
-- Defined: `legacy/vsl_protocol_analyzer.py:30`
+- `VSLParameter.__init__` (method) `legacy/vsl_protocol_analyzer.py:30` `def __init__(self, dsp_id, name, type_unit, min_map, max_map, coeff_A, coeff_C1, log_factor)`
+- `VSLParameter.reverse_map_gain` (method) `legacy/vsl_protocol_analyzer.py:67` `def reverse_map_gain(encoded_value, param)` -- Simula VSL_Decode_Gain.
+- `VSLParameter.reverse_map_frequency` (method) `legacy/vsl_protocol_analyzer.py:95` `def reverse_map_frequency(encoded_value, param)` -- Simula VSL_Decode_Frequency.
+- `VSLParameter.get_decoded_value` (method) `legacy/vsl_protocol_analyzer.py:115` `def get_decoded_value(encoded_value, param_id)` -- Dirige la decodificación al motor DSP correcto.
+- `VSLParameter.decode_vsl_packet` (method) `legacy/vsl_protocol_analyzer.py:140` `def decode_vsl_packet(data)` -- Decodifica el payload de 64 bytes.
+- `VSLParameter.analyze_pcap` (method) `legacy/vsl_protocol_analyzer.py:173` `def analyze_pcap(pcap_file)` -- Carga un archivo PCAP y filtra los paquetes USB VSL.
 
 ## legacy/vsl_transport.py
-
-### build_packet_safe (method) `def build_packet_safe(param, encoded_value)`
-- Defined: `legacy/vsl_transport.py:141`
-- Doc: Construye un paquete con manejo de errores.
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
-
-### __init__ (method) `def __init__(self, param_id, encoded_value, report_id)`
-- Defined: `legacy/vsl_transport.py:21`
-- Doc: Construye un paquete VSL-DSP.
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
-
-### _build_buffer (method) `def _build_buffer(self)`
-- Defined: `legacy/vsl_transport.py:58`
-- Doc: Construye el buffer de 64 bytes según el protocolo VSL-DSP.
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
-
-### buffer (method) `def buffer(self)`
-- Defined: `legacy/vsl_transport.py:89`
-- Doc: Retorna el buffer como bytes inmutables.
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
-
-### hex_dump (method) `def hex_dump(self, num_bytes)`
-- Defined: `legacy/vsl_transport.py:93`
-- Doc: Genera un hex dump del paquete para debugging.
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
-
-### validate (method) `def validate(self)`
-- Defined: `legacy/vsl_transport.py:106`
-- Doc: Valida la integridad del paquete.
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
-
-### __repr__ (method) `def __repr__(self)`
-- Defined: `legacy/vsl_transport.py:133`
-- Depends on: `legacy/vsl_config.h`
-- Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
+Depends on: `legacy/vsl_config.h`
+Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
+- `VSLPacket.__init__` (method) `legacy/vsl_transport.py:21` `def __init__(self, param_id, encoded_value, report_id)` -- Construye un paquete VSL-DSP.
+- `VSLPacket.buffer` (method) `legacy/vsl_transport.py:89` `def buffer(self)` -- Retorna el buffer como bytes inmutables.
+- `VSLPacket.hex_dump` (method) `legacy/vsl_transport.py:93` `def hex_dump(self, num_bytes)` -- Genera un hex dump del paquete para debugging.
+- `VSLPacket.validate` (method) `legacy/vsl_transport.py:106` `def validate(self)` -- Valida la integridad del paquete.
+- `VSLPacket.build_packet_safe` (method) `legacy/vsl_transport.py:141` `def build_packet_safe(param, encoded_value)` -- Construye un paquete con manejo de errores.
 
 ## src/vsl_cli.c
-
-### print_usage (function) `static void print_usage(FILE *fp, const char *prog)`
-- Defined: `src/vsl_cli.c:58`
-- Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`
-
-### print_version (function) `static void print_version(void)`
-- Defined: `src/vsl_cli.c:84`
-- Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`
-
-### print_list (function) `static void print_list(uint16_t product_id)`
-- Defined: `src/vsl_cli.c:91`
-- Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`
-
-### lookup_coeffs_by_param_id (function) `static const VSL_Parameter *
+Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`
+- `print_usage` (function) `src/vsl_cli.c:61` `static void print_usage(FILE *fp, const char *prog)`
+- `print_version` (function) `src/vsl_cli.c:88` `static void print_version(void)`
+- `print_list` (function) `src/vsl_cli.c:95` `static void print_list(uint16_t product_id)`
+- `lookup_coeffs_by_param_id` (function) `src/vsl_cli.c:115` `static const VSL_Parameter *
 lookup_coeffs_by_param_id(uint16_t param_id)`
-- Defined: `src/vsl_cli.c:111`
-- Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`
-
-### find_entry_by_name (function) `static const ParamEntry *
+- `find_entry_by_name` (function) `src/vsl_cli.c:125` `static const ParamEntry *
 find_entry_by_name(const char *name)`
-- Defined: `src/vsl_cli.c:121`
-- Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`
-
-### do_send (function) `static int do_send(uint16_t product_id,
+- `do_send` (function) `src/vsl_cli.c:134` `static int do_send(uint16_t product_id,
                    uint16_t param_id,
                    ...`
-- Defined: `src/vsl_cli.c:130`
-- Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`
-
-### do_send_freq (function) `static int do_send_freq(uint16_t product_id,
+- `do_send_freq` (function) `src/vsl_cli.c:172` `static int do_send_freq(uint16_t product_id,
                         uint16_t param_id,
          ...`
-- Defined: `src/vsl_cli.c:168`
-- Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`
-
-### main (function) `int main(int argc, char *argv[])`
-- Defined: `src/vsl_cli.c:205`
-- Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`
+- `main` (function) `src/vsl_cli.c:209` `int main(int argc, char *argv[])`
 
 ## src/vsl_config.h
-
-### VSL_ModelLookup (function) `static inline const VSL_ModelInfo *
+Imported by: `src/vsl_cli.c`, `src/vsl_dsp_transport.h`
+- `VSL_ModelLookup` (function) `src/vsl_config.h:38` `static inline const VSL_ModelInfo *
 VSL_ModelLookup(uint16_t pid)`
-- Defined: `src/vsl_config.h:37`
-- Imported by: `src/vsl_cli.c`, `src/vsl_dsp_transport.h`
-
-### VSL_ModelLookupByTag (function) `static inline const VSL_ModelInfo *
+- `VSL_ModelLookupByTag` (function) `src/vsl_config.h:50` `static inline const VSL_ModelInfo *
 VSL_ModelLookupByTag(const char *tag)`
-- Defined: `src/vsl_config.h:49`
-- Imported by: `src/vsl_cli.c`, `src/vsl_dsp_transport.h`
 
 ## src/vsl_dsp_logic.c
-
-### VSL_Encode_Gain (function) `float VSL_Encode_Gain(float linear_value, const VSL_Parameter *param)`
-- Defined: `src/vsl_dsp_logic.c:3`
-- Depends on: `src/vsl_dsp_logic.h`
-
-### VSL_Decode_Gain (function) `float VSL_Decode_Gain(float encoded_float, const VSL_Parameter *param)`
-- Defined: `src/vsl_dsp_logic.c:16`
-- Depends on: `src/vsl_dsp_logic.h`
-
-### VSL_Map_Frequency (function) `float VSL_Map_Frequency(float linear_position, const VSL_Parameter *param)`
-- Defined: `src/vsl_dsp_logic.c:50`
-- Depends on: `src/vsl_dsp_logic.h`
-
-### VSL_Final_Encode_To_Int (function) `uint16_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param)`
-- Defined: `src/vsl_dsp_logic.c:66`
-- Depends on: `src/vsl_dsp_logic.h`
-
-### VSL_Decode_Frequency (function) `float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param)`
-- Defined: `src/vsl_dsp_logic.c:76`
-- Depends on: `src/vsl_dsp_logic.h`
+Depends on: `src/vsl_dsp_logic.h`
+- `VSL_Encode_Gain` (function) `src/vsl_dsp_logic.c:3` `float VSL_Encode_Gain(float linear_value, const VSL_Parameter *param)`
+- `VSL_Decode_Gain` (function) `src/vsl_dsp_logic.c:16` `float VSL_Decode_Gain(float encoded_float, const VSL_Parameter *param)`
+- `VSL_Map_Frequency` (function) `src/vsl_dsp_logic.c:50` `float VSL_Map_Frequency(float linear_position, const VSL_Parameter *param)`
+- `VSL_Final_Encode_To_Int` (function) `src/vsl_dsp_logic.c:66` `uint16_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param)`
+- `VSL_Decode_Frequency` (function) `src/vsl_dsp_logic.c:76` `float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param)`
+- `VSL_Linear_To_DB` (function) `src/vsl_dsp_logic.c:95` `float VSL_Linear_To_DB(float linear_value)`
+- `VSL_DB_To_Linear` (function) `src/vsl_dsp_logic.c:105` `float VSL_DB_To_Linear(float db_value)`
 
 ## src/vsl_dsp_logic.h
-
-### VSL_Encode_Gain (function) `float VSL_Encode_Gain(float linear_value, const VSL_Parameter *param);`
-- Defined: `src/vsl_dsp_logic.h:33`
-- Doc: @brief Encodes a linear gain value [0.0, 1.0] to the DSP exponential curve. @param linear_value Linear control position 
-- Imported by: `src/vsl_cli.c`, `src/vsl_dsp_logic.c`, `src/vsl_dsp_transport.h`
-
-### VSL_Decode_Gain (function) `float VSL_Decode_Gain(float encoded_float, const VSL_Parameter *param);`
-- Defined: `src/vsl_dsp_logic.h:42`
-- Doc: @brief Decodes an encoded gain float back to a linear position [0.0, 1.0]. @param encoded_float Value received from the 
-- Imported by: `src/vsl_cli.c`, `src/vsl_dsp_logic.c`, `src/vsl_dsp_transport.h`
-
-### VSL_Map_Frequency (function) `float VSL_Map_Frequency(float linear_position, const VSL_Parameter *param);`
-- Defined: `src/vsl_dsp_logic.h:51`
-- Doc: @brief Maps a linear position [0.0, 1.0] to a logarithmic frequency (Hz). @param linear_position Linear control position
-- Imported by: `src/vsl_cli.c`, `src/vsl_dsp_logic.c`, `src/vsl_dsp_transport.h`
-
-### VSL_Decode_Frequency (function) `float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param);`
-- Defined: `src/vsl_dsp_logic.h:60`
-- Doc: @brief Decodes a frequency (Hz) from the DSP to a linear position [0.0, 1.0]. @param freq_hz_value Frequency in Hz read 
-- Imported by: `src/vsl_cli.c`, `src/vsl_dsp_logic.c`, `src/vsl_dsp_transport.h`
-
-### VSL_Final_Encode_To_Int (function) `uint16_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param);`
-- Defined: `src/vsl_dsp_logic.h:70`
-- Doc: @brief Converts an encoded float to a 16-bit integer for the DSP firmware. @param encoded_float Value from VSL_Encode_Ga
-- Imported by: `src/vsl_cli.c`, `src/vsl_dsp_logic.c`, `src/vsl_dsp_transport.h`
+Imported by: `src/vsl_cli.c`, `src/vsl_dsp_logic.c`, `src/vsl_dsp_transport.h`
+- `VSL_Encode_Gain` (function) `src/vsl_dsp_logic.h:44` `float VSL_Encode_Gain(float linear_value, const VSL_Parameter *param);` -- @brief Encodes a linear gain value [0.0, 1.0] to the DSP exponential curve. @param linear_value Linear control...
+- `VSL_Decode_Gain` (function) `src/vsl_dsp_logic.h:53` `float VSL_Decode_Gain(float encoded_float, const VSL_Parameter *param);` -- @brief Decodes an encoded gain float back to a linear position [0.0, 1.0]. @param encoded_float Value received from...
+- `VSL_Map_Frequency` (function) `src/vsl_dsp_logic.h:62` `float VSL_Map_Frequency(float linear_position, const VSL_Parameter *param);` -- @brief Maps a linear position [0.0, 1.0] to a logarithmic frequency (Hz). @param linear_position Linear control...
+- `VSL_Decode_Frequency` (function) `src/vsl_dsp_logic.h:71` `float VSL_Decode_Frequency(float freq_hz_value, const VSL_Parameter *param);` -- @brief Decodes a frequency (Hz) from the DSP to a linear position [0.0, 1.0]. @param freq_hz_value Frequency in Hz...
+- `VSL_Final_Encode_To_Int` (function) `src/vsl_dsp_logic.h:81` `uint16_t VSL_Final_Encode_To_Int(float encoded_float, const VSL_Parameter *param);` -- @brief Converts an encoded float to a 16-bit integer for the DSP firmware. @param encoded_float Value from...
+- `negative` (function) `src/vsl_dsp_logic.h:87` `* when linear_value is zero or negative (the `db.inf` domain). */ float VSL_Linear_To_DB(float linear_value);`
+- `VSL_DB_To_Linear` (function) `src/vsl_dsp_logic.h:97` `float VSL_DB_To_Linear(float db_value);` -- @brief Converts a decibel gain back to linear [0.0, 1.0]. @param db_value Gain in dB. @return Linear gain clamped to...
 
 ## src/vsl_dsp_transport.c
-
-### VSL_Init_Device (function) `vsl_device_handle VSL_Init_Device(uint16_t vendor_id, uint16_t product_id)`
-- Defined: `src/vsl_dsp_transport.c:13`
-- Depends on: `src/vsl_dsp_transport.h`
-
-### VSL_Close_Device (function) `void VSL_Close_Device(vsl_device_handle handle)`
-- Defined: `src/vsl_dsp_transport.c:45`
-- Depends on: `src/vsl_dsp_transport.h`
-
-### VSL_Send_Parameter (function) `int VSL_Send_Parameter(vsl_device_handle handle,
+Depends on: `src/vsl_dsp_transport.h`
+- `VSL_Init_Device` (function) `src/vsl_dsp_transport.c:13` `vsl_device_handle VSL_Init_Device(uint16_t vendor_id, uint16_t product_id)`
+- `VSL_Close_Device` (function) `src/vsl_dsp_transport.c:50` `void VSL_Close_Device(vsl_device_handle handle)`
+- `VSL_Build_Packet` (function) `src/vsl_dsp_transport.c:79` `int VSL_Build_Packet(uint16_t dsp_param_id,
+                     uint16_t encoded_value,
+        ...`
+- `VSL_Send_Parameter` (function) `src/vsl_dsp_transport.c:96` `int VSL_Send_Parameter(vsl_device_handle handle,
                        uint16_t dsp_param_id,
   ...`
-- Defined: `src/vsl_dsp_transport.c:61`
-- Depends on: `src/vsl_dsp_transport.h`
 
 ## src/vsl_dsp_transport.h
-
-### VSL_Close_Device (function) `void VSL_Close_Device(vsl_device_handle handle);`
-- Defined: `src/vsl_dsp_transport.h:26`
-- Doc: @brief Release the MIDI interface and close the device. @param handle Handle from VSL_Init_Device. NULL is a safe no-op.
-- Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`
-- Imported by: `src/vsl_cli.c`, `src/vsl_dsp_transport.c`
-
-### VSL_Send_Parameter (function) `int VSL_Send_Parameter(vsl_device_handle handle, uint16_t dsp_param_id, uint16_t encoded_value);`
-- Defined: `src/vsl_dsp_transport.h:35`
-- Doc: @brief Send a DSP parameter value to the device via USB bulk transfer. @param handle Handle from VSL_Init_Device. @param
-- Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`
-- Imported by: `src/vsl_cli.c`, `src/vsl_dsp_transport.c`
-
-## tests/test_audiobox_vsl.c
-
-### test_supported_models_table_shape (function) `static void test_supported_models_table_shape(void **state)`
-- Defined: `tests/test_audiobox_vsl.c:31`
-- Depends on: `audiobox_vsl.h`
-
-### test_model_pids_match_table (function) `static void test_model_pids_match_table(void **state)`
-- Defined: `tests/test_audiobox_vsl.c:46`
-- Depends on: `audiobox_vsl.h`
-
-### test_lookup_returns_22_vsl (function) `static void test_lookup_returns_22_vsl(void **state)`
-- Defined: `tests/test_audiobox_vsl.c:55`
-- Depends on: `audiobox_vsl.h`
-
-### test_lookup_returns_44_vsl (function) `static void test_lookup_returns_44_vsl(void **state)`
-- Defined: `tests/test_audiobox_vsl.c:65`
-- Depends on: `audiobox_vsl.h`
-
-### test_lookup_returns_1818_vsl (function) `static void test_lookup_returns_1818_vsl(void **state)`
-- Defined: `tests/test_audiobox_vsl.c:75`
-- Depends on: `audiobox_vsl.h`
-
-### test_lookup_returns_null_for_unknown_pid (function) `static void test_lookup_returns_null_for_unknown_pid(void **state)`
-- Defined: `tests/test_audiobox_vsl.c:85`
-- Depends on: `audiobox_vsl.h`
-
-### test_lookup_handles_full_pid_range (function) `static void test_lookup_handles_full_pid_range(void **state)`
-- Defined: `tests/test_audiobox_vsl.c:95`
-- Depends on: `audiobox_vsl.h`
-
-### test_table_pids_are_unique (function) `static void test_table_pids_are_unique(void **state)`
-- Defined: `tests/test_audiobox_vsl.c:115`
-- Depends on: `audiobox_vsl.h`
-
-### test_table_product_names_non_empty (function) `static void test_table_product_names_non_empty(void **state)`
-- Defined: `tests/test_audiobox_vsl.c:126`
-- Depends on: `audiobox_vsl.h`
-
-### main (function) `int main(void)`
-- Defined: `tests/test_audiobox_vsl.c:136`
-- Depends on: `audiobox_vsl.h`
-
-## tests/test_avatar_logic.c
-
-### test_rms_silence (function) `static void test_rms_silence(void **s)`
-- Defined: `tests/test_avatar_logic.c:17`
-- Depends on: `avatar/avatar_logic.h`
-
-### test_rms_vowel (function) `static void test_rms_vowel(void **s)`
-- Defined: `tests/test_avatar_logic.c:27`
-- Depends on: `avatar/avatar_logic.h`
-
-### test_zcr (function) `static void test_zcr(void **s)`
-- Defined: `tests/test_avatar_logic.c:35`
-- Depends on: `avatar/avatar_logic.h`
-
-### test_hf_ratio (function) `static void test_hf_ratio(void **s)`
-- Defined: `tests/test_avatar_logic.c:47`
-- Depends on: `avatar/avatar_logic.h`
-
-### test_classify_silence (function) `static void test_classify_silence(void **s)`
-- Defined: `tests/test_avatar_logic.c:60`
-- Depends on: `avatar/avatar_logic.h`
-
-### test_classify_vowel_open (function) `static void test_classify_vowel_open(void **s)`
-- Defined: `tests/test_avatar_logic.c:68`
-- Depends on: `avatar/avatar_logic.h`
-
-### test_classify_sibilant (function) `static void test_classify_sibilant(void **s)`
-- Defined: `tests/test_avatar_logic.c:74`
-- Depends on: `avatar/avatar_logic.h`
-
-### test_classify_borderline_needs_both_gates (function) `static void test_classify_borderline_needs_both_gates(void **s)`
-- Defined: `tests/test_avatar_logic.c:80`
-- Depends on: `avatar/avatar_logic.h`
-
-### test_smooth_hold (function) `static void test_smooth_hold(void **s)`
-- Defined: `tests/test_avatar_logic.c:87`
-- Depends on: `avatar/avatar_logic.h`
-
-### test_smooth_sibilant_instant (function) `static void test_smooth_sibilant_instant(void **s)`
-- Defined: `tests/test_avatar_logic.c:97`
-- Depends on: `avatar/avatar_logic.h`
-
-### test_smooth_init_null (function) `static void test_smooth_init_null(void **s)`
-- Defined: `tests/test_avatar_logic.c:107`
-- Depends on: `avatar/avatar_logic.h`
-
-### main (function) `int main(void)`
-- Defined: `tests/test_avatar_logic.c:113`
-- Depends on: `avatar/avatar_logic.h`
-
-## tests/test_vsl_dsp_logic.c
-
-### test_VSL_Encode_Gain (function) `static void test_VSL_Encode_Gain(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:9`
-
-### test_VSL_Map_Frequency (function) `static void test_VSL_Map_Frequency(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:36`
-
-### test_VSL_Decode_Frequency (function) `static void test_VSL_Decode_Frequency(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:68`
-
-### test_VSL_Final_Encode_To_Int (function) `static void test_VSL_Final_Encode_To_Int(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:100`
-
-### test_VSL_Decode_Gain_c1_zero (function) `static void test_VSL_Decode_Gain_c1_zero(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:128`
-
-### test_VSL_Decode_Gain_log_factor_zero (function) `static void test_VSL_Decode_Gain_log_factor_zero(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:146`
-
-### test_VSL_Decode_Gain_encoded_below_offset (function) `static void test_VSL_Decode_Gain_encoded_below_offset(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:164`
-
-### test_VSL_Decode_Gain_range_zero (function) `static void test_VSL_Decode_Gain_range_zero(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:183`
-
-### test_VSL_Decode_Gain_roundtrip_mid (function) `static void test_VSL_Decode_Gain_roundtrip_mid(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:201`
-
-### test_VSL_Decode_Gain_roundtrip_extremes (function) `static void test_VSL_Decode_Gain_roundtrip_extremes(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:221`
-
-### test_VSL_Decode_Gain_roundtrip_75 (function) `static void test_VSL_Decode_Gain_roundtrip_75(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:242`
-
-### test_VSL_Decode_Gain_custom_range_roundtrip (function) `static void test_VSL_Decode_Gain_custom_range_roundtrip(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:262`
-
-### test_VSL_Decode_Gain_encoded_equals_offset (function) `static void test_VSL_Decode_Gain_encoded_equals_offset(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:290`
-
-### test_VSL_Decode_Gain_clamps_output (function) `static void test_VSL_Decode_Gain_clamps_output(void **state)`
-- Defined: `tests/test_vsl_dsp_logic.c:309`
-
-### main (function) `int main(void)`
-- Defined: `tests/test_vsl_dsp_logic.c:329`
-
-## voicecloak/src/vc_alsa.c
-
-### fmt_bps (function) `static size_t fmt_bps(snd_pcm_format_t f)`
-- Defined: `voicecloak/src/vc_alsa.c:20`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_stream.h`
-
-### open_stream (function) `static int open_stream(vc_pcm_t *s, const char *dev, snd_pcm_stream_t dir,
-                      ...`
-- Defined: `voicecloak/src/vc_alsa.c:29`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_stream.h`
-
-### raw_to_mono (function) `static void raw_to_mono(const unsigned char *raw, float *mono,
-                        snd_pcm_uf...`
-- Defined: `voicecloak/src/vc_alsa.c:99`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_stream.h`
-
-### mono_to_raw (function) `static void mono_to_raw(unsigned char *raw, const float *mono,
-                        snd_pcm_uf...`
-- Defined: `voicecloak/src/vc_alsa.c:130`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_stream.h`
-
-### vc_alsa_list (function) `int vc_alsa_list(void)`
-- Defined: `voicecloak/src/vc_alsa.c:163`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_stream.h`
-
-### vc_alsa_run (function) `int vc_alsa_run(const vc_alsa_cfg_t *cfg)`
-- Defined: `voicecloak/src/vc_alsa.c:189`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_stream.h`
-
-## voicecloak/src/vc_alsa.h
-
-### runtime (function) `* * The capture and playback device names are ALSA PCM names discovered * at runtime (e.g. "hw:VSL", "plughw:2,0", "default");`
-- Defined: `voicecloak/src/vc_alsa.h:20`
-- Depends on: `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_stream.h`
-- Imported by: `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_rt_cli.c`
-
-### vc_alsa_list (function) `int vc_alsa_list(void);`
-- Defined: `voicecloak/src/vc_alsa.h:46`
-- Doc: @brief Print the available ALSA PCM devices to stdout. @return 0 on success, -1 on error.
-- Depends on: `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_stream.h`
-- Imported by: `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_rt_cli.c`
-
-### vc_alsa_run (function) `int vc_alsa_run(const vc_alsa_cfg_t *cfg);`
-- Defined: `voicecloak/src/vc_alsa.h:53`
-- Doc: @brief Open capture and playback, run the processing loop until *cfg->stop becomes non-zero or a fatal error occurs. @re
-- Depends on: `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_stream.h`
-- Imported by: `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_rt_cli.c`
-
-## voicecloak/src/vc_cli.c
-
-### print_usage (function) `static void print_usage(const char *prog)`
-- Defined: `voicecloak/src/vc_cli.c:9`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_wav.h`
-
-### cmd_keygen (function) `static int cmd_keygen(void)`
-- Defined: `voicecloak/src/vc_cli.c:41`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_wav.h`
-
-### cmd_cloak (function) `static int cmd_cloak(const char *pubkey_path,
-                     const char *in_path, const cha...`
-- Defined: `voicecloak/src/vc_cli.c:53`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_wav.h`
-
-### cmd_info (function) `static int cmd_info(const char *path)`
-- Defined: `voicecloak/src/vc_cli.c:142`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_wav.h`
-
-### main (function) `int main(int argc, char *argv[])`
-- Defined: `voicecloak/src/vc_cli.c:177`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_wav.h`
-
-## voicecloak/src/vc_crypto.c
-
-### openssl_init (function) `static void openssl_init(void)`
-- Defined: `voicecloak/src/vc_crypto.c:12`
-- Depends on: `voicecloak/src/vc_crypto.h`
-
-### vc_crypto_keygen (function) `int vc_crypto_keygen(const char *pubkey_path, const char *privkey_path)`
-- Defined: `voicecloak/src/vc_crypto.c:17`
-- Depends on: `voicecloak/src/vc_crypto.h`
-
-### vc_crypto_seal (function) `int vc_crypto_seal(const char *pubkey_path,
-                   const unsigned char *seed, size_t ...`
-- Defined: `voicecloak/src/vc_crypto.c:47`
-- Depends on: `voicecloak/src/vc_crypto.h`
-
-### vc_crypto_unseal (function) `int vc_crypto_unseal(const char *privkey_path,
-                     const unsigned char *enc, siz...`
-- Defined: `voicecloak/src/vc_crypto.c:71`
-- Depends on: `voicecloak/src/vc_crypto.h`
-
-### vc_crypto_derive_seeds (function) `int vc_crypto_derive_seeds(const unsigned char *master_seed, size_t seed_len,
-                   ...`
-- Defined: `voicecloak/src/vc_crypto.c:96`
-- Depends on: `voicecloak/src/vc_crypto.h`
-
-### vc_prng_create (function) `vc_prng_t *vc_prng_create(const unsigned char *seed)`
-- Defined: `voicecloak/src/vc_crypto.c:143`
-- Depends on: `voicecloak/src/vc_crypto.h`
-
-### vc_prng_destroy (function) `void vc_prng_destroy(vc_prng_t *p)`
-- Defined: `voicecloak/src/vc_crypto.c:157`
-- Depends on: `voicecloak/src/vc_crypto.h`
-
-### vc_prng_fill (function) `void vc_prng_fill(vc_prng_t *p, unsigned char *buf, size_t len)`
-- Defined: `voicecloak/src/vc_crypto.c:164`
-- Depends on: `voicecloak/src/vc_crypto.h`
-
-### vc_prng_float (function) `float vc_prng_float(vc_prng_t *p, float low, float high)`
-- Defined: `voicecloak/src/vc_crypto.c:184`
-- Depends on: `voicecloak/src/vc_crypto.h`
-
-## voicecloak/src/vc_crypto.h
-
-### vc_crypto_keygen (function) `int vc_crypto_keygen(const char *pubkey_path, const char *privkey_path);`
-- Defined: `voicecloak/src/vc_crypto.h:24`
-- Doc: @brief Generate an RSA-4096 keypair and write to PEM files. @param pubkey_path   Output path for public key. @param priv
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`
-
-### vc_crypto_seal (function) `int vc_crypto_seal(const char *pubkey_path, const unsigned char *seed, size_t seed_len, unsigned char *enc_out, size_t *enc_len);`
-- Defined: `voicecloak/src/vc_crypto.h:35`
-- Doc: @brief Encrypt a symmetric session seed using RSA-4096 public key. @param pubkey_path   Path to PEM public key. @param s
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`
-
-### vc_crypto_unseal (function) `int vc_crypto_unseal(const char *privkey_path, const unsigned char *enc, size_t enc_len, unsigned char *seed, size_t seed_len);`
-- Defined: `voicecloak/src/vc_crypto.h:48`
-- Doc: @brief Decrypt the session seed using RSA-4096 private key. @param privkey_path  Path to PEM private key. @param enc    
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`
-
-### vc_crypto_derive_seeds (function) `int vc_crypto_derive_seeds(const unsigned char *master_seed, size_t seed_len, unsigned char *pitch_seed, unsigned char *formant_seed, unsigned char *spectral_seed);`
-- Defined: `voicecloak/src/vc_crypto.h:61`
-- Doc: @brief Derive sub-seeds from a master seed via HKDF-SHA256. @param master_seed   96-byte master seed. @param seed_len   
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`
-
-### vc_prng_create (function) `vc_prng_t *vc_prng_create(const unsigned char *seed);`
-- Defined: `voicecloak/src/vc_crypto.h:77`
-- Doc: @brief Create a PRNG from a 32-byte seed.
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`
-
-### vc_prng_destroy (function) `void vc_prng_destroy(vc_prng_t *p);`
-- Defined: `voicecloak/src/vc_crypto.h:82`
-- Doc: @brief Release PRNG.
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`
-
-### vc_prng_fill (function) `void vc_prng_fill(vc_prng_t *p, unsigned char *buf, size_t len);`
-- Defined: `voicecloak/src/vc_crypto.h:87`
-- Doc: @brief Fill buffer with deterministic pseudo-random bytes.
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`
-
-### vc_prng_float (function) `float vc_prng_float(vc_prng_t *p, float low, float high);`
-- Defined: `voicecloak/src/vc_crypto.h:92`
-- Doc: @brief Generate a float in [low, high] deterministically.
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`
-
-## voicecloak/src/vc_denoise.c
-
-### vc_denoise_params_defaults (function) `void vc_denoise_params_defaults(vc_denoise_params_t *params)`
-- Defined: `voicecloak/src/vc_denoise.c:29`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### params_valid (function) `static int params_valid(const vc_denoise_params_t *p)`
-- Defined: `voicecloak/src/vc_denoise.c:39`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### reset_tracking (function) `static void reset_tracking(vc_denoise_t *dn)`
-- Defined: `voicecloak/src/vc_denoise.c:57`
-- Doc: Restart the per-bin gains and close the gate: right after a profile * appears the user is assumed silent, so nothing lea
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### restart_learning (function) `static void restart_learning(vc_denoise_t *dn)`
-- Defined: `voicecloak/src/vc_denoise.c:64`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### vc_denoise_create (function) `vc_denoise_t *vc_denoise_create(size_t nbins,
-                                const vc_denoise_pa...`
-- Defined: `voicecloak/src/vc_denoise.c:71`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### vc_denoise_destroy (function) `void vc_denoise_destroy(vc_denoise_t *denoise)`
-- Defined: `voicecloak/src/vc_denoise.c:92`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### vc_denoise_is_ready (function) `int vc_denoise_is_ready(const vc_denoise_t *denoise)`
-- Defined: `voicecloak/src/vc_denoise.c:100`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### mute (function) `static void mute(float *mag, size_t nbins)`
-- Defined: `voicecloak/src/vc_denoise.c:104`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### install_profile (function) `static void install_profile(vc_denoise_t *dn, uint32_t sample_rate)`
-- Defined: `voicecloak/src/vc_denoise.c:108`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### learn (function) `static void learn(vc_denoise_t *dn, float *mag, uint32_t sample_rate,
-                  size_t hop)`
-- Defined: `voicecloak/src/vc_denoise.c:117`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### update_gate (function) `static void update_gate(vc_denoise_t *dn, double frame_power,
-                        uint32_t sa...`
-- Defined: `voicecloak/src/vc_denoise.c:136`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### vc_denoise_transform (function) `void vc_denoise_transform(float *mag, float *phase, size_t nbins,
-                          uint3...`
-- Defined: `voicecloak/src/vc_denoise.c:158`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### parse_ulong (function) `static int parse_ulong(const char **cursor, unsigned long *out)`
-- Defined: `voicecloak/src/vc_denoise.c:196`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### parse_header (function) `static int parse_header(const char **cursor, unsigned long *rate,
-                        unsigne...`
-- Defined: `voicecloak/src/vc_denoise.c:208`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### vc_denoise_profile_parse (function) `int vc_denoise_profile_parse(vc_denoise_t *denoise, const char *text,
-                           ...`
-- Defined: `voicecloak/src/vc_denoise.c:224`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### vc_denoise_save (function) `int vc_denoise_save(const vc_denoise_t *denoise, const char *path)`
-- Defined: `voicecloak/src/vc_denoise.c:266`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-### vc_denoise_load (function) `int vc_denoise_load(vc_denoise_t *denoise, const char *path)`
-- Defined: `voicecloak/src/vc_denoise.c:280`
-- Depends on: `voicecloak/src/vc_denoise.h`
-
-## voicecloak/src/vc_denoise.h
-
-### vc_denoise_params_defaults (function) `void vc_denoise_params_defaults(vc_denoise_params_t *params);`
-- Defined: `voicecloak/src/vc_denoise.h:55`
-- Doc: loaded; output is muted while learning.  typedef struct { float reduction; float floor_db; float smoothing; float gate_s
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/tests/test_vc_denoise.c`
-
-### vc_denoise_create (function) `vc_denoise_t *vc_denoise_create(size_t nbins, const vc_denoise_params_t *params);`
-- Defined: `voicecloak/src/vc_denoise.h:61`
-- Doc: @brief Create a noise reducer for @p nbins frequency bins. @return Context or NULL for invalid bins/parameters/allocatio
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/tests/test_vc_denoise.c`
-
-### vc_denoise_destroy (function) `void vc_denoise_destroy(vc_denoise_t *denoise);`
-- Defined: `voicecloak/src/vc_denoise.h:65`
-- Doc: @brief Create a noise reducer for @p nbins frequency bins. @return Context or NULL for invalid bins/parameters/allocatio
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/tests/test_vc_denoise.c`
-
-### first (function) `* * Learns the noise print first (muting those frames), then applies * power spectral subtraction and the spectral gate to @p mag. Phases * are untouched. Frames with a bin count mismatch or non-finit`
-- Defined: `voicecloak/src/vc_denoise.h:70`
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/tests/test_vc_denoise.c`
-
-### vc_denoise_is_ready (function) `int vc_denoise_is_ready(const vc_denoise_t *denoise);`
-- Defined: `voicecloak/src/vc_denoise.h:79`
-- Doc: @brief Per-frame spectral transform, compatible with vc_spectral_fn.  Learns the noise print first (muting those frames)
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/tests/test_vc_denoise.c`
-
-### vc_denoise_profile_parse (function) `int vc_denoise_profile_parse(vc_denoise_t *denoise, const char *text, size_t length);`
-- Defined: `voicecloak/src/vc_denoise.h:85`
-- Doc: @brief Parse a text noise profile (see spec for the format). @return 0 on success; -1 on any malformed input (context un
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/tests/test_vc_denoise.c`
-
-### vc_denoise_save (function) `int vc_denoise_save(const vc_denoise_t *denoise, const char *path);`
-- Defined: `voicecloak/src/vc_denoise.h:89`
-- Doc: @brief Parse a text noise profile (see spec for the format). @return 0 on success; -1 on any malformed input (context un
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/tests/test_vc_denoise.c`
-
-### vc_denoise_load (function) `int vc_denoise_load(vc_denoise_t *denoise, const char *path);`
-- Defined: `voicecloak/src/vc_denoise.h:92`
-- Doc: @brief Parse a text noise profile (see spec for the format). @return 0 on success; -1 on any malformed input (context un
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/tests/test_vc_denoise.c`
-
-## voicecloak/src/vc_dsp.c
-
-### stft_process (function) `static int stft_process(const float *samples, size_t num_samples,
-                        float *...`
-- Defined: `voicecloak/src/vc_dsp.c:12`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_stft.h`
-
-### stft_reconstruct (function) `static int stft_reconstruct(const float *mag, const float *phase,
-                            siz...`
-- Defined: `voicecloak/src/vc_dsp.c:21`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_stft.h`
-
-### compute_out_len (function) `static size_t compute_out_len(size_t nframes, size_t hop)`
-- Defined: `voicecloak/src/vc_dsp.c:31`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_stft.h`
-
-### vc_dsp_pitch_shift (function) `int vc_dsp_pitch_shift(const float *samples, size_t num_samples,
-                       uint32_t ...`
-- Defined: `voicecloak/src/vc_dsp.c:35`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_stft.h`
-
-### vc_dsp_formant_shift (function) `int vc_dsp_formant_shift(const float *samples, size_t num_samples,
-                         uint3...`
-- Defined: `voicecloak/src/vc_dsp.c:91`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_stft.h`
-
-### vc_dsp_spectral_scramble (function) `int vc_dsp_spectral_scramble(const float *samples, size_t num_samples,
-                          ...`
-- Defined: `voicecloak/src/vc_dsp.c:161`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_stft.h`
-
-### trim_edges (function) `static void trim_edges(float **buf, size_t *len)`
-- Defined: `voicecloak/src/vc_dsp.c:234`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_stft.h`
-
-### normalize_rms (function) `static void normalize_rms(const float *in, size_t in_len,
-                          float *out, s...`
-- Defined: `voicecloak/src/vc_dsp.c:255`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_stft.h`
-
-### vc_dsp_cloak (function) `int vc_dsp_cloak(const float *samples, size_t num_samples,
-                 uint32_t sample_rate,...`
-- Defined: `voicecloak/src/vc_dsp.c:272`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_stft.h`
-
-## voicecloak/src/vc_dsp.h
-
-### vc_dsp_pitch_shift (function) `int vc_dsp_pitch_shift(const float *samples, size_t num_samples, uint32_t sample_rate, float semitones, float **out, size_t *out_len);`
-- Defined: `voicecloak/src/vc_dsp.h:16`
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_dsp.c`
-
-### vc_dsp_formant_shift (function) `int vc_dsp_formant_shift(const float *samples, size_t num_samples, uint32_t sample_rate, float shift_factor, float **out, size_t *out_len);`
-- Defined: `voicecloak/src/vc_dsp.h:20`
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_dsp.c`
-
-### vc_dsp_spectral_scramble (function) `int vc_dsp_spectral_scramble(const float *samples, size_t num_samples, uint32_t sample_rate, float intensity, float **out, size_t *out_len);`
-- Defined: `voicecloak/src/vc_dsp.h:24`
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_dsp.c`
-
-### vc_dsp_cloak (function) `int vc_dsp_cloak(const float *samples, size_t num_samples, uint32_t sample_rate, const unsigned char *pitch_seed, const unsigned char *formant_seed, const unsigned char *spectral_seed, VcMode mode, fl`
-- Defined: `voicecloak/src/vc_dsp.h:28`
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_dsp.c`
-
-## voicecloak/src/vc_effects.c
-
-### finite_params (function) `static int finite_params(const vc_effects_params_t *p)`
-- Defined: `voicecloak/src/vc_effects.c:40`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### ring_valid (function) `static int ring_valid(const vc_effects_params_t *p, float nyquist)`
-- Defined: `voicecloak/src/vc_effects.c:53`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### params_valid (function) `static int params_valid(uint32_t sample_rate, const vc_effects_params_t *p)`
-- Defined: `voicecloak/src/vc_effects.c:61`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### samples_from_ms (function) `static size_t samples_from_ms(float milliseconds, uint32_t sample_rate)`
-- Defined: `voicecloak/src/vc_effects.c:105`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### alloc_comb (function) `static int alloc_comb(vc_comb_t *comb, float milliseconds,
-                      uint32_t sample_...`
-- Defined: `voicecloak/src/vc_effects.c:111`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### free_combs (function) `static void free_combs(vc_effects_t *fx)`
-- Defined: `voicecloak/src/vc_effects.c:121`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### vc_effects_create (function) `vc_effects_t *vc_effects_create(uint32_t sample_rate,
-                                const vc_ef...`
-- Defined: `voicecloak/src/vc_effects.c:129`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### vc_effects_destroy (function) `void vc_effects_destroy(vc_effects_t *effects)`
-- Defined: `voicecloak/src/vc_effects.c:173`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### reset_state (function) `static void reset_state(vc_effects_t *fx)`
-- Defined: `voicecloak/src/vc_effects.c:180`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### process_space (function) `static float process_space(vc_effects_t *fx, float input, double lfo)`
-- Defined: `voicecloak/src/vc_effects.c:197`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### process_reverb (function) `static float process_reverb(vc_effects_t *fx, float input)`
-- Defined: `voicecloak/src/vc_effects.c:214`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### process_phaser (function) `static float process_phaser(vc_effects_t *fx, float input, double lfo)`
-- Defined: `voicecloak/src/vc_effects.c:228`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### ring_modulate (function) `static float ring_modulate(const vc_effects_t *fx, float input)`
-- Defined: `voicecloak/src/vc_effects.c:249`
-- Doc: Soft square: a hard edge multiplies the voice by infinitely many harmonics that alias; tanh(k sin) keeps the square char
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### process_metallic (function) `static float process_metallic(vc_effects_t *fx, float input)`
-- Defined: `voicecloak/src/vc_effects.c:260`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### process_one (function) `static float process_one(vc_effects_t *fx, float input)`
-- Defined: `voicecloak/src/vc_effects.c:270`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### vc_effects_process (function) `int vc_effects_process(vc_effects_t *effects, float *samples, size_t count)`
-- Defined: `voicecloak/src/vc_effects.c:309`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-## voicecloak/src/vc_effects.h
-
-### vc_effects_create (function) `vc_effects_t *vc_effects_create(uint32_t sample_rate, const vc_effects_params_t *params);`
-- Defined: `voicecloak/src/vc_effects.h:60`
-- Doc: @brief Create one stateful, sample-domain effect context. @return Context or NULL for invalid sample rate/parameters/all
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_effects.c`, `voicecloak/src/vc_presets.h`, `voicecloak/tests/test_vc_effects.c`
-
-### vc_effects_destroy (function) `void vc_effects_destroy(vc_effects_t *effects);`
-- Defined: `voicecloak/src/vc_effects.h:64`
-- Doc: @brief Create one stateful, sample-domain effect context. @return Context or NULL for invalid sample rate/parameters/all
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_effects.c`, `voicecloak/src/vc_presets.h`, `voicecloak/tests/test_vc_effects.c`
-
-### vc_effects_process (function) `int vc_effects_process(vc_effects_t *effects, float *samples, size_t count);`
-- Defined: `voicecloak/src/vc_effects.h:71`
-- Doc: @brief Process mono samples in place, preserving state between blocks. @return 0 on success; nonzero on invalid input. I
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_effects.c`, `voicecloak/src/vc_presets.h`, `voicecloak/tests/test_vc_effects.c`
-
-## voicecloak/src/vc_eq.c
-
-### params_valid (function) `static int params_valid(uint32_t sample_rate, const vc_eq_params_t *p)`
-- Defined: `voicecloak/src/vc_eq.c:24`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### normalize (function) `static void normalize(vc_biquad_t *f, double b0, double b1, double b2,
-                      doub...`
-- Defined: `voicecloak/src/vc_eq.c:39`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### design_highpass (function) `static void design_highpass(vc_biquad_t *f, double hz, double rate)`
-- Defined: `voicecloak/src/vc_eq.c:49`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### design_peaking (function) `static void design_peaking(vc_biquad_t *f, double hz, double gain_db,
-                           ...`
-- Defined: `voicecloak/src/vc_eq.c:57`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### vc_eq_create (function) `vc_eq_t *vc_eq_create(uint32_t sample_rate, const vc_eq_params_t *params)`
-- Defined: `voicecloak/src/vc_eq.c:67`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### vc_eq_destroy (function) `void vc_eq_destroy(vc_eq_t *eq)`
-- Defined: `voicecloak/src/vc_eq.c:81`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### run_biquad (function) `static double run_biquad(vc_biquad_t *f, double x)`
-- Defined: `voicecloak/src/vc_eq.c:85`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### fail_closed (function) `static void fail_closed(vc_eq_t *eq, float *samples, size_t count)`
-- Defined: `voicecloak/src/vc_eq.c:93`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### vc_eq_process (function) `int vc_eq_process(vc_eq_t *eq, float *samples, size_t count)`
-- Defined: `voicecloak/src/vc_eq.c:99`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-## voicecloak/src/vc_eq.h
-
-### vc_eq_create (function) `vc_eq_t *vc_eq_create(uint32_t sample_rate, const vc_eq_params_t *params);`
-- Defined: `voicecloak/src/vc_eq.h:36`
-- Doc: @brief Create a high-pass + presence peaking equalizer. @return Context or NULL for invalid sample rate/parameters/alloc
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_eq.c`, `voicecloak/src/vc_presets.h`, `voicecloak/tests/test_vc_eq.c`, `voicecloak/tests/test_vc_presets.c`
-
-### vc_eq_destroy (function) `void vc_eq_destroy(vc_eq_t *eq);`
-- Defined: `voicecloak/src/vc_eq.h:39`
-- Doc: @brief Create a high-pass + presence peaking equalizer. @return Context or NULL for invalid sample rate/parameters/alloc
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_eq.c`, `voicecloak/src/vc_presets.h`, `voicecloak/tests/test_vc_eq.c`, `voicecloak/tests/test_vc_presets.c`
-
-### vc_eq_process (function) `int vc_eq_process(vc_eq_t *eq, float *samples, size_t count);`
-- Defined: `voicecloak/src/vc_eq.h:46`
-- Doc: @brief Equalize mono samples in place, keeping filter state. @return 0 on success; nonzero on invalid arguments/data. In
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_eq.c`, `voicecloak/src/vc_presets.h`, `voicecloak/tests/test_vc_eq.c`, `voicecloak/tests/test_vc_presets.c`
-
-## voicecloak/src/vc_fft.c
-
-### bit_reverse (function) `static unsigned int bit_reverse(unsigned int x, unsigned int bits)`
-- Defined: `voicecloak/src/vc_fft.c:10`
-- Depends on: `voicecloak/src/vc_fft.h`
-
-### bit_reverse_reorder (function) `static void bit_reverse_reorder(size_t n, float *real, float *imag)`
-- Defined: `voicecloak/src/vc_fft.c:20`
-- Depends on: `voicecloak/src/vc_fft.h`
-
-### vc_fft (function) `void vc_fft(size_t n, float *real, float *imag, int inverse)`
-- Defined: `voicecloak/src/vc_fft.c:36`
-- Depends on: `voicecloak/src/vc_fft.h`
-
-## voicecloak/src/vc_fft.h
-
-### FFT (function) `* FFT(IFFT(x)) == IFFT(FFT(x)) == x. */ void vc_fft(size_t n, float *real, float *imag, int inverse);`
-- Defined: `voicecloak/src/vc_fft.h:18`
-- Imported by: `voicecloak/src/vc_fft.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_stft.c`, `voicecloak/src/vc_stream.c`, `voicecloak/tests/test_vc_fft.c`, `voicecloak/tests/test_vc_stream.c`
-
-## voicecloak/src/vc_level.c
-
-### config_valid (function) `static int config_valid(uint32_t sample_rate, const vc_level_config_t *config)`
-- Defined: `voicecloak/src/vc_level.c:22`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### time_alpha (function) `static float time_alpha(float milliseconds, uint32_t sample_rate)`
-- Defined: `voicecloak/src/vc_level.c:50`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### vc_level_config_defaults (function) `void vc_level_config_defaults(vc_level_config_t *config)`
-- Defined: `voicecloak/src/vc_level.c:55`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### vc_level_create (function) `vc_level_t *vc_level_create(uint32_t sample_rate,
-                            const vc_level_conf...`
-- Defined: `voicecloak/src/vc_level.c:67`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### vc_level_destroy (function) `void vc_level_destroy(vc_level_t *level)`
-- Defined: `voicecloak/src/vc_level.c:90`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### silence_block (function) `static void silence_block(float *samples, size_t count)`
-- Defined: `voicecloak/src/vc_level.c:94`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### vc_level_process (function) `int vc_level_process(vc_level_t *level, float *samples, size_t count)`
-- Defined: `voicecloak/src/vc_level.c:99`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### vc_level_current_gain_db (function) `float vc_level_current_gain_db(const vc_level_t *level)`
-- Defined: `voicecloak/src/vc_level.c:169`
-- Depends on: `voicecloak/src/vc_level.h`
-
-## voicecloak/src/vc_level.h
-
-### vc_level_config_defaults (function) `void vc_level_config_defaults(vc_level_config_t *config);`
-- Defined: `voicecloak/src/vc_level.h:40`
-- Doc: typedef struct { float target_dbfs; float max_gain_db; float ceiling_dbfs; float attack_ms; float release_ms; float limi
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_level.c`, `voicecloak/tests/test_vc_level.c`, `voicecloak/tests/test_vc_presets.c`
-
-### vc_level_create (function) `vc_level_t *vc_level_create(uint32_t sample_rate, const vc_level_config_t *config);`
-- Defined: `voicecloak/src/vc_level.h:46`
-- Doc: @brief Create smoothed RMS gain control and peak limiter state. @return Context or NULL if sample rate/configuration is 
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_level.c`, `voicecloak/tests/test_vc_level.c`, `voicecloak/tests/test_vc_presets.c`
-
-### vc_level_destroy (function) `void vc_level_destroy(vc_level_t *level);`
-- Defined: `voicecloak/src/vc_level.h:50`
-- Doc: @brief Create smoothed RMS gain control and peak limiter state. @return Context or NULL if sample rate/configuration is 
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_level.c`, `voicecloak/tests/test_vc_level.c`, `voicecloak/tests/test_vc_presets.c`
-
-### vc_level_process (function) `int vc_level_process(vc_level_t *level, float *samples, size_t count);`
-- Defined: `voicecloak/src/vc_level.h:58`
-- Doc: @brief Apply smoothed RMS gain, soft saturation, and peak limiting in place. @return 0 on success; nonzero on invalid ar
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_level.c`, `voicecloak/tests/test_vc_level.c`, `voicecloak/tests/test_vc_presets.c`
-
-### vc_level_current_gain_db (function) `float vc_level_current_gain_db(const vc_level_t *level);`
-- Defined: `voicecloak/src/vc_level.h:61`
-- Doc: @brief Apply smoothed RMS gain, soft saturation, and peak limiting in place. @return 0 on success; nonzero on invalid ar
-- Depends on: `voicecloak/src/vc_audio_config.h`
-- Imported by: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_level.c`, `voicecloak/tests/test_vc_level.c`, `voicecloak/tests/test_vc_presets.c`
-
-## voicecloak/src/vc_presets.c
-
-### vc_preset_lookup (function) `int vc_preset_lookup(const char *name, vc_preset_t *out)`
-- Defined: `voicecloak/src/vc_presets.c:115`
-- Depends on: `voicecloak/src/vc_presets.h`
-
-## voicecloak/src/vc_presets.h
-
-### vc_preset_lookup (function) `int vc_preset_lookup(const char *name, vc_preset_t *out);`
-- Defined: `voicecloak/src/vc_presets.h:28`
-- Doc: @brief Resolve a named real-time voice/effect preset. @return 0 on match; -1 for unknown name or invalid arguments.
-- Depends on: `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_rt.h`
-- Imported by: `voicecloak/src/vc_presets.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/tests/test_vc_presets.c`
-
-## voicecloak/src/vc_rt.c
-
-### vc_rt_create (function) `vc_rt_ctx_t *vc_rt_create(size_t nbins, vc_rt_params_t params)`
-- Defined: `voicecloak/src/vc_rt.c:31`
-- Depends on: `voicecloak/src/vc_rt.h`
-
-### vc_rt_destroy (function) `void vc_rt_destroy(vc_rt_ctx_t *c)`
-- Defined: `voicecloak/src/vc_rt.c:70`
-- Depends on: `voicecloak/src/vc_rt.h`
-
-### vc_rt_reset (function) `void vc_rt_reset(vc_rt_ctx_t *c)`
-- Defined: `voicecloak/src/vc_rt.c:88`
-- Depends on: `voicecloak/src/vc_rt.h`
-
-### vc_rt_semitones_to_ratio (function) `float vc_rt_semitones_to_ratio(float semitones)`
-- Defined: `voicecloak/src/vc_rt.c:95`
-- Depends on: `voicecloak/src/vc_rt.h`
-
-### wrap_pi (function) `static double wrap_pi(double x)`
-- Defined: `voicecloak/src/vc_rt.c:99`
-- Depends on: `voicecloak/src/vc_rt.h`
-
-### target (function) `* peak region are recorded per target (tgt_src/tgt_pk) so the final
- * stage can identity-lock no...`
-- Defined: `voicecloak/src/vc_rt.c:139`
-- Depends on: `voicecloak/src/vc_rt.h`
-
-### vc_rt_transform (function) `void vc_rt_transform(float *mag, float *phase, size_t nbins,
-                     uint32_t sample...`
-- Defined: `voicecloak/src/vc_rt.c:214`
-- Depends on: `voicecloak/src/vc_rt.h`
-
-## voicecloak/src/vc_rt.h
-
-### vc_rt_create (function) `vc_rt_ctx_t *vc_rt_create(size_t nbins, vc_rt_params_t params);`
-- Defined: `voicecloak/src/vc_rt.h:43`
-- Doc: @brief Create a transform context sized for @p nbins frequency bins. @return Context or NULL on allocation failure / inv
-- Imported by: `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_rt_destroy (function) `void vc_rt_destroy(vc_rt_ctx_t *c);`
-- Defined: `voicecloak/src/vc_rt.h:46`
-- Doc: @brief Create a transform context sized for @p nbins frequency bins. @return Context or NULL on allocation failure / inv
-- Imported by: `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_rt_reset (function) `void vc_rt_reset(vc_rt_ctx_t *c);`
-- Defined: `voicecloak/src/vc_rt.h:49`
-- Doc: @brief Create a transform context sized for @p nbins frequency bins. @return Context or NULL on allocation failure / inv
-- Imported by: `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_rt_transform (function) `void vc_rt_transform(float *mag, float *phase, size_t nbins, uint32_t sample_rate, size_t hop, void *user);`
-- Defined: `voicecloak/src/vc_rt.h:61`
-- Doc: @brief Per-frame transform, compatible with vc_spectral_fn. @param user Must be a vc_rt_ctx_t* created with matching nbi
-- Imported by: `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_rt_semitones_to_ratio (function) `float vc_rt_semitones_to_ratio(float semitones);`
-- Defined: `voicecloak/src/vc_rt.h:67`
-- Doc: @brief Convert a semitone shift to a pitch ratio (2^(semitones/12)).
-- Imported by: `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_rt_derive (function) `int vc_rt_derive(const unsigned char *pitch_seed, const unsigned char *formant_seed, const unsigned char *spectral_seed, int witness_mode, vc_rt_params_t *out);`
-- Defined: `voicecloak/src/vc_rt.h:78`
-- Doc: @brief Derive cloak parameters from three 32-byte PRNG seeds. @param pitch_seed    32-byte seed. @param formant_seed  32
-- Imported by: `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.c`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_rt_seed.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_stream.c`
-
-## voicecloak/src/vc_rt_cli.c
-
-### on_sigint (function) `static void on_sigint(int sig)`
-- Defined: `voicecloak/src/vc_rt_cli.c:24`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### parse_float (function) `static int parse_float(const char *text, float *out)`
-- Defined: `voicecloak/src/vc_rt_cli.c:29`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### print_usage (function) `static void print_usage(const char *prog)`
-- Defined: `voicecloak/src/vc_rt_cli.c:40`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### dominant_freq (function) `static float dominant_freq(const float *x, size_t n, unsigned int sr)`
-- Defined: `voicecloak/src/vc_rt_cli.c:94`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### cmd_selftest (function) `static int cmd_selftest(void)`
-- Defined: `voicecloak/src/vc_rt_cli.c:117`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### resolve_params (function) `static int resolve_params(int have_fixed, float semis, float formant,
-                          f...`
-- Defined: `voicecloak/src/vc_rt_cli.c:155`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### cmd_live (function) `static int cmd_live(int argc, char *argv[])`
-- Defined: `voicecloak/src/vc_rt_cli.c:179`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### main (function) `int main(int argc, char *argv[])`
-- Defined: `voicecloak/src/vc_rt_cli.c:504`
-- Depends on: `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-## voicecloak/src/vc_rt_seed.c
-
-### vc_rt_derive (function) `int vc_rt_derive(const unsigned char *pitch_seed,
-                 const unsigned char *formant_s...`
-- Defined: `voicecloak/src/vc_rt_seed.c:5`
-- Depends on: `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_rt.h`
-
-## voicecloak/src/vc_stft.c
-
-### vc_stft_create (function) `vc_stft_t *vc_stft_create(size_t fft_size, size_t hop_size)`
-- Defined: `voicecloak/src/vc_stft.c:21`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stft.h`
-
-### vc_stft_destroy (function) `void vc_stft_destroy(vc_stft_t *st)`
-- Defined: `voicecloak/src/vc_stft.c:58`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stft.h`
-
-### vc_stft_num_bins (function) `size_t vc_stft_num_bins(const vc_stft_t *st)`
-- Defined: `voicecloak/src/vc_stft.c:67`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stft.h`
-
-### vc_stft_forward (function) `int vc_stft_forward(vc_stft_t *st,
-                    const float *samples, size_t num_samples,
-...`
-- Defined: `voicecloak/src/vc_stft.c:71`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stft.h`
-
-### vc_stft_inverse (function) `int vc_stft_inverse(vc_stft_t *st,
-                    const float *mag, const float *phase,
-    ...`
-- Defined: `voicecloak/src/vc_stft.c:119`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stft.h`
-
-### vc_stft_inverse_hop (function) `int vc_stft_inverse_hop(vc_stft_t *st,
-                        const float *mag, const float *pha...`
-- Defined: `voicecloak/src/vc_stft.c:127`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stft.h`
-
-## voicecloak/src/vc_stft.h
-
-### vc_stft_create (function) `vc_stft_t *vc_stft_create(size_t fft_size, size_t hop_size);`
-- Defined: `voicecloak/src/vc_stft.h:25`
-- Doc: @brief Allocate STFT context. @param fft_size  FFT size (power of 2, e.g. 2048). @param hop_size  Hop size in samples (e
-- Imported by: `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_stft.c`
-
-### vc_stft_destroy (function) `void vc_stft_destroy(vc_stft_t *st);`
-- Defined: `voicecloak/src/vc_stft.h:30`
-- Doc: @brief Release STFT context.
-- Imported by: `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_stft.c`
-
-### vc_stft_forward (function) `int vc_stft_forward(vc_stft_t *st, const float *samples, size_t num_samples, float **mag, float **phase, size_t *num_frames_out);`
-- Defined: `voicecloak/src/vc_stft.h:42`
-- Doc: @brief Forward STFT: decompose a mono float buffer into complex frames. @param st       STFT context. @param samples  In
-- Imported by: `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_stft.c`
-
-### vc_stft_inverse (function) `int vc_stft_inverse(vc_stft_t *st, const float *mag, const float *phase, size_t num_frames, float *samples_out, size_t num_samples_out);`
-- Defined: `voicecloak/src/vc_stft.h:57`
-- Doc: @brief Inverse STFT: reconstruct signal from modified magnitude/phase. @param st        STFT context. @param mag       I
-- Imported by: `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_stft.c`
-
-### vc_stft_inverse_hop (function) `int vc_stft_inverse_hop(vc_stft_t *st, const float *mag, const float *phase, size_t num_frames, float *samples_out, size_t num_samples_out, size_t synth_hop);`
-- Defined: `voicecloak/src/vc_stft.h:66`
-- Doc: @brief Inverse STFT with custom synthesis hop (for pitch shifting). @param synth_hop  Synthesis hop size in samples (may
-- Imported by: `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_stft.c`
-
-### vc_stft_num_bins (function) `size_t vc_stft_num_bins(const vc_stft_t *st);`
-- Defined: `voicecloak/src/vc_stft.h:75`
-- Doc: @brief Number of frequency bins (fft_size/2 + 1).
-- Imported by: `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_stft.c`
-
-## voicecloak/src/vc_stream.c
-
-### is_pow2 (function) `static int is_pow2(size_t v)`
-- Defined: `voicecloak/src/vc_stream.c:31`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stream.h`
-
-### vc_stream_create (function) `vc_stream_t *vc_stream_create(size_t fft_size, size_t hop_size,
-                              uin...`
-- Defined: `voicecloak/src/vc_stream.c:35`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stream.h`
-
-### vc_stream_destroy (function) `void vc_stream_destroy(vc_stream_t *st)`
-- Defined: `voicecloak/src/vc_stream.c:94`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stream.h`
-
-### vc_stream_latency_samples (function) `size_t vc_stream_latency_samples(const vc_stream_t *st)`
-- Defined: `voicecloak/src/vc_stream.c:107`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stream.h`
-
-### process_frame (function) `static void process_frame(vc_stream_t *st, vc_spectral_fn fn, void *user)`
-- Defined: `voicecloak/src/vc_stream.c:111`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stream.h`
-
-### vc_stream_process (function) `int vc_stream_process(vc_stream_t *st,
-                      const float *in, float *out, size_t ...`
-- Defined: `voicecloak/src/vc_stream.c:159`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stream.h`
-
-### vc_spectral_chain_init (function) `void vc_spectral_chain_init(vc_spectral_chain_t *chain)`
-- Defined: `voicecloak/src/vc_stream.c:178`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stream.h`
-
-### vc_spectral_chain_add (function) `int vc_spectral_chain_add(vc_spectral_chain_t *chain, vc_spectral_fn fn,
-                        ...`
-- Defined: `voicecloak/src/vc_stream.c:182`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stream.h`
-
-### vc_spectral_chain_run (function) `void vc_spectral_chain_run(float *mag, float *phase, size_t nbins,
-                           uin...`
-- Defined: `voicecloak/src/vc_stream.c:191`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_stream.h`
-
-## voicecloak/src/vc_stream.h
-
-### frames (function) `* that must persist across frames (phase-vocoder accumulators) lives * in @p user, not in the engine. */ typedef void (*vc_spectral_fn)(float *mag, float *phase, size_t nbins, uint32_t sample_rate, si`
-- Defined: `voicecloak/src/vc_stream.h:32`
-- Imported by: `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_stream.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_presets.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_spectral_chain_init (function) `void vc_spectral_chain_init(vc_spectral_chain_t *chain);`
-- Defined: `voicecloak/src/vc_stream.h:54`
-- Doc: @brief Ordered list of spectral stages run as one vc_spectral_fn.  Each stage keeps its own state in its user pointer; t
-- Imported by: `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_stream.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_presets.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_spectral_chain_add (function) `int vc_spectral_chain_add(vc_spectral_chain_t *chain, vc_spectral_fn fn, void *user);`
-- Defined: `voicecloak/src/vc_stream.h:60`
-- Doc: @brief Append a stage. @return 0 on success; -1 for NULL chain/fn or a full chain (unchanged).
-- Imported by: `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_stream.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_presets.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_spectral_chain_run (function) `void vc_spectral_chain_run(float *mag, float *phase, size_t nbins, uint32_t sample_rate, size_t hop, void *user);`
-- Defined: `voicecloak/src/vc_stream.h:67`
-- Doc: @brief vc_spectral_fn that runs every stage of the chain in @p user. A NULL chain leaves the spectrum untouched.
-- Imported by: `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_stream.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_presets.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_stream_create (function) `vc_stream_t *vc_stream_create(size_t fft_size, size_t hop_size, uint32_t sample_rate);`
-- Defined: `voicecloak/src/vc_stream.h:77`
-- Doc: @brief Create a streaming engine. @param fft_size  Power of two. @param hop_size  Must divide fft_size; fft_size/hop_siz
-- Imported by: `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_stream.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_presets.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_stream_destroy (function) `void vc_stream_destroy(vc_stream_t *st);`
-- Defined: `voicecloak/src/vc_stream.h:81`
-- Doc: @brief Create a streaming engine. @param fft_size  Power of two. @param hop_size  Must divide fft_size; fft_size/hop_siz
-- Imported by: `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_stream.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_presets.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_stream_latency_samples (function) `size_t vc_stream_latency_samples(const vc_stream_t *st);`
-- Defined: `voicecloak/src/vc_stream.h:84`
-- Doc: @brief Create a streaming engine. @param fft_size  Power of two. @param hop_size  Must divide fft_size; fft_size/hop_siz
-- Imported by: `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_stream.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_presets.c`, `voicecloak/tests/test_vc_stream.c`
-
-### vc_stream_process (function) `int vc_stream_process(vc_stream_t *st, const float *in, float *out, size_t n, vc_spectral_fn fn, void *user);`
-- Defined: `voicecloak/src/vc_stream.h:96`
-- Doc: @brief Process a block, producing exactly @p n output samples. @param st   Engine. @param in   Input samples (length n).
-- Imported by: `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/src/vc_stream.c`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_presets.c`, `voicecloak/tests/test_vc_stream.c`
-
-## voicecloak/src/vc_wav.c
-
-### read_bytes (function) `static int read_bytes(FILE *fp, void *buf, size_t n)`
-- Defined: `voicecloak/src/vc_wav.c:30`
-- Depends on: `voicecloak/src/vc_wav.h`
-
-### write_bytes (function) `static int write_bytes(FILE *fp, const void *buf, size_t n)`
-- Defined: `voicecloak/src/vc_wav.c:34`
-- Depends on: `voicecloak/src/vc_wav.h`
-
-### sample_to_float (function) `static float sample_to_float(const unsigned char *p, int bps)`
-- Defined: `voicecloak/src/vc_wav.c:38`
-- Depends on: `voicecloak/src/vc_wav.h`
-
-### float_to_sample (function) `static void float_to_sample(float f, unsigned char *p, int bps)`
-- Defined: `voicecloak/src/vc_wav.c:62`
-- Depends on: `voicecloak/src/vc_wav.h`
-
-### find_chunk (function) `static int find_chunk(FILE *fp, const char *id, uint32_t *size)`
-- Defined: `voicecloak/src/vc_wav.c:78`
-- Depends on: `voicecloak/src/vc_wav.h`
-
-### vc_wav_read (function) `int vc_wav_read(const char *path,
-                float **samples_out, size_t *num_samples_out,
- ...`
-- Defined: `voicecloak/src/vc_wav.c:93`
-- Depends on: `voicecloak/src/vc_wav.h`
-
-### vc_wav_write (function) `int vc_wav_write(const char *path,
-                 const float *samples, size_t num_samples,
-   ...`
-- Defined: `voicecloak/src/vc_wav.c:169`
-- Depends on: `voicecloak/src/vc_wav.h`
-
-## voicecloak/src/vc_wav.h
-
-### vc_wav_read (function) `int vc_wav_read(const char *path, float **samples_out, size_t *num_samples_out, uint32_t *sample_rate_out);`
-- Defined: `voicecloak/src/vc_wav.h:19`
-- Doc: @brief Read a mono PCM WAV file into a float buffer [-1.0, 1.0]. @param path         File path. @param samples_out  Outp
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_wav.c`
-
-### vc_wav_write (function) `int vc_wav_write(const char *path, const float *samples, size_t num_samples, uint32_t sample_rate);`
-- Defined: `voicecloak/src/vc_wav.h:31`
-- Doc: @brief Write a mono float buffer to a 16-bit PCM WAV file. @param path       File path. @param samples    Float samples 
-- Imported by: `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_wav.c`
-
-## voicecloak/tests/test_vc_denoise.c
-
-### white (function) `static float white(float amplitude)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:27`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### rms (function) `static float rms(const float *x, size_t n)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:32`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### harmonic (function) `static float harmonic(size_t i)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:39`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### run_chunks (function) `static void run_chunks(vc_stream_t *st, const float *in, float *out, size_t n,
-                  ...`
-- Defined: `voicecloak/tests/test_vc_denoise.c:48`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### learn_then_process (function) `static void learn_then_process(vc_denoise_t *dn, const float *in, float *out,
-                   ...`
-- Defined: `voicecloak/tests/test_vc_denoise.c:59`
-- Doc: return (float)(0.1 * value); } static void run_chunks(vc_stream_t *st, const float *in, float *out, size_t n, vc_spectra
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### make_denoise (function) `static vc_denoise_t *make_denoise(float learn_ms)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:78`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_defaults_and_invalid_params (function) `static void test_defaults_and_invalid_params(void **state)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:87`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_learning_mutes_then_ready (function) `static void test_learning_mutes_then_ready(void **state)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:112`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_stationary_noise_removed (function) `static void test_stationary_noise_removed(void **state)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:128`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_speech_like_content_survives (function) `static void test_speech_like_content_survives(void **state)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:149`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### robot_noise_rms (function) `static float robot_noise_rms(int with_denoise)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:176`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_robot_hum_on_silence_suppressed (function) `static void test_robot_hum_on_silence_suppressed(void **state)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:206`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_profile_round_trip (function) `static void test_profile_round_trip(void **state)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:214`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_malformed_profiles_rejected (function) `static void test_malformed_profiles_rejected(void **state)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:279`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_rate_mismatch_relearns (function) `static void test_rate_mismatch_relearns(void **state)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:313`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_non_finite_frame_muted (function) `static void test_non_finite_frame_muted(void **state)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:329`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### main (function) `int main(void)`
-- Defined: `voicecloak/tests/test_vc_denoise.c:347`
-- Depends on: `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-## voicecloak/tests/test_vc_effects.c
-
-### rms (function) `static float rms(const float *samples, size_t count)`
-- Defined: `voicecloak/tests/test_vc_effects.c:14`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### assert_finite (function) `static void assert_finite(const float *samples, size_t count)`
-- Defined: `voicecloak/tests/test_vc_effects.c:22`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### test_ring_modulation_changes_tone (function) `static void test_ring_modulation_changes_tone(void **state)`
-- Defined: `voicecloak/tests/test_vc_effects.c:27`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### test_ring_amount_zero_is_identity (function) `static void test_ring_amount_zero_is_identity(void **state)`
-- Defined: `voicecloak/tests/test_vc_effects.c:48`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### test_square_carrier_is_soft_and_bounded (function) `static void test_square_carrier_is_soft_and_bounded(void **state)`
-- Defined: `voicecloak/tests/test_vc_effects.c:70`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### test_metallic_comb_echoes_with_feedback_ratio (function) `static void test_metallic_comb_echoes_with_feedback_ratio(void **state)`
-- Defined: `voicecloak/tests/test_vc_effects.c:99`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### test_metallic_bounds_rejected (function) `static void test_metallic_bounds_rejected(void **state)`
-- Defined: `voicecloak/tests/test_vc_effects.c:120`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### test_underwater_lowpass_reduces_high_tone (function) `static void test_underwater_lowpass_reduces_high_tone(void **state)`
-- Defined: `voicecloak/tests/test_vc_effects.c:149`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### test_reverb_has_tail (function) `static void test_reverb_has_tail(void **state)`
-- Defined: `voicecloak/tests/test_vc_effects.c:175`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### test_space_delay_adds_echo_without_unbounded_feedback (function) `static void test_space_delay_adds_echo_without_unbounded_feedback(void **state)`
-- Defined: `voicecloak/tests/test_vc_effects.c:198`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### test_phaser_bounded_and_non_identity (function) `static void test_phaser_bounded_and_non_identity(void **state)`
-- Defined: `voicecloak/tests/test_vc_effects.c:223`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### test_invalid_rate_and_parameters_rejected (function) `static void test_invalid_rate_and_parameters_rejected(void **state)`
-- Defined: `voicecloak/tests/test_vc_effects.c:245`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-### main (function) `int main(void)`
-- Defined: `voicecloak/tests/test_vc_effects.c:257`
-- Depends on: `voicecloak/src/vc_effects.h`
-
-## voicecloak/tests/test_vc_eq.c
-
-### tone_gain_db (function) `static float tone_gain_db(const vc_eq_params_t *params, float frequency)`
-- Defined: `voicecloak/tests/test_vc_eq.c:22`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### test_highpass_removes_rumble (function) `static void test_highpass_removes_rumble(void **state)`
-- Defined: `voicecloak/tests/test_vc_eq.c:44`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### test_presence_peak_boosts_consonant_band (function) `static void test_presence_peak_boosts_consonant_band(void **state)`
-- Defined: `voicecloak/tests/test_vc_eq.c:49`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### test_zero_params_bypass (function) `static void test_zero_params_bypass(void **state)`
-- Defined: `voicecloak/tests/test_vc_eq.c:57`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### test_invalid_params_rejected (function) `static void test_invalid_params_rejected(void **state)`
-- Defined: `voicecloak/tests/test_vc_eq.c:75`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### test_bad_samples_fail_closed (function) `static void test_bad_samples_fail_closed(void **state)`
-- Defined: `voicecloak/tests/test_vc_eq.c:98`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-### main (function) `int main(void)`
-- Defined: `voicecloak/tests/test_vc_eq.c:115`
-- Depends on: `voicecloak/src/vc_eq.h`
-
-## voicecloak/tests/test_vc_fft.c
-
-### test_fft_identity (function) `static void test_fft_identity(void **state)`
-- Defined: `voicecloak/tests/test_vc_fft.c:10`
-- Depends on: `voicecloak/src/vc_fft.h`
-
-### test_fft_dc_signal (function) `static void test_fft_dc_signal(void **state)`
-- Defined: `voicecloak/tests/test_vc_fft.c:27`
-- Depends on: `voicecloak/src/vc_fft.h`
-
-### test_fft_sine (function) `static void test_fft_sine(void **state)`
-- Defined: `voicecloak/tests/test_vc_fft.c:47`
-- Depends on: `voicecloak/src/vc_fft.h`
-
-### main (function) `int main(void)`
-- Defined: `voicecloak/tests/test_vc_fft.c:76`
-- Depends on: `voicecloak/src/vc_fft.h`
-
-## voicecloak/tests/test_vc_level.c
-
-### rms (function) `static float rms(const float *samples, size_t count)`
-- Defined: `voicecloak/tests/test_vc_level.c:15`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### test_default_config_and_rms_target (function) `static void test_default_config_and_rms_target(void **state)`
-- Defined: `voicecloak/tests/test_vc_level.c:23`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### test_limiter_ceiling_and_agc_off (function) `static void test_limiter_ceiling_and_agc_off(void **state)`
-- Defined: `voicecloak/tests/test_vc_level.c:53`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### test_gain_changes_smoothly_between_periods (function) `static void test_gain_changes_smoothly_between_periods(void **state)`
-- Defined: `voicecloak/tests/test_vc_level.c:74`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### test_silence_stays_silent (function) `static void test_silence_stays_silent(void **state)`
-- Defined: `voicecloak/tests/test_vc_level.c:104`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### test_non_finite_block_fails_closed (function) `static void test_non_finite_block_fails_closed(void **state)`
-- Defined: `voicecloak/tests/test_vc_level.c:119`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### test_invalid_rate_and_excessive_input_fail_closed (function) `static void test_invalid_rate_and_excessive_input_fail_closed(void **state)`
-- Defined: `voicecloak/tests/test_vc_level.c:132`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### run_constant_level (function) `static void run_constant_level(float drive, float input, float *output)`
-- Defined: `voicecloak/tests/test_vc_level.c:148`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### test_saturation_curve_and_bypass (function) `static void test_saturation_curve_and_bypass(void **state)`
-- Defined: `voicecloak/tests/test_vc_level.c:160`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### test_saturation_raises_loudness_within_ceiling (function) `static void test_saturation_raises_loudness_within_ceiling(void **state)`
-- Defined: `voicecloak/tests/test_vc_level.c:175`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### test_invalid_saturation_drive_rejected (function) `static void test_invalid_saturation_drive_rejected(void **state)`
-- Defined: `voicecloak/tests/test_vc_level.c:212`
-- Depends on: `voicecloak/src/vc_level.h`
-
-### main (function) `int main(void)`
-- Defined: `voicecloak/tests/test_vc_level.c:228`
-- Depends on: `voicecloak/src/vc_level.h`
-
-## voicecloak/tests/test_vc_presets.c
-
-### rms (function) `static float rms(const float *samples, size_t count)`
-- Defined: `voicecloak/tests/test_vc_presets.c:18`
-- Depends on: `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_stream.h`
-
-### test_all_named_presets_resolve (function) `static void test_all_named_presets_resolve(void **state)`
-- Defined: `voicecloak/tests/test_vc_presets.c:26`
-- Depends on: `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_stream.h`
-
-### test_robot_preset_is_clear_robotization (function) `static void test_robot_preset_is_clear_robotization(void **state)`
-- Defined: `voicecloak/tests/test_vc_presets.c:58`
-- Depends on: `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_stream.h`
-
-### test_voice_profiles_are_distinct (function) `static void test_voice_profiles_are_distinct(void **state)`
-- Defined: `voicecloak/tests/test_vc_presets.c:81`
-- Depends on: `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_stream.h`
-
-### test_lookup_rejects_unknown_and_invalid_output (function) `static void test_lookup_rejects_unknown_and_invalid_output(void **state)`
-- Defined: `voicecloak/tests/test_vc_presets.c:93`
-- Depends on: `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_stream.h`
-
-### test_preset_pipeline_on_deterministic_noise (function) `static void test_preset_pipeline_on_deterministic_noise(void **state)`
-- Defined: `voicecloak/tests/test_vc_presets.c:100`
-- Depends on: `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_stream.h`
-
-### test_full_live_chain_tracks_rms_and_ceiling (function) `static void test_full_live_chain_tracks_rms_and_ceiling(void **state)`
-- Defined: `voicecloak/tests/test_vc_presets.c:150`
-- Depends on: `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_stream.h`
-
-### test_witness_loss_is_compensated_in_live_chain (function) `static void test_witness_loss_is_compensated_in_live_chain(void **state)`
-- Defined: `voicecloak/tests/test_vc_presets.c:196`
-- Depends on: `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_stream.h`
-
-### test_robot_live_chain_is_loud_and_bounded (function) `static void test_robot_live_chain_is_loud_and_bounded(void **state)`
-- Defined: `voicecloak/tests/test_vc_presets.c:250`
-- Depends on: `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_stream.h`
-
-### main (function) `int main(void)`
-- Defined: `voicecloak/tests/test_vc_presets.c:311`
-- Depends on: `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_stream.h`
-
-## voicecloak/tests/test_vc_stream.c
-
-### gen_sines (function) `static void gen_sines(float *buf, size_t n, uint32_t sr,
-                      const float *freqs...`
-- Defined: `voicecloak/tests/test_vc_stream.c:20`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### dominant_freq (function) `static float dominant_freq(const float *x, size_t n, uint32_t sr)`
-- Defined: `voicecloak/tests/test_vc_stream.c:32`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### rms (function) `static float rms(const float *x, size_t n)`
-- Defined: `voicecloak/tests/test_vc_stream.c:54`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### run_stream (function) `static void run_stream(vc_stream_t *st, const float *in, float *out, size_t n,
-                  ...`
-- Defined: `voicecloak/tests/test_vc_stream.c:63`
-- Doc: Stream a whole buffer through the engine in small, irregular chunks * to exercise arbitrary block sizes.
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_create_validation (function) `static void test_create_validation(void **state)`
-- Defined: `voicecloak/tests/test_vc_stream.c:74`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_transform_parameter_validation (function) `static void test_transform_parameter_validation(void **state)`
-- Defined: `voicecloak/tests/test_vc_stream.c:86`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_passthrough_identity (function) `static void test_passthrough_identity(void **state)`
-- Defined: `voicecloak/tests/test_vc_stream.c:112`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### normalized_autocorrelation (function) `static float normalized_autocorrelation(const float *x, size_t n,
-                               ...`
-- Defined: `voicecloak/tests/test_vc_stream.c:148`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_robotize_locks_pitch_to_frame_rate (function) `static void test_robotize_locks_pitch_to_frame_rate(void **state)`
-- Defined: `voicecloak/tests/test_vc_stream.c:161`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### scale_by_two (function) `static void scale_by_two(float *mag, float *phase, size_t nbins,
-                         uint32_...`
-- Defined: `voicecloak/tests/test_vc_stream.c:191`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### add_one (function) `static void add_one(float *mag, float *phase, size_t nbins,
-                    uint32_t sample_r...`
-- Defined: `voicecloak/tests/test_vc_stream.c:200`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_spectral_chain_runs_in_order (function) `static void test_spectral_chain_runs_in_order(void **state)`
-- Defined: `voicecloak/tests/test_vc_stream.c:209`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_spectral_chain_rejects_null_and_overflow (function) `static void test_spectral_chain_rejects_null_and_overflow(void **state)`
-- Defined: `voicecloak/tests/test_vc_stream.c:224`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### run_pitch (function) `static void run_pitch(float in_freq, float ratio, float expect_freq)`
-- Defined: `voicecloak/tests/test_vc_stream.c:240`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_pitch_up_octave (function) `static void test_pitch_up_octave(void **state)`
-- Defined: `voicecloak/tests/test_vc_stream.c:264`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_pitch_down_octave (function) `static void test_pitch_down_octave(void **state)`
-- Defined: `voicecloak/tests/test_vc_stream.c:269`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_bounded_output (function) `static void test_bounded_output(void **state)`
-- Defined: `voicecloak/tests/test_vc_stream.c:274`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### run_level (function) `static void run_level(float semis, float formant, float scramble,
-                      float max...`
-- Defined: `voicecloak/tests/test_vc_stream.c:303`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_level_preserved_fixed (function) `static void test_level_preserved_fixed(void **state)`
-- Defined: `voicecloak/tests/test_vc_stream.c:336`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### test_level_preserved_witness (function) `static void test_level_preserved_witness(void **state)`
-- Defined: `voicecloak/tests/test_vc_stream.c:341`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
-
-### main (function) `int main(void)`
-- Defined: `voicecloak/tests/test_vc_stream.c:382`
-- Depends on: `voicecloak/src/vc_fft.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
+Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`
+Imported by: `src/vsl_cli.c`, `src/vsl_dsp_transport.c`
+- `VSL_Close_Device` (function) `src/vsl_dsp_transport.h:26` `void VSL_Close_Device(vsl_device_handle handle);` -- @brief Release the MIDI interface and close the device. @param handle Handle from VSL_Init_Device.
+- `evidence` (function) `src/vsl_dsp_transport.h:37` `* evidence (blockers #2/#3);`
+- `VSL_Build_Packet` (function) `src/vsl_dsp_transport.h:39` `int VSL_Build_Packet(uint16_t dsp_param_id, uint16_t encoded_value, unsigned char *out);` -- @brief Fill a VSL_PACKET_SIZE buffer with a DSP parameter datagram. @param dsp_param_id 16-bit DSP parameter...
+- `VSL_Send_Parameter` (function) `src/vsl_dsp_transport.h:50` `int VSL_Send_Parameter(vsl_device_handle handle, uint16_t dsp_param_id, uint16_t encoded_value);` -- @brief Send a DSP parameter value to the device via USB bulk transfer. @param handle Handle from VSL_Init_Device....
+
+## tests/bdd_driver_gate.sh
+- `ok` (function) `tests/bdd_driver_gate.sh:29`
+- `bad` (function) `tests/bdd_driver_gate.sh:30`
+
+
+Next: [API_p2.md](API_p2.md)
