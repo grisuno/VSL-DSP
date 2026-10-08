@@ -1,0 +1,120 @@
+# Concepts
+
+Nouns map atomically to file sets (EXTRACTED); verbs aggregate structural edges (INFERRED).
+
+- `voicecloak` | files=37 | mentions=37 | `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_audio_config.h`, `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_dsp.h`
+- `vsl` | files=25 | mentions=187 | `audiobox_vsl.c`, `audiobox_vsl.h`, `install.sh`, `legacy/build-dkms.sh`, `legacy/test.sh`, `legacy/vsl_config.h`, `legacy/vsl_config.py`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.c`, `legacy/vsl_dsp_logic.h`
+- `brief` | files=20 | mentions=107 | `audiobox_vsl.h`, `avatar/avatar_logic.h`, `avatar/avatar_main.c`, `legacy/vsl_dsp_logic.c`, `legacy/vsl_dsp_logic.h`, `legacy/vsl_dsp_transport.c`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_audio_config.h`
+- `dsp` | files=20 | mentions=76 | `legacy/test.sh`, `legacy/vsl_config.h`, `legacy/vsl_config.py`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.c`, `legacy/vsl_dsp_logic.h`, `legacy/vsl_dsp_transport.c`, `legacy/vsl_dsp_transport.h`, `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
+- `create` | files=19 | mentions=89 | `legacy/build-dkms.sh`, `legacy/mixer_quirks.c`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.c`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.c`, `voicecloak/src/vc_eq.h`
+- `return` | files=19 | mentions=78 | `avatar/avatar_logic.h`, `avatar/avatar_main.c`, `legacy/mixer_quirks.c`, `legacy/vsl_dsp_logic.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`
+- `rate` | files=18 | mentions=47 | `avatar/avatar_config.h`, `avatar/avatar_logic.h`, `legacy/mixer_quirks.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_audio_config.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_rt.h`
+- `legacy` | files=17 | mentions=17 | `legacy/app.py`, `legacy/build-dkms.sh`, `legacy/main.c`, `legacy/mixer_quirks.c`, `legacy/test.sh`, `legacy/test_connection.c`, `legacy/vsl_config.h`, `legacy/vsl_config.py`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.c`
+- `float` | files=16 | mentions=52 | `avatar/avatar_logic.h`, `avatar/avatar_main.c`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.c`, `legacy/vsl_dsp_logic.h`, `legacy/vsl_protocol_analyzer.py`, `src/vsl_dsp_logic.h`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`
+- `destroy` | files=16 | mentions=18 | `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.c`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.c`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.c`, `voicecloak/src/vc_level.h`
+- `gain` | files=15 | mentions=49 | `legacy/mixer_quirks.c`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.c`, `legacy/vsl_dsp_logic.h`, `legacy/vsl_poc_main.py`, `legacy/vsl_protocol_analyzer.py`, `src/vsl_dsp_logic.c`, `src/vsl_dsp_logic.h`, `voicecloak/src/vc_audio_config.h`, `voicecloak/src/vc_denoise.h`
+- `max` | files=14 | mentions=44 | `legacy/mixer_quirks.c`, `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.c`, `legacy/vsl_protocol_analyzer.py`, `src/vsl_cli.c`, `src/vsl_dsp_logic.h`, `voicecloak/src/vc_audio_config.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.c`
+- `null` | files=13 | mentions=47 | `avatar/avatar_logic.h`, `avatar/avatar_main.c`, `legacy/mixer_quirks.c`, `src/vsl_dsp_transport.h`, `tests/test_audiobox_vsl.c`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_rt.h`
+- `success` | files=13 | mentions=23 | `audiobox_vsl.h`, `legacy/build-dkms.sh`, `src/vsl_dsp_transport.h`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_rt.h`
+- `cplusplus` | files=13 | mentions=13 | `audiobox_vsl.h`, `avatar/avatar_logic.h`, `src/vsl_config.h`, `src/vsl_dsp_transport.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`
+- `ifdef` | files=13 | mentions=13 | `audiobox_vsl.h`, `avatar/avatar_logic.h`, `src/vsl_config.h`, `src/vsl_dsp_transport.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`
+- `param` | files=12 | mentions=123 | `avatar/avatar_logic.h`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.h`, `legacy/vsl_transport.py`, `src/vsl_cli.c`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stft.h`
+- `invalid` | files=12 | mentions=30 | `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_effects.c`, `voicecloak/tests/test_vc_eq.c`
+- `packet` | files=12 | mentions=18 | `legacy/vsl_config.h`, `legacy/vsl_dsp_logic.c`, `legacy/vsl_dsp_transport.c`, `legacy/vsl_dsp_transport.h`, `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`, `legacy/vsl_protocol_analyzer.py`, `legacy/vsl_transport.py`, `src/vsl_config.h`, `src/vsl_dsp_logic.h`
+- `size` | files=11 | mentions=54 | `legacy/vsl_config.h`, `src/vsl_config.h`, `src/vsl_dsp_transport.h`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stft.h`, `voicecloak/src/vc_stream.h`
+- `int` | files=11 | mentions=40 | `legacy/mixer_quirks.c`, `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.c`, `legacy/vsl_dsp_logic.h`, `src/vsl_dsp_logic.c`, `src/vsl_dsp_logic.h`, `voicecloak/src/vc_crypto.c`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_level.h`
+- `samples` | files=11 | mentions=34 | `avatar/avatar_config.h`, `voicecloak/src/vc_effects.c`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_stft.h`, `voicecloak/src/vc_stream.c`, `voicecloak/src/vc_stream.h`, `voicecloak/src/vc_wav.h`, `voicecloak/tests/test_vc_denoise.c`
+- `out` | files=11 | mentions=31 | `legacy/mixer_quirks.c`, `src/vsl_config.h`, `src/vsl_dsp_transport.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stft.h`, `voicecloak/src/vc_stream.h`, `voicecloak/src/vc_wav.h`
+- `frequency` | files=11 | mentions=30 | `avatar/avatar_logic.h`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.c`, `legacy/vsl_dsp_logic.h`, `legacy/vsl_poc_main.py`, `legacy/vsl_protocol_analyzer.py`, `src/vsl_dsp_logic.c`, `src/vsl_dsp_logic.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`
+- `params` | files=11 | mentions=30 | `avatar/avatar_main.c`, `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.c`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.c`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_rt_cli.c`, `voicecloak/tests/test_vc_denoise.c`
+- `release` | files=11 | mentions=19 | `avatar/avatar_logic.h`, `src/vsl_dsp_transport.h`, `tests/test_audiobox_vsl.c`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stft.h`
+- `real` | files=11 | mentions=13 | `install.sh`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.c`, `legacy/vsl_dsp_logic.h`, `legacy/vsl_dsp_transport.c`, `legacy/vsl_hid_io.py`, `legacy/vsl_protocol_analyzer.py`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`
+- `spectral` | files=10 | mentions=36 | `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_dsp.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.c`, `voicecloak/src/vc_stream.h`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_stream.c`
+- `sample` | files=10 | mentions=34 | `voicecloak/src/vc_audio_config.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`, `voicecloak/src/vc_wav.c`, `voicecloak/src/vc_wav.h`
+- `rms` | files=10 | mentions=26 | `avatar/avatar_logic.c`, `avatar/avatar_logic.h`, `voicecloak/src/vc_audio_config.h`, `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_level.h`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_effects.c`, `voicecloak/tests/test_vc_level.c`, `voicecloak/tests/test_vc_presets.c`, `voicecloak/tests/test_vc_stream.c`
+- `state` | files=10 | mentions=26 | `avatar/avatar_logic.c`, `avatar/avatar_logic.h`, `legacy/mixer_quirks.c`, `tests/bdd_driver_gate.sh`, `voicecloak/src/vc_effects.c`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.h`
+- `error` | files=10 | mentions=22 | `legacy/build-dkms.sh`, `legacy/vsl_config.py`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`, `src/vsl_dsp_transport.h`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stft.h`, `voicecloak/src/vc_wav.h`
+- `process` | files=10 | mentions=21 | `voicecloak/src/vc_dsp.c`, `voicecloak/src/vc_effects.c`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.c`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.c`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_stream.c`, `voicecloak/src/vc_stream.h`, `voicecloak/tests/test_vc_denoise.c`
+- `output` | files=10 | mentions=19 | `avatar/avatar_logic.h`, `legacy/mixer_quirks.c`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stft.h`, `voicecloak/src/vc_stream.h`, `voicecloak/src/vc_wav.h`, `voicecloak/tests/test_vc_presets.c`, `voicecloak/tests/test_vc_stream.c`
+- `run` | files=10 | mentions=16 | `legacy/vsl_poc_main.py`, `tests/bdd_driver_gate.sh`, `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_eq.c`, `voicecloak/src/vc_stream.c`, `voicecloak/src/vc_stream.h`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_level.c`, `voicecloak/tests/test_vc_stream.c`
+- `time` | files=10 | mentions=12 | `install.sh`, `legacy/mixer_quirks.c`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_audio_config.h`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_level.c`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stft.h`, `voicecloak/src/vc_stream.h`
+- `value` | files=9 | mentions=38 | `avatar/avatar_logic.h`, `legacy/mixer_quirks.c`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.h`, `legacy/vsl_protocol_analyzer.py`, `legacy/vsl_transport.py`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`, `voicecloak/tests/test_vc_denoise.c`
+- `context` | files=9 | mentions=36 | `legacy/vsl_hid_io.py`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stft.h`, `voicecloak/src/vc_stream.h`
+- `config` | files=9 | mentions=24 | `avatar/avatar_config.h`, `legacy/mixer_quirks.c`, `legacy/vsl_config.h`, `legacy/vsl_config.py`, `src/vsl_config.h`, `voicecloak/src/vc_audio_config.h`, `voicecloak/src/vc_level.c`, `voicecloak/src/vc_level.h`, `voicecloak/tests/test_vc_level.c`
+- `frame` | files=9 | mentions=21 | `avatar/avatar_config.h`, `avatar/avatar_logic.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stft.h`, `voicecloak/src/vc_stream.c`, `voicecloak/src/vc_stream.h`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_stream.c`
+- `transform` | files=9 | mentions=17 | `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_denoise.c`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_presets.h`, `voicecloak/src/vc_rt.c`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stft.h`, `voicecloak/src/vc_stream.h`, `voicecloak/tests/test_vc_stream.c`
+- `print` | files=9 | mentions=16 | `legacy/build-dkms.sh`, `legacy/vsl_config.py`, `legacy/vsl_poc_main.py`, `src/vsl_cli.c`, `tests/bdd_driver_gate.sh`, `voicecloak/src/vc_alsa.h`, `voicecloak/src/vc_cli.c`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_rt_cli.c`
+- `level` | files=8 | mentions=54 | `avatar/avatar_logic.h`, `install.sh`, `voicecloak/src/vc_audio_config.h`, `voicecloak/src/vc_level.c`, `voicecloak/src/vc_level.h`, `voicecloak/src/vc_presets.h`, `voicecloak/tests/test_vc_level.c`, `voicecloak/tests/test_vc_stream.c`
+- `usb` | files=8 | mentions=42 | `audiobox_vsl.h`, `legacy/mixer_quirks.c`, `legacy/test.sh`, `legacy/vsl_protocol_analyzer.py`, `src/vsl_config.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`, `tests/bdd_driver_gate.sh`
+- `stream` | files=8 | mentions=35 | `tests/bdd_driver_gate.sh`, `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_crypto.h`, `voicecloak/src/vc_rt.h`, `voicecloak/src/vc_stream.c`, `voicecloak/src/vc_stream.h`, `voicecloak/tests/test_vc_denoise.c`, `voicecloak/tests/test_vc_stream.c`
+- `audio` | files=8 | mentions=25 | `audiobox_vsl.h`, `legacy/build-dkms.sh`, `legacy/mixer_quirks.c`, `legacy/test.sh`, `tests/bdd_driver_gate.sh`, `voicecloak/src/vc_audio_config.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_stream.h`
+- `encoded` | files=8 | mentions=23 | `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.c`, `legacy/vsl_dsp_logic.h`, `legacy/vsl_protocol_analyzer.py`, `legacy/vsl_transport.py`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`
+- `con` | files=8 | mentions=21 | `legacy/vsl_config.py`, `legacy/vsl_core.py`, `legacy/vsl_dsp_logic.h`, `legacy/vsl_dsp_transport.c`, `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`, `legacy/vsl_protocol_analyzer.py`, `legacy/vsl_transport.py`
+- `mono` | files=8 | mentions=21 | `avatar/avatar_logic.h`, `avatar/avatar_main.c`, `legacy/mixer_quirks.c`, `voicecloak/src/vc_alsa.c`, `voicecloak/src/vc_effects.h`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_stft.h`, `voicecloak/src/vc_wav.h`
+- `min` | files=8 | mentions=19 | `legacy/mixer_quirks.c`, `legacy/vsl_protocol_analyzer.py`, `src/vsl_dsp_logic.h`, `voicecloak/src/vc_audio_config.h`, `voicecloak/src/vc_denoise.h`, `voicecloak/src/vc_effects.c`, `voicecloak/src/vc_eq.h`, `voicecloak/src/vc_rt.h`
+
+## Verb Edges
+
+- `voicecloak` --depends_on--> `brief` (strength 1.00)
+- `voicecloak` --depends_on--> `return` (strength 0.91)
+- `voicecloak` --depends_on--> `success` (strength 0.85)
+- `voicecloak` --depends_on--> `sample` (strength 0.81)
+- `voicecloak` --depends_on--> `rate` (strength 0.79)
+- `voicecloak` --depends_on--> `cplusplus` (strength 0.77)
+- `voicecloak` --depends_on--> `create` (strength 0.77)
+- `voicecloak` --depends_on--> `destroy` (strength 0.77)
+- `voicecloak` --depends_on--> `ifdef` (strength 0.77)
+- `voicecloak` --depends_on--> `release` (strength 0.77)
+- `voicecloak` --depends_on--> `context` (strength 0.70)
+- `voicecloak` --depends_on--> `invalid` (strength 0.68)
+- `voicecloak` --depends_on--> `null` (strength 0.66)
+- `voicecloak` --depends_on--> `max` (strength 0.62)
+- `voicecloak` --depends_on--> `time` (strength 0.62)
+- `voicecloak` --depends_on--> `spectral` (strength 0.55)
+- `voicecloak` --depends_on--> `state` (strength 0.55)
+- `voicecloak` --depends_on--> `output` (strength 0.53)
+- `voicecloak` --depends_on--> `samples` (strength 0.51)
+- `voicecloak` --depends_on--> `transform` (strength 0.49)
+- `voicecloak` --depends_on--> `out` (strength 0.47)
+- `voicecloak` --depends_on--> `param` (strength 0.47)
+- `voicecloak` --depends_on--> `size` (strength 0.47)
+- `rate` --depends_on--> `brief` (strength 0.45)
+- `rate` --depends_on--> `voicecloak` (strength 0.45)
+- `rate` --depends_on--> `sample` (strength 0.43)
+- `voicecloak` --depends_on--> `process` (strength 0.43)
+- `return` --depends_on--> `brief` (strength 0.38)
+- `voicecloak` --depends_on--> `frame` (strength 0.38)
+- `voicecloak` --depends_on--> `min` (strength 0.38)
+- `voicecloak` --depends_on--> `params` (strength 0.38)
+- `voicecloak` --depends_on--> `real` (strength 0.38)
+- `voicecloak` --depends_on--> `stream` (strength 0.38)
+- `create` --depends_on--> `voicecloak` (strength 0.36)
+- `invalid` --depends_on--> `brief` (strength 0.36)
+- `invalid` --depends_on--> `sample` (strength 0.36)
+- `invalid` --depends_on--> `voicecloak` (strength 0.36)
+- `legacy` --depends_on--> `vsl` (strength 0.36)
+- `params` --depends_on--> `brief` (strength 0.36)
+- `params` --depends_on--> `voicecloak` (strength 0.36)
+- `rate` --depends_on--> `cplusplus` (strength 0.36)
+- `rate` --depends_on--> `ifdef` (strength 0.36)
+- `rate` --depends_on--> `max` (strength 0.36)
+- `voicecloak` --depends_on--> `error` (strength 0.36)
+- `vsl` --depends_on--> `dsp` (strength 0.36)
+- `dsp` --depends_on--> `vsl` (strength 0.34)
+- `invalid` --depends_on--> `rate` (strength 0.34)
+- `legacy` --depends_on--> `dsp` (strength 0.34)
+- `params` --depends_on--> `rate` (strength 0.34)
+- `rate` --depends_on--> `invalid` (strength 0.34)
+
+## Dialectic
+
+- Thesis: `audio` centralizes 8 files; Antithesis: `usb` pulls 8 files with 4 shared (Jaccard 0.33); Synthesis: should they merge, split by layer, or keep `bridges` explicit?
+- Thesis: `brief` centralizes 20 files; Antithesis: `context` pulls 9 files with 8 shared (Jaccard 0.38); Synthesis: should they merge, split by layer, or keep `bridges` explicit?
+- Thesis: `brief` centralizes 20 files; Antithesis: `cplusplus` pulls 13 files with 11 shared (Jaccard 0.50); Synthesis: should they merge, split by layer, or keep `bridges` explicit?
+- Thesis: `brief` centralizes 20 files; Antithesis: `float` pulls 16 files with 10 shared (Jaccard 0.38); Synthesis: should they merge, split by layer, or keep `depends_on` explicit?
+- Thesis: `brief` centralizes 20 files; Antithesis: `ifdef` pulls 13 files with 11 shared (Jaccard 0.50); Synthesis: should they merge, split by layer, or keep `bridges` explicit?
+- Thesis: `brief` centralizes 20 files; Antithesis: `max` pulls 14 files with 8 shared (Jaccard 0.31); Synthesis: should they merge, split by layer, or keep `bridges` explicit?
+- Thesis: `brief` centralizes 20 files; Antithesis: `null` pulls 13 files with 10 shared (Jaccard 0.43); Synthesis: should they merge, split by layer, or keep `bridges` explicit?
+- Thesis: `brief` centralizes 20 files; Antithesis: `output` pulls 10 files with 7 shared (Jaccard 0.30); Synthesis: should they merge, split by layer, or keep `bridges` explicit?
+- Thesis: `brief` centralizes 20 files; Antithesis: `param` pulls 12 files with 9 shared (Jaccard 0.39); Synthesis: should they merge, split by layer, or keep `bridges` explicit?
+- Thesis: `brief` centralizes 20 files; Antithesis: `rate` pulls 18 files with 10 shared (Jaccard 0.36); Synthesis: should they merge, split by layer, or keep `depends_on` explicit?
