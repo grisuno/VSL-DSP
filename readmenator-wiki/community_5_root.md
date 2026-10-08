@@ -1,19 +1,19 @@
 # root
 
-*Community 0 | 4 files | cohesion 1.00*
+*Community 5 | 4 files | cohesion 1.00*
 
 ## Definition
 
-This community groups 4 file(s) rooted at `root` with dominant language c (cohesion 1.00). Central symbols: `AUDIOBOX_DRIVER_DESC`, `AUDIOBOX_DRIVER_LIC`, `AUDIOBOX_DRIVER_NAME`, `AUDIOBOX_VENDOR_ID`, `AUDIOBOX_VSL_H`, `DECLARE_TLV_DB_RANGE`, `HDA_VERB_CMD`, `REALTEK_AUDIO_FUNCTION_GROUP`. Core file: `legacy/mixer_quirks.c` (309 symbols).
+This community groups 4 file(s) rooted at `root` with dominant language c (cohesion 1.00). Central symbols: `AUDIOBOX_DRIVER_DESC`, `AUDIOBOX_DRIVER_LIC`, `AUDIOBOX_DRIVER_NAME`, `AUDIOBOX_VENDOR_ID`, `AUDIOBOX_VERSION_STRING`, `AUDIOBOX_VSL_H`, `DECLARE_TLV_DB_RANGE`, `HDA_VERB_CMD`. Core file: `legacy/mixer_quirks.c` (309 symbols).
 
 ## Files
 
 | File | Language | Layer | Symbols | Doc |
 |------|----------|-------|---------|-----|
-| `audiobox_vsl.c` | c | infrastructure | 5 | yes |
-| `audiobox_vsl.h` | h | infrastructure | 7 | yes |
-| `legacy/mixer_quirks.c` | c | presentation | 309 | yes |
-| `tests/test_audiobox_vsl.c` | c | testing | 10 | yes |
+| `audiobox_vsl.c` | c | utility | 5 | yes |
+| `audiobox_vsl.h` | h | utility | 9 | yes |
+| `legacy/mixer_quirks.c` | c | utility | 309 | yes |
+| `tests/test_audiobox_vsl.c` | c | testing | 12 | yes |
 
 ## Key Symbols
 
@@ -21,14 +21,16 @@ This community groups 4 file(s) rooted at `root` with dominant language c (cohes
 - `AUDIOBOX_DRIVER_DESC` (macro, `audiobox_vsl.c:26`) `#define AUDIOBOX_DRIVER_DESC`
 - `AUDIOBOX_DRIVER_LIC` (macro, `audiobox_vsl.c:27`) `#define AUDIOBOX_DRIVER_LIC`
 - `audiobox_probe` (function, `audiobox_vsl.c:37`) `static int audiobox_probe(struct usb_interface *intf,`
-- `audiobox_disconnect` (function, `audiobox_vsl.c:59`) `static void audiobox_disconnect(struct usb_interface *intf)`
+- `audiobox_disconnect` (function, `audiobox_vsl.c:64`) `static void audiobox_disconnect(struct usb_interface *intf)`
 - `AUDIOBOX_VSL_H` (macro, `audiobox_vsl.h:21`) `#define AUDIOBOX_VSL_H`
 - `audiobox_model_pid_t` (variable, `audiobox_vsl.h:26`) `extern "C" { #endif /** * @brief PreSonus USB vendor ID shared by every AudioBox` - ifdef __cplusplus
 - `AUDIOBOX_VENDOR_ID` (macro, `audiobox_vsl.h:32`) `#define AUDIOBOX_VENDOR_ID`
-- `audiobox_model_info_t` (struct, `audiobox_vsl.h:53`) - @brief Pair of product ID and canonical human readable model name.  The product_name field is a poin
-- `audiobox_lookup_model` (function, `audiobox_vsl.h:96`) `static inline const audiobox_model_info_t * audiobox_lookup_model(uint16_t pid)`
-- `usb_mixer_interface` (struct, `audiobox_vsl.h:113`)
-- `snd_audiobox_vsl_init` (function, `audiobox_vsl.h:122`) `int snd_audiobox_vsl_init(struct usb_mixer_interface *mixer);` - @brief ALSA mixer init hook for AudioBox VSL devices.  Optional entry point used by the upstream sou
+- `AUDIOBOX_VERSION_STRING` (macro, `audiobox_vsl.h:55`) `#define AUDIOBOX_VERSION_STRING`
+- `audiobox_model_info_t` (struct, `audiobox_vsl.h:64`) - @brief Pair of product ID and canonical human readable model name.  The product_name field is a poin
+- `audiobox_lookup_model` (function, `audiobox_vsl.h:107`) `static inline const audiobox_model_info_t * audiobox_lookup_model(uint16_t pid)`
+- `audiobox_is_primary_interface` (function, `audiobox_vsl.h:131`) `static inline int audiobox_is_primary_interface(unsigned int ifnum)`
+- `usb_mixer_interface` (struct, `audiobox_vsl.h:141`)
+- `snd_audiobox_vsl_init` (function, `audiobox_vsl.h:150`) `int snd_audiobox_vsl_init(struct usb_mixer_interface *mixer);` - @brief ALSA mixer init hook for AudioBox VSL devices.  Optional entry point used by the upstream sou
 - `std_mono_table` (struct, `legacy/mixer_quirks.c:45`)
 - `snd_create_std_mono_ctl_offset` (function, `legacy/mixer_quirks.c:59`) `static int snd_create_std_mono_ctl_offset(struct usb_mixer_interface *mixer,` - This function allows for the creation of standard UAC controls. See the quirks for M-Audio FTUs or E
 - `snd_create_std_mono_ctl` (function, `legacy/mixer_quirks.c:113`) `static int snd_create_std_mono_ctl(struct usb_mixer_interface *mixer, 				   uns`
@@ -45,8 +47,6 @@ This community groups 4 file(s) rooted at `root` with dominant language c (cohes
 - `snd_audigy2nx_led_put` (function, `legacy/mixer_quirks.c:334`) `static int snd_audigy2nx_led_put(struct snd_kcontrol *kcontrol, 				 struct snd_`
 - `snd_audigy2nx_led_resume` (function, `legacy/mixer_quirks.c:353`) `static int snd_audigy2nx_led_resume(struct usb_mixer_elem_list *list)`
 - `snd_audigy2nx_controls_create` (function, `legacy/mixer_quirks.c:375`) `static int snd_audigy2nx_controls_create(struct usb_mixer_interface *mixer)`
-- `snd_audigy2nx_proc_read` (function, `legacy/mixer_quirks.c:407`) `static void snd_audigy2nx_proc_read(struct snd_info_entry *entry, 				    struct`
-- `sb_jack` (struct, `legacy/mixer_quirks.c:410`)
 
 ## Internal vs External Edges
 
@@ -55,10 +55,12 @@ This community groups 4 file(s) rooted at `root` with dominant language c (cohes
 
 ## Connections
 
-- [INFERRED] shares_context community 0 <-> 1 (strength 0.5): Inferred shared context (language c) with no import path between community 0 (root) and community 1 (avatar).
-- [INFERRED] shares_context community 0 <-> 2 (strength 0.5): Inferred shared context (language c) with no import path between community 0 (root) and community 2 (legacy).
-- [INFERRED] shares_context community 0 <-> 3 (strength 0.5): Inferred shared context (language c) with no import path between community 0 (root) and community 3 (src).
-- [INFERRED] shares_context community 0 <-> 4 (strength 0.5): Inferred shared context (language c) with no import path between community 0 (root) and community 4 (voicecloak/src).
+- [INFERRED] shares_context community 0 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 0 (voicecloak/src: vc_denoise) and community 5 (root).
+- [INFERRED] shares_context community 1 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 5 (root).
+- [INFERRED] shares_context community 2 <-> 5 (strength 0.5): Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 5 (root).
+- [INFERRED] shares_context community 3 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 3 (voicecloak/src: vc_crypto) and community 5 (root).
+- [INFERRED] shares_context community 4 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 4 (src) and community 5 (root).
+- [INFERRED] shares_context community 5 <-> 7 (strength 0.5): Inferred shared context (layer utility) with no import path between community 5 (root) and community 7 (orphans).
 
 ## Risks
 

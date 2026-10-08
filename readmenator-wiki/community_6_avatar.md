@@ -1,10 +1,10 @@
 # avatar
 
-*Community 1 | 5 files | cohesion 1.00*
+*Community 6 | 4 files | cohesion 1.00*
 
 ## Definition
 
-This community groups 5 file(s) rooted at `avatar` with dominant language c (cohesion 1.00). Central symbols: `AVATAR_CONFIG_H`, `AVATAR_DEFAULT_HF_THR`, `AVATAR_DEFAULT_HOLD_MS`, `AVATAR_DEFAULT_PCM`, `AVATAR_DEFAULT_RATE`, `AVATAR_DEFAULT_SILENCE_DB`, `AVATAR_DEFAULT_ZCR_THR`, `AVATAR_FALLBACK_PCM`. Core file: `avatar/avatar_config.h` (14 symbols).
+This community groups 4 file(s) rooted at `avatar` with dominant language h (cohesion 1.00). Central symbols: `AVATAR_CONFIG_H`, `AVATAR_DEFAULT_HF_THR`, `AVATAR_DEFAULT_HOLD_MS`, `AVATAR_DEFAULT_PCM`, `AVATAR_DEFAULT_RATE`, `AVATAR_DEFAULT_SILENCE_DB`, `AVATAR_DEFAULT_ZCR_THR`, `AVATAR_FALLBACK_PCM`. Core file: `avatar/avatar_config.h` (14 symbols).
 
 ## Files
 
@@ -14,7 +14,6 @@ This community groups 5 file(s) rooted at `avatar` with dominant language c (coh
 | `avatar/avatar_logic.c` | c | business_logic | 8 | no |
 | `avatar/avatar_logic.h` | h | business_logic | 12 | no |
 | `avatar/avatar_main.c` | c | utility | 7 | no |
-| `tests/test_avatar_logic.c` | c | testing | 12 | no |
 
 ## Key Symbols
 
@@ -51,15 +50,12 @@ This community groups 5 file(s) rooted at `avatar` with dominant language c (coh
 
 ## Internal vs External Edges
 
-- Internal resolved imports (EXTRACTED): 4
+- Internal resolved imports (EXTRACTED): 3
 - Cross-boundary resolved imports (EXTRACTED): 0
 
 ## Connections
 
-- [INFERRED] shares_context community 0 <-> 1 (strength 0.5): Inferred shared context (language c) with no import path between community 0 (root) and community 1 (avatar).
-- [INFERRED] shares_context community 1 <-> 2 (strength 0.5): Inferred shared context (language c) with no import path between community 1 (avatar) and community 2 (legacy).
-- [INFERRED] shares_context community 1 <-> 3 (strength 0.5): Inferred shared context (language c) with no import path between community 1 (avatar) and community 3 (src).
-- [INFERRED] shares_context community 1 <-> 4 (strength 0.5): Inferred shared context (language c) with no import path between community 1 (avatar) and community 4 (voicecloak/src).
+- No cross-community bridges recorded. This community is self-contained.
 
 ## Risks
 
@@ -67,7 +63,7 @@ This community groups 5 file(s) rooted at `avatar` with dominant language c (coh
 
 ## Open Questions
 
-- Why do 5 file(s) lack file-level docs (e.g. `avatar/avatar_config.h`)? What purpose do they serve?
+- Why do 4 file(s) lack file-level docs (e.g. `avatar/avatar_config.h`)? What purpose do they serve?
 - What would break if the most connected file in avatar changed?
 - Should avatar be split, given cohesion 1.00?
 
@@ -77,4 +73,3 @@ This community groups 5 file(s) rooted at `avatar` with dominant language c (coh
 - `avatar/avatar_logic.c`
 - `avatar/avatar_logic.h`
 - `avatar/avatar_main.c`
-- `tests/test_avatar_logic.c`

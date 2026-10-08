@@ -1,0 +1,150 @@
+# Architecture
+
+## Internal Dependencies
+
+- `audiobox_vsl.c` -> `audiobox_vsl.h`
+- `avatar/avatar_logic.c` -> `avatar/avatar_logic.h`
+- `avatar/avatar_main.c` -> `avatar/avatar_config.h`
+- `avatar/avatar_main.c` -> `avatar/avatar_logic.h`
+- `legacy/main.c` -> `legacy/vsl_dsp_logic.h`
+- `legacy/main.c` -> `legacy/vsl_dsp_transport.h`
+- `legacy/mixer_quirks.c` -> `audiobox_vsl.h`
+- `legacy/test_connection.c` -> `legacy/vsl_config.h`
+- `legacy/test_connection.c` -> `legacy/vsl_dsp_transport.h`
+- `legacy/vsl_core.py` -> `legacy/vsl_config.h`
+- `legacy/vsl_dsp_logic.c` -> `legacy/vsl_dsp_logic.h`
+- `legacy/vsl_dsp_transport.c` -> `legacy/vsl_config.h`
+- `legacy/vsl_dsp_transport.c` -> `legacy/vsl_dsp_transport.h`
+- `legacy/vsl_dsp_transport.h` -> `legacy/vsl_config.h`
+- `legacy/vsl_hid_io.py` -> `legacy/vsl_config.h`
+- `legacy/vsl_hid_io.py` -> `legacy/vsl_core.py`
+- `legacy/vsl_hid_io.py` -> `legacy/vsl_transport.py`
+- `legacy/vsl_poc_main.py` -> `legacy/vsl_config.h`
+- `legacy/vsl_poc_main.py` -> `legacy/vsl_core.py`
+- `legacy/vsl_poc_main.py` -> `legacy/vsl_transport.py`
+- `legacy/vsl_transport.py` -> `legacy/vsl_config.h`
+- `src/vsl_cli.c` -> `src/vsl_config.h`
+- `src/vsl_cli.c` -> `src/vsl_dsp_logic.h`
+- `src/vsl_cli.c` -> `src/vsl_dsp_transport.h`
+- `src/vsl_dsp_logic.c` -> `src/vsl_dsp_logic.h`
+- `src/vsl_dsp_transport.c` -> `src/vsl_dsp_transport.h`
+- `src/vsl_dsp_transport.h` -> `src/vsl_config.h`
+- `src/vsl_dsp_transport.h` -> `src/vsl_dsp_logic.h`
+- `tests/test_audiobox_vsl.c` -> `audiobox_vsl.h`
+- `voicecloak/src/vc_alsa.c` -> `voicecloak/src/vc_alsa.h`
+- `voicecloak/src/vc_alsa.c` -> `voicecloak/src/vc_stream.h`
+- `voicecloak/src/vc_alsa.h` -> `voicecloak/src/vc_effects.h`
+- `voicecloak/src/vc_alsa.h` -> `voicecloak/src/vc_eq.h`
+- `voicecloak/src/vc_alsa.h` -> `voicecloak/src/vc_level.h`
+- `voicecloak/src/vc_alsa.h` -> `voicecloak/src/vc_stream.h`
+- `voicecloak/src/vc_cli.c` -> `voicecloak/src/vc_crypto.h`
+- `voicecloak/src/vc_cli.c` -> `voicecloak/src/vc_dsp.h`
+- `voicecloak/src/vc_cli.c` -> `voicecloak/src/vc_wav.h`
+- `voicecloak/src/vc_crypto.c` -> `voicecloak/src/vc_crypto.h`
+- `voicecloak/src/vc_denoise.c` -> `voicecloak/src/vc_denoise.h`
+- `voicecloak/src/vc_denoise.h` -> `voicecloak/src/vc_audio_config.h`
+- `voicecloak/src/vc_dsp.c` -> `voicecloak/src/vc_crypto.h`
+- `voicecloak/src/vc_dsp.c` -> `voicecloak/src/vc_dsp.h`
+- `voicecloak/src/vc_dsp.c` -> `voicecloak/src/vc_stft.h`
+- `voicecloak/src/vc_effects.c` -> `voicecloak/src/vc_effects.h`
+- `voicecloak/src/vc_effects.h` -> `voicecloak/src/vc_audio_config.h`
+- `voicecloak/src/vc_eq.c` -> `voicecloak/src/vc_eq.h`
+- `voicecloak/src/vc_eq.h` -> `voicecloak/src/vc_audio_config.h`
+- `voicecloak/src/vc_fft.c` -> `voicecloak/src/vc_fft.h`
+- `voicecloak/src/vc_level.c` -> `voicecloak/src/vc_level.h`
+- `voicecloak/src/vc_level.h` -> `voicecloak/src/vc_audio_config.h`
+- `voicecloak/src/vc_presets.c` -> `voicecloak/src/vc_presets.h`
+- `voicecloak/src/vc_presets.h` -> `voicecloak/src/vc_effects.h`
+- `voicecloak/src/vc_presets.h` -> `voicecloak/src/vc_eq.h`
+- `voicecloak/src/vc_presets.h` -> `voicecloak/src/vc_rt.h`
+- `voicecloak/src/vc_rt.c` -> `voicecloak/src/vc_rt.h`
+- `voicecloak/src/vc_rt_cli.c` -> `voicecloak/src/vc_alsa.h`
+- `voicecloak/src/vc_rt_cli.c` -> `voicecloak/src/vc_crypto.h`
+- `voicecloak/src/vc_rt_cli.c` -> `voicecloak/src/vc_denoise.h`
+- `voicecloak/src/vc_rt_cli.c` -> `voicecloak/src/vc_fft.h`
+- `voicecloak/src/vc_rt_cli.c` -> `voicecloak/src/vc_presets.h`
+- `voicecloak/src/vc_rt_cli.c` -> `voicecloak/src/vc_rt.h`
+- `voicecloak/src/vc_rt_cli.c` -> `voicecloak/src/vc_stream.h`
+- `voicecloak/src/vc_rt_seed.c` -> `voicecloak/src/vc_crypto.h`
+- `voicecloak/src/vc_rt_seed.c` -> `voicecloak/src/vc_rt.h`
+- `voicecloak/src/vc_stft.c` -> `voicecloak/src/vc_fft.h`
+- `voicecloak/src/vc_stft.c` -> `voicecloak/src/vc_stft.h`
+- `voicecloak/src/vc_stream.c` -> `voicecloak/src/vc_fft.h`
+- `voicecloak/src/vc_stream.c` -> `voicecloak/src/vc_stream.h`
+- `voicecloak/src/vc_wav.c` -> `voicecloak/src/vc_wav.h`
+- `voicecloak/tests/test_vc_denoise.c` -> `voicecloak/src/vc_denoise.h`
+- `voicecloak/tests/test_vc_denoise.c` -> `voicecloak/src/vc_rt.h`
+- `voicecloak/tests/test_vc_denoise.c` -> `voicecloak/src/vc_stream.h`
+- `voicecloak/tests/test_vc_effects.c` -> `voicecloak/src/vc_effects.h`
+- `voicecloak/tests/test_vc_eq.c` -> `voicecloak/src/vc_eq.h`
+- `voicecloak/tests/test_vc_fft.c` -> `voicecloak/src/vc_fft.h`
+- `voicecloak/tests/test_vc_level.c` -> `voicecloak/src/vc_level.h`
+- `voicecloak/tests/test_vc_presets.c` -> `voicecloak/src/vc_eq.h`
+- `voicecloak/tests/test_vc_presets.c` -> `voicecloak/src/vc_level.h`
+- `voicecloak/tests/test_vc_presets.c` -> `voicecloak/src/vc_presets.h`
+- `voicecloak/tests/test_vc_presets.c` -> `voicecloak/src/vc_stream.h`
+- `voicecloak/tests/test_vc_stream.c` -> `voicecloak/src/vc_fft.h`
+- `voicecloak/tests/test_vc_stream.c` -> `voicecloak/src/vc_rt.h`
+- `voicecloak/tests/test_vc_stream.c` -> `voicecloak/src/vc_stream.h`
+
+## External Imports
+
+- `audiobox_vsl.c` -> linux/module.h, linux/printk.h, linux/usb.h
+- `audiobox_vsl.h` -> linux/types.h, linux/usb.h, sound/core.h
+- `avatar/avatar_logic.c` -> math.h
+- `avatar/avatar_logic.h` -> stddef.h, stdint.h
+- `avatar/avatar_main.c` -> SDL.h, SDL_image.h, alsa/asoundlib.h, getopt.h, signal.h, stdint.h, stdio.h, stdlib.h, string.h
+- `legacy/main.c` -> stdio.h
+- `legacy/mixer_quirks.c` -> fcp.h, helper.h, linux/bitfield.h, linux/hid.h, linux/init.h, linux/input.h, linux/math64.h, linux/slab.h, linux/usb.h, linux/usb/audio.h, mixer.h, mixer_s1810c.h, mixer_scarlett.h, mixer_scarlett2.h, mixer_us16x08.h, sound/asoundef.h, sound/control.h, sound/core.h, sound/hda_verbs.h, sound/hwdep.h, sound/info.h, sound/tlv.h, usbaudio.h
+- `legacy/test_connection.c` -> stdio.h
+- `legacy/vsl_config.h` -> stdint.h
+- `legacy/vsl_config.py` -> sys, typing
+- `legacy/vsl_core.py` -> math, typing
+- `legacy/vsl_dsp_logic.h` -> float.h, math.h, stdint.h
+- `legacy/vsl_dsp_transport.c` -> hidapi/hidapi.h, math.h, stdio.h, stdlib.h, string.h
+- `legacy/vsl_dsp_transport.h` -> hidapi/hidapi.h, stddef.h, stdint.h
+- `legacy/vsl_hid_io.py` -> hid, sys, traceback, typing
+- `legacy/vsl_poc_main.py` -> sys, traceback, typing
+- `legacy/vsl_protocol_analyzer.py` -> json, math, scapy.all, sys, typing
+- `legacy/vsl_transport.py` -> typing
+- `src/vsl_cli.c` -> math.h, stdint.h, stdio.h, stdlib.h, string.h
+- `src/vsl_config.h` -> stddef.h, stdint.h
+- `src/vsl_dsp_logic.h` -> float.h, math.h, stdint.h
+- `src/vsl_dsp_transport.c` -> libusb-1.0/libusb.h, stdio.h, stdlib.h, string.h
+- `src/vsl_dsp_transport.h` -> stdint.h
+- `tests/test_audiobox_vsl.c` -> cmocka.h, setjmp.h, stdarg.h, stddef.h, stdint.h
+- `voicecloak/src/vc_alsa.c` -> alloca.h, alsa/asoundlib.h, math.h, stdio.h, stdlib.h, string.h
+- `voicecloak/src/vc_alsa.h` -> signal.h, stddef.h, stdint.h
+- `voicecloak/src/vc_cli.c` -> stdio.h, stdlib.h, string.h, time.h
+- `voicecloak/src/vc_crypto.c` -> openssl/err.h, openssl/evp.h, openssl/hmac.h, openssl/pem.h, openssl/rand.h, openssl/rsa.h, stdio.h, stdlib.h, string.h
+- `voicecloak/src/vc_crypto.h` -> stddef.h, stdint.h
+- `voicecloak/src/vc_denoise.c` -> errno.h, math.h, stdio.h, stdlib.h, string.h
+- `voicecloak/src/vc_denoise.h` -> stddef.h, stdint.h
+- `voicecloak/src/vc_dsp.c` -> float.h, math.h, stdlib.h, string.h
+- `voicecloak/src/vc_dsp.h` -> stddef.h, stdint.h
+- `voicecloak/src/vc_effects.c` -> math.h, stdlib.h, string.h
+- `voicecloak/src/vc_effects.h` -> stddef.h, stdint.h
+- `voicecloak/src/vc_eq.c` -> math.h, stdlib.h, string.h
+- `voicecloak/src/vc_eq.h` -> stddef.h, stdint.h
+- `voicecloak/src/vc_fft.c` -> math.h, stdlib.h, string.h
+- `voicecloak/src/vc_fft.h` -> stddef.h
+- `voicecloak/src/vc_level.c` -> math.h, stdlib.h
+- `voicecloak/src/vc_level.h` -> stddef.h, stdint.h
+- `voicecloak/src/vc_presets.c` -> string.h
+- `voicecloak/src/vc_rt.c` -> math.h, stdlib.h, string.h
+- `voicecloak/src/vc_rt.h` -> stddef.h, stdint.h
+- `voicecloak/src/vc_rt_cli.c` -> errno.h, math.h, signal.h, stdio.h, stdlib.h, string.h
+- `voicecloak/src/vc_rt_seed.c` -> math.h
+- `voicecloak/src/vc_stft.c` -> math.h, stdlib.h, string.h
+- `voicecloak/src/vc_stft.h` -> stddef.h, stdint.h
+- `voicecloak/src/vc_stream.c` -> math.h, stdlib.h, string.h
+- `voicecloak/src/vc_stream.h` -> stddef.h, stdint.h
+- `voicecloak/src/vc_wav.c` -> math.h, stdint.h, stdio.h, stdlib.h, string.h
+- `voicecloak/src/vc_wav.h` -> stddef.h, stdint.h
+- `voicecloak/tests/test_vc_denoise.c` -> cmocka.h, math.h, setjmp.h, stdarg.h, stddef.h, stdint.h, stdio.h, stdlib.h, string.h, unistd.h
+- `voicecloak/tests/test_vc_effects.c` -> cmocka.h, math.h, setjmp.h, stdarg.h, stddef.h, stdint.h
+- `voicecloak/tests/test_vc_eq.c` -> cmocka.h, math.h, setjmp.h, stdarg.h, stddef.h, stdint.h, stdlib.h
+- `voicecloak/tests/test_vc_fft.c` -> cmocka.h, math.h, setjmp.h, stdarg.h, stddef.h, stdlib.h, string.h
+- `voicecloak/tests/test_vc_level.c` -> cmocka.h, math.h, setjmp.h, stdarg.h, stddef.h, stdint.h, stdlib.h
+- `voicecloak/tests/test_vc_presets.c` -> cmocka.h, math.h, setjmp.h, stdarg.h, stddef.h, stdlib.h, string.h
+- `voicecloak/tests/test_vc_stream.c` -> cmocka.h, math.h, setjmp.h, stdarg.h, stddef.h, stdlib.h, string.h
