@@ -76,6 +76,72 @@ void VSL_Close_Device(vsl_device_handle handle)
     free(dev);
 }
 
+int VSL_Probe_Device(uint16_t vendor_id,
+                     uint16_t product_id,
+                     char *out,
+                     size_t out_len)
+{
+    libusb_device_handle *handle;
+    libusb_device *device;
+    struct libusb_device_descriptor desc;
+    unsigned int bus_number;
+    unsigned int device_address;
+    unsigned char manufacturer[64];
+    unsigned char product[64];
+    unsigned char serial[32];
+    int written;
+
+    if (!out || out_len == 0) return -1;
+    out[0] = '\0';
+
+    if (libusb_init(NULL) != 0) return -1;
+
+    handle = libusb_open_device_with_vid_pid(NULL, vendor_id, product_id);
+    if (!handle) {
+        libusb_exit(NULL);
+        return -1;
+    }
+    device = libusb_get_device(handle);
+
+    if (libusb_get_device_descriptor(device, &desc) != 0) {
+        libusb_close(handle);
+        libusb_exit(NULL);
+        return -1;
+    }
+
+    manufacturer[0] = '\0';
+    product[0] = '\0';
+    serial[0] = '\0';
+    if (libusb_get_string_descriptor_ascii(handle, desc.iManufacturer,
+            manufacturer, (int)sizeof(manufacturer)) < 0) {
+        manufacturer[0] = '\0';
+    }
+    if (libusb_get_string_descriptor_ascii(handle, desc.iProduct,
+            product, (int)sizeof(product)) < 0) {
+        product[0] = '\0';
+    }
+    if (libusb_get_string_descriptor_ascii(handle, desc.iSerialNumber,
+            serial, (int)sizeof(serial)) < 0) {
+        serial[0] = '\0';
+    }
+
+    bus_number = (unsigned int)libusb_get_bus_number(device);
+    device_address = (unsigned int)libusb_get_device_address(device);
+    libusb_close(handle);
+    libusb_exit(NULL);
+
+    written = snprintf(out, out_len,
+                       "manufacturer=%s product=%s serial=%s bus=%u addr=%u",
+                       (const char *)manufacturer, (const char *)product,
+                       (const char *)serial, bus_number, device_address);
+    if (written < 0 || (size_t)written >= out_len) {
+        out[0] = '\0';
+        return -1;
+    }
+
+    return 0;
+}
+
 int VSL_Build_Packet(uint16_t dsp_param_id,
                      uint16_t encoded_value,
                      unsigned char *out)

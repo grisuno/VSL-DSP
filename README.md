@@ -390,3 +390,10 @@ AI agents: Read `readmenator-wiki/index.md` first for the big picture, then `rea
 Developers: Read `KNOWLEDGE_BASE.md` for full architecture reference.
 <!-- /readmenator-kb-link -->
 
+<!-- deploynator-footer -->
+
+---
+
+Deployed with [deploynator](https://github.com/grisuno/deploynator)
+
+<!-- /deploynator-footer -->

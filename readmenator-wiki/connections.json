@@ -2,24 +2,24 @@
   {
     "community_a": 0,
     "community_b": 1,
-    "connection_type": "shares_context",
-    "explanation": "Inferred shared context (language c) with no import path between community 0 (root) and community 1 (avatar).",
-    "strength": 0.5,
-    "confidence": "INFERRED"
+    "connection_type": "depends_on",
+    "explanation": "Extracted import edge crosses communities: voicecloak/src/vc_alsa.h imports voicecloak/src/vc_effects.h.",
+    "strength": 0.9,
+    "confidence": "EXTRACTED"
+  },
+  {
+    "community_a": 0,
+    "community_b": 3,
+    "connection_type": "depends_on",
+    "explanation": "Extracted import edge crosses communities: voicecloak/src/vc_rt_cli.c imports voicecloak/src/vc_crypto.h.",
+    "strength": 0.9,
+    "confidence": "EXTRACTED"
   },
   {
     "community_a": 0,
     "community_b": 2,
     "connection_type": "shares_context",
-    "explanation": "Inferred shared context (language c) with no import path between community 0 (root) and community 2 (legacy).",
-    "strength": 0.5,
-    "confidence": "INFERRED"
-  },
-  {
-    "community_a": 0,
-    "community_b": 3,
-    "connection_type": "shares_context",
-    "explanation": "Inferred shared context (language c) with no import path between community 0 (root) and community 3 (src).",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 0 (voicecloak/src: vc_denoise) and community 2 (legacy).",
     "strength": 0.5,
     "confidence": "INFERRED"
   },
@@ -27,7 +27,23 @@
     "community_a": 0,
     "community_b": 4,
     "connection_type": "shares_context",
-    "explanation": "Inferred shared context (language c) with no import path between community 0 (root) and community 4 (voicecloak/src).",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 0 (voicecloak/src: vc_denoise) and community 4 (src).",
+    "strength": 0.5,
+    "confidence": "INFERRED"
+  },
+  {
+    "community_a": 0,
+    "community_b": 5,
+    "connection_type": "shares_context",
+    "explanation": "Inferred shared context (language c and layer utility) with no import path between community 0 (voicecloak/src: vc_denoise) and community 5 (root).",
+    "strength": 0.5,
+    "confidence": "INFERRED"
+  },
+  {
+    "community_a": 0,
+    "community_b": 7,
+    "connection_type": "shares_context",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 0 (voicecloak/src: vc_denoise) and community 7 (orphans).",
     "strength": 0.5,
     "confidence": "INFERRED"
   },
@@ -35,15 +51,7 @@
     "community_a": 1,
     "community_b": 2,
     "connection_type": "shares_context",
-    "explanation": "Inferred shared context (language c) with no import path between community 1 (avatar) and community 2 (legacy).",
-    "strength": 0.5,
-    "confidence": "INFERRED"
-  },
-  {
-    "community_a": 1,
-    "community_b": 3,
-    "connection_type": "shares_context",
-    "explanation": "Inferred shared context (language c) with no import path between community 1 (avatar) and community 3 (src).",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 2 (legacy).",
     "strength": 0.5,
     "confidence": "INFERRED"
   },
@@ -51,7 +59,23 @@
     "community_a": 1,
     "community_b": 4,
     "connection_type": "shares_context",
-    "explanation": "Inferred shared context (language c) with no import path between community 1 (avatar) and community 4 (voicecloak/src).",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 4 (src).",
+    "strength": 0.5,
+    "confidence": "INFERRED"
+  },
+  {
+    "community_a": 1,
+    "community_b": 5,
+    "connection_type": "shares_context",
+    "explanation": "Inferred shared context (language c and layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 5 (root).",
+    "strength": 0.5,
+    "confidence": "INFERRED"
+  },
+  {
+    "community_a": 1,
+    "community_b": 7,
+    "connection_type": "shares_context",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 7 (orphans).",
     "strength": 0.5,
     "confidence": "INFERRED"
   },
@@ -59,7 +83,7 @@
     "community_a": 2,
     "community_b": 3,
     "connection_type": "shares_context",
-    "explanation": "Inferred shared context (language c and layer utility) with no import path between community 2 (legacy) and community 3 (src).",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 3 (voicecloak/src: vc_crypto).",
     "strength": 0.5,
     "confidence": "INFERRED"
   },
@@ -67,7 +91,7 @@
     "community_a": 2,
     "community_b": 4,
     "connection_type": "shares_context",
-    "explanation": "Inferred shared context (language c and layer utility) with no import path between community 2 (legacy) and community 4 (voicecloak/src).",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 4 (src).",
     "strength": 0.5,
     "confidence": "INFERRED"
   },
@@ -75,7 +99,15 @@
     "community_a": 2,
     "community_b": 5,
     "connection_type": "shares_context",
-    "explanation": "Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 5 (orphans).",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 5 (root).",
+    "strength": 0.5,
+    "confidence": "INFERRED"
+  },
+  {
+    "community_a": 2,
+    "community_b": 7,
+    "connection_type": "shares_context",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 7 (orphans).",
     "strength": 0.5,
     "confidence": "INFERRED"
   },
@@ -83,7 +115,7 @@
     "community_a": 3,
     "community_b": 4,
     "connection_type": "shares_context",
-    "explanation": "Inferred shared context (language c and layer utility) with no import path between community 3 (src) and community 4 (voicecloak/src).",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 3 (voicecloak/src: vc_crypto) and community 4 (src).",
     "strength": 0.5,
     "confidence": "INFERRED"
   },
@@ -91,7 +123,15 @@
     "community_a": 3,
     "community_b": 5,
     "connection_type": "shares_context",
-    "explanation": "Inferred shared context (layer utility) with no import path between community 3 (src) and community 5 (orphans).",
+    "explanation": "Inferred shared context (language c and layer utility) with no import path between community 3 (voicecloak/src: vc_crypto) and community 5 (root).",
+    "strength": 0.5,
+    "confidence": "INFERRED"
+  },
+  {
+    "community_a": 3,
+    "community_b": 7,
+    "connection_type": "shares_context",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 3 (voicecloak/src: vc_crypto) and community 7 (orphans).",
     "strength": 0.5,
     "confidence": "INFERRED"
   },
@@ -99,7 +139,23 @@
     "community_a": 4,
     "community_b": 5,
     "connection_type": "shares_context",
-    "explanation": "Inferred shared context (layer utility) with no import path between community 4 (voicecloak/src) and community 5 (orphans).",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 4 (src) and community 5 (root).",
+    "strength": 0.5,
+    "confidence": "INFERRED"
+  },
+  {
+    "community_a": 4,
+    "community_b": 6,
+    "connection_type": "shares_context",
+    "explanation": "Inferred shared context (language h) with no import path between community 4 (src) and community 6 (avatar).",
+    "strength": 0.5,
+    "confidence": "INFERRED"
+  },
+  {
+    "community_a": 4,
+    "community_b": 7,
+    "connection_type": "shares_context",
+    "explanation": "Inferred shared context (layer utility) with no import path between community 4 (src) and community 7 (orphans).",
     "strength": 0.5,
     "confidence": "INFERRED"
   }

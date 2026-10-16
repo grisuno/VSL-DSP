@@ -147,7 +147,23 @@ uninstall:
 	rm -f $(INSTALL)/audiobox_vsl.ko
 	$(DEPMOD) -a $(KVER) || true
 
-modprobe:
+modprobe: modules
+	@inst_path=$$(modinfo -n audiobox_vsl 2>/dev/null || true); \
+	if [ -z "$$inst_path" ]; then \
+		echo "note: audiobox_vsl is not installed; run 'sudo make install' first"; \
+	else \
+		tmp=$$(mktemp); \
+		case "$$inst_path" in \
+			*.xz) unxz -c "$$inst_path" > "$$tmp" ;; \
+			*) cp "$$inst_path" "$$tmp" ;; \
+		esac; \
+		if ! cmp -s audiobox_vsl.ko "$$tmp"; then \
+			rm -f "$$tmp"; \
+			echo "error: installed module ($$inst_path) differs from ./audiobox_vsl.ko; run 'sudo make install' first"; \
+			exit 1; \
+		fi; \
+		rm -f "$$tmp"; \
+	fi
 	$(MODPROBE) audiobox_vsl
 
 bdd-driver: modules

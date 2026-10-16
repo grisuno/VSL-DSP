@@ -66,6 +66,32 @@ static void test_send_null_handle_fails_closed(void **state)
     VSL_Close_Device(NULL);
 }
 
+static void test_probe_null_buffer_fails_closed(void **state)
+{
+    (void)state;
+
+    assert_int_not_equal(VSL_Probe_Device(0x194FU, 0x0101U, NULL, 256), 0);
+}
+
+static void test_probe_zero_length_fails_closed(void **state)
+{
+    (void)state;
+    char buf[64];
+
+    memset(buf, 0xAA, sizeof(buf));
+    assert_int_not_equal(VSL_Probe_Device(0x194FU, 0x0101U, buf, 0), 0);
+}
+
+static void test_probe_absent_device_fails_closed(void **state)
+{
+    (void)state;
+    char buf[256];
+
+    memset(buf, 0, sizeof(buf));
+    assert_int_not_equal(VSL_Probe_Device(0x1234U, 0x5678U, buf, sizeof(buf)), 0);
+    assert_int_equal(buf[0], '\0');
+}
+
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -74,6 +100,9 @@ int main(void)
         cmocka_unit_test(test_build_packet_max_values),
         cmocka_unit_test(test_build_packet_null_fails_closed),
         cmocka_unit_test(test_send_null_handle_fails_closed),
+        cmocka_unit_test(test_probe_null_buffer_fails_closed),
+        cmocka_unit_test(test_probe_zero_length_fails_closed),
+        cmocka_unit_test(test_probe_absent_device_fails_closed),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

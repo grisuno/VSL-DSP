@@ -75,6 +75,7 @@ static void print_usage(FILE *fp, const char *prog)
         "  freq <ch> <hz>       Set HPF frequency (Hz)\n"
         "  raw  <id> <val>      Send raw param ID (hex) with linear value\n"
         "  list                 List known parameters\n"
+        "  probe                Show USB identification strings (read-only)\n"
         "\n"
         "Examples:\n"
         "  %s gain 1 0.75               Gain ch1 at 75%%\n"
@@ -129,6 +130,23 @@ find_entry_by_name(const char *name)
         if (strcmp(p->name, name) == 0) return p;
     }
     return NULL;
+}
+
+static int do_probe(uint16_t product_id)
+{
+    char summary[256];
+
+    if (VSL_Probe_Device(VSL_VENDOR_ID, product_id,
+                         summary, sizeof(summary)) != 0) {
+        fprintf(stderr, "Error: Cannot open device %04x:%04x.\n",
+                VSL_VENDOR_ID, product_id);
+        fprintf(stderr, "Check: is the device connected?\n");
+        fprintf(stderr, "Check: udev rules or run as root.\n");
+        return 1;
+    }
+
+    printf("Device: %04x:%04x\n  %s\n", VSL_VENDOR_ID, product_id, summary);
+    return 0;
 }
 
 static int do_send(uint16_t product_id,
@@ -267,6 +285,10 @@ int main(int argc, char *argv[])
     if (strcmp(argv[i], "list") == 0 || strcmp(argv[i], "params") == 0) {
         print_list(product_id);
         return 0;
+    }
+
+    if (strcmp(argv[i], "probe") == 0) {
+        return do_probe(product_id);
     }
 
     if (strcmp(argv[i], "gain") == 0) {

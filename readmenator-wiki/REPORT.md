@@ -1,6 +1,6 @@
 # Audit Report
 
-*Project: VSL-DSP | 2026-10-04 | offline, deterministic*
+*Project: VSL-DSP | 2026-10-16 | offline, deterministic*
 
 ## Confidence Trail
 
@@ -8,17 +8,17 @@ Every edge is tagged. Extracted means parsed from source; inferred means derived
 
 | Confidence | Count | Meaning |
 |------------|-------|---------|
-| EXTRACTED | 88 | Resolved import edges parsed from source |
-| EXTRACTED | 330 | Raw import statements (may include externals) |
-| INFERRED | 0 | Surprising cross-community bridges |
+| EXTRACTED | 87 | Resolved import edges parsed from source |
+| EXTRACTED | 316 | Raw import statements (may include externals) |
+| INFERRED | 5 | Surprising cross-community bridges |
 | AMBIGUOUS | 0 | No uncertain edges are emitted by the static scanner |
 
 ## Coverage
 
-- Files: 70, communities: 6
-- File doc coverage: 21/70
-- Orphans (no docs at any level): 26
-- Layers detected: 6
+- Files: 69, communities: 8
+- File doc coverage: 22/69
+- Orphans (no docs at any level): 24
+- Layers detected: 5
 - Security findings: 0
 - Large files (>256KB, maybe generated): 0
 
@@ -31,7 +31,7 @@ Every edge is tagged. Extracted means parsed from source; inferred means derived
 
 ## Token Benchmark
 
-- Wiki index plus community pages estimate: ~14090 tokens (chars/4).
+- Wiki index plus community pages estimate: ~14622 tokens (chars/4).
 - Full re-read of every source file would cost strictly more on any non-trivial project; this wiki is the cheaper entry point.
 - Generation cost: $0, offline, no network calls.
 

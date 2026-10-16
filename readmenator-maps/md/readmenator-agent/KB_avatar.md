@@ -38,6 +38,7 @@
 - Depends on: `avatar/avatar_logic.h`
 
 ## avatar/avatar_logic.h
+- Doc: avatar_cfg_t: @brief Tunable classifier thresholds.
 - Layer: business_logic
 - Language: h
 - Symbols:
@@ -51,11 +52,12 @@
   - `avatar_smooth_init` (function, line 85) `void avatar_smooth_init(avatar_smooth_t *s, avatar_state_t init, uint64_t now_ms, unsigned int hold_ms);`
   - `avatar_smooth` (function, line 95) `avatar_state_t avatar_smooth(avatar_smooth_t *s, avatar_state_t inst, uint64_t now_ms);`
   - `avatar_state_name` (function, line 103) `const char *avatar_state_name(avatar_state_t st);`
-  - `avatar_state_t` (variable, line 8) `extern "C" { #endif /** * @brief Visible mouth state. */ typedef enum { AVATAR_CLOSED = 0, AVATAR_OPEN = 1, AVATAR_SIBILANT = 2 } avatar_state_t;`
+  - `avatar_state_t` (variable, line 8) `extern "C" { #endif /** * @brief Visible mouth state. */ typedef enum { AVATAR_CLOSED = 0, AVATAR_OPEN = 1...`
   - `AVATAR_LOGIC_H` (macro, line 2) `#define AVATAR_LOGIC_H`
-- Imported by: `avatar/avatar_logic.c`, `avatar/avatar_main.c`, `tests/test_avatar_logic.c`
+- Imported by: `avatar/avatar_logic.c`, `avatar/avatar_main.c`
 
 ## avatar/avatar_main.c
+- Doc: to_mono_f32: if (snd_pcm_hw_params(pcm, hw) < 0) { fprintf(stderr, "avatar: '%s' cannot apply hw...
 - Layer: utility
 - Language: c
 - Symbols:

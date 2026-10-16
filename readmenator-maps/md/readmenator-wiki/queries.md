@@ -16,11 +16,11 @@ Log each answered question here so the wiki compounds. Format: question, answer,
 
 - Status: unanswered
 
-### Q: How are the 4 files in 'root' related to each other?
+### Q: How are the 14 files in 'voicecloak/src: vc_denoise' related to each other?
 
 - Status: unanswered
 
-### Q: What is usb_mixer_interface in audiobox_vsl.h and how is it used?
+### Q: Why are vc_effects.c and vc_wav.c connected through 7 hops across 3 communities?
 
 - Status: unanswered
 

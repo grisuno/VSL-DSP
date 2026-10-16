@@ -26,6 +26,23 @@ vsl_device_handle VSL_Init_Device(uint16_t vendor_id, uint16_t product_id);
 void VSL_Close_Device(vsl_device_handle handle);
 
 /**
+ * @brief Read USB identification strings without claiming any interface.
+ * @param vendor_id USB vendor ID (typically VSL_VENDOR_ID).
+ * @param product_id USB product ID for the specific VSL model.
+ * @param out Caller-provided buffer receiving a human-readable summary.
+ * @param out_len Size of out in bytes; must be non-zero.
+ * @return 0 with out populated on success, negative when out is NULL,
+ *         out_len is zero, the device is absent, or a descriptor read fails.
+ *
+ * Open-only probe: never detaches or claims drivers, sends no DSP traffic.
+ * Safe to run while audio is streaming.
+ */
+int VSL_Probe_Device(uint16_t vendor_id,
+                     uint16_t product_id,
+                     char *out,
+                     size_t out_len);
+
+/**
  * @brief Fill a VSL_PACKET_SIZE buffer with a DSP parameter datagram.
  * @param dsp_param_id 16-bit DSP parameter identifier.
  * @param encoded_value 16-bit encoded integer value.
