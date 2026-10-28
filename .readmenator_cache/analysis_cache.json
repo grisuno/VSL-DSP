@@ -47,20 +47,20 @@
         "id": 0,
         "label": "voicecloak/src: vc_denoise",
         "file_ids": [
-          "voicecloak/tests/test_vc_denoise.c",
-          "voicecloak/src/vc_denoise.h",
-          "voicecloak/src/vc_fft.h",
+          "voicecloak/src/vc_alsa.c",
           "voicecloak/src/vc_rt_cli.c",
-          "voicecloak/src/vc_rt.c",
-          "voicecloak/tests/test_vc_stream.c",
-          "voicecloak/src/vc_denoise.c",
-          "voicecloak/src/vc_fft.c",
-          "voicecloak/src/vc_alsa.h",
-          "voicecloak/tests/test_vc_fft.c",
-          "voicecloak/src/vc_stream.h",
-          "voicecloak/src/vc_stream.c",
           "voicecloak/src/vc_rt.h",
-          "voicecloak/src/vc_alsa.c"
+          "voicecloak/src/vc_fft.c",
+          "voicecloak/src/vc_denoise.h",
+          "voicecloak/src/vc_rt.c",
+          "voicecloak/src/vc_stream.h",
+          "voicecloak/tests/test_vc_fft.c",
+          "voicecloak/tests/test_vc_stream.c",
+          "voicecloak/tests/test_vc_denoise.c",
+          "voicecloak/src/vc_alsa.h",
+          "voicecloak/src/vc_fft.h",
+          "voicecloak/src/vc_stream.c",
+          "voicecloak/src/vc_denoise.c"
         ],
         "cohesion": 0.6666666666666666,
         "size": 14
@@ -69,19 +69,19 @@
         "id": 1,
         "label": "voicecloak/src: vc_effects",
         "file_ids": [
-          "voicecloak/src/vc_eq.c",
-          "voicecloak/src/vc_effects.c",
-          "voicecloak/src/vc_level.h",
           "voicecloak/src/vc_presets.c",
-          "voicecloak/tests/test_vc_level.c",
-          "voicecloak/src/vc_effects.h",
+          "voicecloak/src/vc_eq.c",
+          "voicecloak/src/vc_level.h",
           "voicecloak/tests/test_vc_eq.c",
-          "voicecloak/tests/test_vc_effects.c",
-          "voicecloak/tests/test_vc_presets.c",
-          "voicecloak/src/vc_audio_config.h",
           "voicecloak/src/vc_presets.h",
+          "voicecloak/src/vc_audio_config.h",
+          "voicecloak/src/vc_effects.h",
+          "voicecloak/src/vc_eq.h",
           "voicecloak/src/vc_level.c",
-          "voicecloak/src/vc_eq.h"
+          "voicecloak/tests/test_vc_presets.c",
+          "voicecloak/tests/test_vc_effects.c",
+          "voicecloak/tests/test_vc_level.c",
+          "voicecloak/src/vc_effects.c"
         ],
         "cohesion": 0.6818181818181818,
         "size": 13
@@ -90,17 +90,17 @@
         "id": 2,
         "label": "legacy",
         "file_ids": [
-          "legacy/vsl_config.h",
+          "legacy/vsl_dsp_logic.c",
           "legacy/test_connection.c",
           "legacy/vsl_core.py",
-          "legacy/vsl_dsp_transport.h",
-          "legacy/vsl_poc_main.py",
-          "legacy/vsl_dsp_transport.c",
-          "legacy/vsl_dsp_logic.c",
           "legacy/vsl_dsp_logic.h",
-          "legacy/vsl_transport.py",
+          "legacy/vsl_dsp_transport.h",
           "legacy/main.c",
-          "legacy/vsl_hid_io.py"
+          "legacy/vsl_transport.py",
+          "legacy/vsl_poc_main.py",
+          "legacy/vsl_config.h",
+          "legacy/vsl_hid_io.py",
+          "legacy/vsl_dsp_transport.c"
         ],
         "cohesion": 1.0,
         "size": 11
@@ -109,16 +109,16 @@
         "id": 3,
         "label": "voicecloak/src: vc_crypto",
         "file_ids": [
-          "voicecloak/src/vc_dsp.h",
-          "voicecloak/src/vc_dsp.c",
-          "voicecloak/src/vc_rt_seed.c",
+          "voicecloak/src/vc_crypto.c",
           "voicecloak/src/vc_cli.c",
-          "voicecloak/src/vc_stft.c",
+          "voicecloak/src/vc_rt_seed.c",
           "voicecloak/src/vc_wav.c",
+          "voicecloak/src/vc_stft.c",
           "voicecloak/src/vc_crypto.h",
+          "voicecloak/src/vc_dsp.h",
           "voicecloak/src/vc_wav.h",
           "voicecloak/src/vc_stft.h",
-          "voicecloak/src/vc_crypto.c"
+          "voicecloak/src/vc_dsp.c"
         ],
         "cohesion": 0.7692307692307693,
         "size": 10
@@ -127,12 +127,12 @@
         "id": 4,
         "label": "src",
         "file_ids": [
-          "src/vsl_dsp_logic.c",
-          "src/vsl_dsp_transport.c",
+          "src/vsl_cli.c",
           "src/vsl_dsp_transport.h",
+          "src/vsl_dsp_transport.c",
           "src/vsl_config.h",
-          "src/vsl_dsp_logic.h",
-          "src/vsl_cli.c"
+          "src/vsl_dsp_logic.c",
+          "src/vsl_dsp_logic.h"
         ],
         "cohesion": 1.0,
         "size": 6
@@ -142,9 +142,9 @@
         "label": "root",
         "file_ids": [
           "legacy/mixer_quirks.c",
+          "tests/test_audiobox_vsl.c",
           "audiobox_vsl.h",
-          "audiobox_vsl.c",
-          "tests/test_audiobox_vsl.c"
+          "audiobox_vsl.c"
         ],
         "cohesion": 1.0,
         "size": 4
@@ -153,10 +153,10 @@
         "id": 6,
         "label": "avatar",
         "file_ids": [
+          "avatar/avatar_config.h",
           "avatar/avatar_logic.h",
-          "avatar/avatar_logic.c",
           "avatar/avatar_main.c",
-          "avatar/avatar_config.h"
+          "avatar/avatar_logic.c"
         ],
         "cohesion": 1.0,
         "size": 4

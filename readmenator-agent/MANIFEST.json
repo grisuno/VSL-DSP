@@ -1,10 +1,10 @@
 {
   "tool": "readmenator",
   "schema_version": 2,
-  "generated_at": "2026-10-28T04:09:02Z",
+  "generated_at": "2026-10-28T04:28:38Z",
   "project_root": ".",
   "project_name": "VSL-DSP",
-  "git_commit": "5536cf121a0572c3fe397c15b9af07ac9944f53a",
+  "git_commit": "26c5d6885f17ca0cffe6d10015eea78f49d53ab3",
   "git_branch": "main",
   "source_fingerprint": "2eec0816ca31f20ff3ce86ed0773913497bf23d09a22bdf14d01c823aa228671",
   "freshness_check": "readmenator . fresh  # exit 0 = docs match sources, exit 1 = run: readmenator . --rebuild",

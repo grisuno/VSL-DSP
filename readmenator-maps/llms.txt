@@ -37,7 +37,7 @@ Generated offline by readmenator (zero LLM tokens). Start with the wiki index fo
 - [readmenator-agent/KB_root.md](md/readmenator-agent/KB_root.md): audioboxprobe (function, line 37) static int audioboxprobe(struct usbinterface intf,
 - [readmenator-agent/KB_src.md](md/readmenator-agent/KB_src.md): ParamEntry (struct, line 16)
 - [readmenator-agent/KB_tests.md](md/readmenator-agent/KB_tests.md): Doc: BDD hardware gate for audioboxvsl.
-- [readmenator-agent/MEMORY.md](md/readmenator-agent/MEMORY.md): Generated from 69 files at commit 5536cf121a05. Read this first, then readmenator-wiki/index.md, then readmenator . ask "<question>" for anything specific.
+- [readmenator-agent/MEMORY.md](md/readmenator-agent/MEMORY.md): Generated from 69 files at commit 26c5d6885f17. Read this first, then readmenator-wiki/index.md, then readmenator . ask "<question>" for anything specific.
 - [readmenator-agent/SECURITY.md](md/readmenator-agent/SECURITY.md)
 - [readmenator-agent/SYMBOLS.md](md/readmenator-agent/SYMBOLS.md)
 - [readmenator-agent/SYMBOLS_p2.md](md/readmenator-agent/SYMBOLS_p2.md)
