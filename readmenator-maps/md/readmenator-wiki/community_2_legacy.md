@@ -62,11 +62,11 @@ This community groups 11 file(s) rooted at `legacy` with dominant language c (co
 
 ## Connections
 
-- [INFERRED] shares_context community 0 <-> 2 (strength 0.5): Inferred shared context (layer utility) with no import path between community 0 (voicecloak/src: vc_denoise) and community 2 (legacy).
-- [INFERRED] shares_context community 1 <-> 2 (strength 0.5): Inferred shared context (layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 2 (legacy).
-- [INFERRED] shares_context community 2 <-> 3 (strength 0.5): Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 3 (voicecloak/src: vc_crypto).
-- [INFERRED] shares_context community 2 <-> 4 (strength 0.5): Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 4 (src).
-- [INFERRED] shares_context community 2 <-> 5 (strength 0.5): Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 5 (root).
+- [INFERRED] shares_context community 0 <-> 2 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 0 (voicecloak/src: vc_denoise) and community 2 (legacy).
+- [INFERRED] shares_context community 1 <-> 2 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 2 (legacy).
+- [INFERRED] shares_context community 2 <-> 3 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 2 (legacy) and community 3 (voicecloak/src: vc_crypto).
+- [INFERRED] shares_context community 2 <-> 4 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 2 (legacy) and community 4 (src).
+- [INFERRED] shares_context community 2 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 2 (legacy) and community 5 (root).
 - [INFERRED] shares_context community 2 <-> 7 (strength 0.5): Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 7 (orphans).
 
 ## Risks

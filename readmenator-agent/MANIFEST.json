@@ -1,10 +1,10 @@
 {
   "tool": "readmenator",
   "schema_version": 2,
-  "generated_at": "2026-10-16T14:52:29Z",
+  "generated_at": "2026-10-28T04:09:02Z",
   "project_root": ".",
   "project_name": "VSL-DSP",
-  "git_commit": "1b5ad1bd16657b219968c5049c1d8f9535f8c64b",
+  "git_commit": "5536cf121a0572c3fe397c15b9af07ac9944f53a",
   "git_branch": "main",
   "source_fingerprint": "2eec0816ca31f20ff3ce86ed0773913497bf23d09a22bdf14d01c823aa228671",
   "freshness_check": "readmenator . fresh  # exit 0 = docs match sources, exit 1 = run: readmenator . --rebuild",
@@ -51,7 +51,7 @@
     {
       "path": "API.md",
       "lines": 497,
-      "approx_tokens": 12331
+      "approx_tokens": 12308
     },
     {
       "path": "API_p2.md",
@@ -86,12 +86,12 @@
     {
       "path": "KB_legacy.md",
       "lines": 500,
-      "approx_tokens": 9742
+      "approx_tokens": 9743
     },
     {
       "path": "KB_legacy_p2.md",
       "lines": 115,
-      "approx_tokens": 1619
+      "approx_tokens": 1622
     },
     {
       "path": "KB_root.md",
@@ -109,6 +109,11 @@
       "approx_tokens": 413
     },
     {
+      "path": "MEMORY.md",
+      "lines": 109,
+      "approx_tokens": 1776
+    },
+    {
       "path": "SECURITY.md",
       "lines": 3,
       "approx_tokens": 10
@@ -116,7 +121,7 @@
     {
       "path": "SYMBOLS.md",
       "lines": 500,
-      "approx_tokens": 15285
+      "approx_tokens": 15290
     },
     {
       "path": "SYMBOLS_p2.md",

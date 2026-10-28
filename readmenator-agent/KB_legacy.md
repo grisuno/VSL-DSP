@@ -480,8 +480,8 @@ Pages: [KB_legacy.md](KB_legacy.md), [KB_legacy_p2.md](KB_legacy_p2.md)
 - Language: py
 - Symbols:
   - `VSLParameter` (class, line 40) `class VSLParameter(NamedTuple)`
-  - `validate_configuration` (method, line 92) `def validate_configuration()`
-  - `print_configuration_status` (method, line 116) `def print_configuration_status()`
+  - `validate_configuration` (function, line 92) `def validate_configuration()`
+  - `print_configuration_status` (function, line 116) `def print_configuration_status()`
 
 ## legacy/vsl_core.py
 - Doc: VSL-DSP Core Logic Module Implementa las funciones matemáticas de encoding/decoding.

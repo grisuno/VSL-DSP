@@ -65,8 +65,8 @@ This community groups 13 file(s) rooted at `voicecloak/src` with dominant langua
 ## Connections
 
 - [EXTRACTED] depends_on community 0 <-> 1 (strength 0.9): Extracted import edge crosses communities: voicecloak/src/vc_alsa.h imports voicecloak/src/vc_effects.h.
-- [INFERRED] shares_context community 1 <-> 2 (strength 0.5): Inferred shared context (layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 2 (legacy).
-- [INFERRED] shares_context community 1 <-> 4 (strength 0.5): Inferred shared context (layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 4 (src).
+- [INFERRED] shares_context community 1 <-> 2 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 2 (legacy).
+- [INFERRED] shares_context community 1 <-> 4 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 4 (src).
 - [INFERRED] shares_context community 1 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 5 (root).
 - [INFERRED] shares_context community 1 <-> 7 (strength 0.5): Inferred shared context (layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 7 (orphans).
 

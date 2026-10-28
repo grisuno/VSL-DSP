@@ -1,6 +1,6 @@
 # Audit Report
 
-*Project: VSL-DSP | 2026-10-16 | offline, deterministic*
+*Project: VSL-DSP | 2026-10-28 | offline, deterministic*
 
 ## Confidence Trail
 

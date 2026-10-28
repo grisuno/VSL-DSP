@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Component Diagrams | Component diagrams</title>
+<style>
+:root{--cb-bg:#020617;--cb-stage:#030a1c;--cb-panel:#0b1224;--cb-panel2:#111c33;--cb-ink:#f8fafc;--cb-muted:#94a3b8;--cb-faint:#475569;--cb-border:#1e293b;--cb-accent:#22d3ee;--cb-accent2:#f472b6;--cb-chip:#111c33;--cb-glow:rgba(34,211,238,.16)}
+html[data-theme="light"]{--cb-bg:#f8fafc;--cb-stage:#eef2f7;--cb-panel:#ffffff;--cb-panel2:#f1f5f9;--cb-ink:#0f172a;--cb-muted:#475569;--cb-faint:#94a3b8;--cb-border:#e2e8f0;--cb-accent:#0891b2;--cb-accent2:#db2777;--cb-chip:#f1f5f9;--cb-glow:rgba(8,145,178,.10)}
+*{box-sizing:border-box}
+body{margin:0 auto;max-width:1240px;padding:20px;background:var(--cb-bg);color:var(--cb-ink);font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.6}
+a{color:var(--cb-accent)}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.brand{font-weight:700;background:linear-gradient(90deg,var(--cb-ink),var(--cb-accent) 70%,var(--cb-accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.spacer{flex:1}
+.home,.topbar button{font:inherit;font-size:12px;text-decoration:none;border:1px solid var(--cb-border);border-radius:9px;padding:6px 10px;color:var(--cb-ink);background:var(--cb-panel);cursor:pointer}
+.home:hover,.topbar button:hover{border-color:var(--cb-accent)}
+h1{margin:.4em 0 .2em;font-size:22px}
+h2{font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--cb-muted);margin:26px 0 8px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 4px}
+.chips span{background:var(--cb-chip);border:1px solid var(--cb-border);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--cb-muted)}
+.chips span b{color:var(--cb-accent)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:10px 0 2px;font-size:12px;color:var(--cb-muted)}
+.legend-title{letter-spacing:.12em;text-transform:uppercase;font-size:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;box-shadow:0 0 8px currentColor}
+.diagram-controls{margin:10px 0;text-align:center}
+.diagram-controls button{font:inherit;margin:0 5px;padding:8px 16px;background:var(--cb-panel);color:var(--cb-ink);border:1px solid var(--cb-border);border-radius:9px;cursor:pointer}
+.diagram-controls button:hover{border-color:var(--cb-accent)}
+.cb-wrap{border:1px solid var(--cb-border);border-radius:12px;background:radial-gradient(900px 400px at 20% 0%,var(--cb-glow),transparent 70%),var(--cb-stage);overflow:hidden}
+svg.cb-diagram{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
+.cb-node rect{fill:var(--cb-panel2)}
+.cb-node:hover rect{stroke:var(--cb-accent)!important;stroke-width:3}
+.cb-node.hub rect{filter:drop-shadow(0 0 10px var(--cb-glow))}
+.cb-node a{text-decoration:none}
+.cb-node-label{fill:var(--cb-ink);font-size:13px;font-weight:700}
+.cb-node-sub{fill:var(--cb-muted);font-size:10px}
+.cb-node-layer{fill:var(--cb-muted);font-size:10px}
+.cb-node-sym{fill:var(--cb-accent);font-size:10.5px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.cb-node-hub{fill:var(--cb-accent2);font-size:9px;font-weight:700;text-anchor:end;letter-spacing:.1em}
+.cb-edge{fill:none;stroke:#38bdf8;stroke-opacity:.75}
+.cb-arrow{fill:#38bdf8;fill-opacity:.9}
+.cb-edge-label{fill:var(--cb-ink);font-size:10.5px;text-anchor:middle;paint-order:stroke;stroke:var(--cb-stage);stroke-width:4px}
+.cb-edge-sub{fill:var(--cb-muted);font-size:9px;text-anchor:middle;paint-order:stroke;stroke:var(--cb-stage);stroke-width:4px}
+.component{border:1px solid var(--cb-border);border-left:3px solid var(--cb-accent);background:var(--cb-panel);padding:15px;border-radius:10px;margin-bottom:20px}
+.component h3{color:var(--cb-ink);margin-top:0}
+.component h4{color:var(--cb-muted);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.rellist{list-style:none;padding-left:0}
+.rellist li{background:var(--cb-panel);border:1px solid var(--cb-border);border-radius:8px;padding:8px 12px;margin:6px 0;font-size:12px}
+.rellist b{color:var(--cb-accent)}
+.references{list-style:none;padding-left:0;margin:10px 0}
+.references li{margin:4px 0}
+code{background:var(--cb-chip);border:1px solid var(--cb-border);padding:1px 6px;border-radius:6px;font-size:12px}
+.muted{color:var(--cb-muted)}
+footer{color:var(--cb-muted);font-size:12px;margin:24px 0}
+#cb-tip{position:fixed;z-index:50;pointer-events:none;display:none;max-width:340px;background:var(--cb-panel);color:var(--cb-ink);border:1px solid var(--cb-border);border-radius:10px;padding:8px 10px;font-size:12px;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="topbar"><span class="brand">Component diagrams</span>
+<a class="home" href="index.html">← Maps gallery</a>
+<span class="spacer"></span>
+<button type="button" id="cb-theme" title="Toggle light and dark theme">Theme</button></div>
+<main>
+<h1>Component Diagrams</h1>
+<div class="chips"><span>7 components</span><span>5 relations</span><span>69 files</span></div>
+<div class="legend"><span class="legend-title">Layer</span><span><i style="background:#34d399"></i>business logic</span><span><i style="background:#94a3b8"></i>utility</span></div>
+<div class="diagram-controls"><button type="button" id="cb-reset" title="Reset pan and zoom">Reset Layout</button><button type="button" id="cb-fit" title="Fit the diagram to the view">Fit to View</button><button type="button" id="cb-png" title="Export the diagram as PNG">Export PNG</button></div>
+<div class="cb-wrap"><svg id="cb-diagram" class="cb-diagram" viewBox="0 0 8030 610" role="img" aria-label="Component diagram"><defs><marker id="cb-diagram-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="cb-arrow"/></marker></defs><path d="M7990.0 305.0 C8040.0 305.0 7190.0 107.0 7240.0 107.0" class="cb-edge" marker-end="url(#cb-diagram-arrow)" style="stroke-width:4.3"/><text x="7615.0" y="198.0" class="cb-edge-label">depends on</text><text x="7615.0" y="212.0" class="cb-edge-sub">1 calls · 5 imports</text><path d="M7990.0 305.0 C8040.0 305.0 7190.0 305.0 7240.0 305.0" class="cb-edge" marker-end="url(#cb-diagram-arrow)" style="stroke-width:3.5"/><text x="7615.0" y="297.0" class="cb-edge-label">calls into</text><text x="7615.0" y="311.0" class="cb-edge-sub">3 calls · 0 imports</text><path d="M7990.0 305.0 C8040.0 305.0 7190.0 503.0 7240.0 503.0" class="cb-edge" marker-end="url(#cb-diagram-arrow)" style="stroke-width:3.1"/><text x="7615.0" y="396.0" class="cb-edge-label">calls into</text><text x="7615.0" y="410.0" class="cb-edge-sub">1 calls · 1 imports</text><path d="M7510.0 107.0 C7615.0 107.0 7615.0 305.0 7720.0 305.0" class="cb-edge" marker-end="url(#cb-diagram-arrow)" style="stroke-width:5.0"/><text x="7615.0" y="198.0" class="cb-edge-label">calls into</text><text x="7615.0" y="212.0" class="cb-edge-sub">12 calls · 2 imports</text><path d="M7510.0 503.0 C7615.0 503.0 7615.0 305.0 7720.0 305.0" class="cb-edge" marker-end="url(#cb-diagram-arrow)" style="stroke-width:4.1"/><text x="7615.0" y="396.0" class="cb-edge-label">calls into</text><text x="7615.0" y="410.0" class="cb-edge-sub">3 calls · 2 imports</text><g class="cb-node" data-desc="voicecloak/src: vc_denoise groups 14 files (c, h) around VC_FFT_H, FFT, VC_RT_H, VC_RT_MIN_SEMITONES, VC_RT_MAX_SEMITONES. vc_alsa_cfg_t: @brief Configuration for a real-time ALSA processing session."><a href="#comp-1"><rect x="7720.0" y="238.0" width="270" height="134" rx="10" stroke="#94a3b8" stroke-width="2.5"/><text x="7734.0" y="262.0" class="cb-node-label">voicecloak/src: vc_denoise</text><text x="7734.0" y="278.0" class="cb-node-sub">14 files · 178 symbols</text><circle cx="7740.0" cy="290.0" r="4" fill="#94a3b8"/><text x="7750.0" y="294.0" class="cb-node-layer">utility</text><text x="7734.0" y="310.0" class="cb-node-sym">VC_FFT_H</text><text x="7734.0" y="324.0" class="cb-node-sym">FFT</text><text x="7734.0" y="338.0" class="cb-node-sym">VC_RT_H</text><text x="7734.0" y="352.0" class="cb-node-sub">+142 more</text></a></g><g class="cb-node hub" data-desc="voicecloak/src: vc_effects groups 13 files (c, h) around VC_AUDIO_CONFIG_H, VC_AUDIO_MIN_SAMPLE_RATE, VC_AUDIO_MAX_SAMPLE_RATE, VC_AUDIO_MAX_INTERNAL_SAMPLE, VC_LEVEL_MIN_TARGET_DBFS. @brief Accepted sample-rate interval for live effect engines."><a href="#comp-2"><rect x="7240.0" y="40.0" width="270" height="134" rx="10" stroke="#94a3b8" stroke-width="2.5"/><text x="7254.0" y="64.0" class="cb-node-label">voicecloak/src: vc_effects</text><text x="7254.0" y="80.0" class="cb-node-sub">13 files · 154 symbols</text><circle cx="7260.0" cy="92.0" r="4" fill="#94a3b8"/><text x="7270.0" y="96.0" class="cb-node-layer">utility</text><text x="7254.0" y="112.0" class="cb-node-sym">VC_AUDIO_CONFIG_H</text><text x="7254.0" y="126.0" class="cb-node-sym">VC_AUDIO_MIN_SAMPLE_RATE</text><text x="7254.0" y="140.0" class="cb-node-sym">VC_AUDIO_MAX_SAMPLE_RATE</text><text x="7254.0" y="154.0" class="cb-node-sub">+127 more</text><text x="7496.0" y="60.0" class="cb-node-hub">HUB</text></a></g><g class="cb-node" data-desc="legacy groups 11 files (c, h, py) around VSL_CONFIG_H, VSL_VENDOR_ID, VSL_PRODUCT_ID, VSL_REPORT_ID, VSL_SCALE_FACTOR."><a href="#comp-3"><rect x="7240.0" y="238.0" width="270" height="134" rx="10" stroke="#94a3b8" stroke-width="2.5"/><text x="7254.0" y="262.0" class="cb-node-label">legacy</text><text x="7254.0" y="278.0" class="cb-node-sub">11 files · 63 symbols</text><circle cx="7260.0" cy="290.0" r="4" fill="#94a3b8"/><text x="7270.0" y="294.0" class="cb-node-layer">utility</text><text x="7254.0" y="310.0" class="cb-node-sym">VSL_CONFIG_H</text><text x="7254.0" y="324.0" class="cb-node-sym">VSL_VENDOR_ID</text><text x="7254.0" y="338.0" class="cb-node-sym">VSL_PRODUCT_ID</text><text x="7254.0" y="352.0" class="cb-node-sub">+47 more</text></a></g><g class="cb-node" data-desc="voicecloak/src: vc_crypto groups 10 files (c, h) around VC_CRYPTO_H, VC_CRYPTO_SEED_BYTES, VC_CRYPTO_KEY_BYTES, VC_PITCH_SEED_BYTES, VC_FORMANT_SEED_BYTES. vc_prng_s: int i; for (i = 0; i &lt; 3; ++i) { unsigned int outlen = 32; unsigned char..."><a href="#comp-4"><rect x="7240.0" y="436.0" width="270" height="134" rx="10" stroke="#94a3b8" stroke-width="2.5"/><text x="7254.0" y="460.0" class="cb-node-label">voicecloak/src: vc_crypto</text><text x="7254.0" y="476.0" class="cb-node-sub">10 files · 79 symbols</text><circle cx="7260.0" cy="488.0" r="4" fill="#94a3b8"/><text x="7270.0" y="492.0" class="cb-node-layer">utility</text><text x="7254.0" y="508.0" class="cb-node-sym">VC_CRYPTO_H</text><text x="7254.0" y="522.0" class="cb-node-sym">VC_CRYPTO_SEED_BYTES</text><text x="7254.0" y="536.0" class="cb-node-sym">VC_CRYPTO_KEY_BYTES</text><text x="7254.0" y="550.0" class="cb-node-sub">+55 more</text></a></g><g class="cb-node" data-desc="src groups 6 files (c, h) around VSL_DSP_LOGIC_H, VSL_INV_LN2, VSL_MAX_ENCODED_FLOAT, VSL_DB_NEG_INF, VSL_DB_FLOOR_LINEAR. pid: ifdef __cplusplus"><a href="#comp-5"><rect x="40.0" y="40.0" width="270" height="134" rx="10" stroke="#94a3b8" stroke-width="2.5"/><text x="54.0" y="64.0" class="cb-node-label">src</text><text x="54.0" y="80.0" class="cb-node-sub">6 files · 59 symbols</text><circle cx="60.0" cy="92.0" r="4" fill="#94a3b8"/><text x="70.0" y="96.0" class="cb-node-layer">utility</text><text x="54.0" y="112.0" class="cb-node-sym">VSL_DSP_LOGIC_H</text><text x="54.0" y="126.0" class="cb-node-sym">VSL_INV_LN2</text><text x="54.0" y="140.0" class="cb-node-sym">VSL_MAX_ENCODED_FLOAT</text><text x="54.0" y="154.0" class="cb-node-sub">+45 more</text></a></g><g class="cb-node" data-desc="root groups 4 files (c, h) around AUDIOBOX_VSL_H, audiobox_model_pid_t, AUDIOBOX_VENDOR_ID, AUDIOBOX_VERSION_STRING, audiobox_model_info_t. audiobox_model_info_t: @brief Pair of product ID and canonical human readable model name."><a href="#comp-6"><rect x="40.0" y="238.0" width="270" height="134" rx="10" stroke="#94a3b8" stroke-width="2.5"/><text x="54.0" y="262.0" class="cb-node-label">root</text><text x="54.0" y="278.0" class="cb-node-sub">4 files · 335 symbols</text><circle cx="60.0" cy="290.0" r="4" fill="#94a3b8"/><text x="70.0" y="294.0" class="cb-node-layer">utility</text><text x="54.0" y="310.0" class="cb-node-sym">AUDIOBOX_VSL_H</text><text x="54.0" y="324.0" class="cb-node-sym">audiobox_model_pid_t</text><text x="54.0" y="338.0" class="cb-node-sym">AUDIOBOX_VENDOR_ID</text><text x="54.0" y="352.0" class="cb-node-sub">+332 more</text></a></g><g class="cb-node" data-desc="avatar groups 4 files (c, h) around AVATAR_LOGIC_H, avatar_state_t, avatar_cfg_t, avatar_smooth_t, avatar_rms_f32. avatar_cfg_t: @brief Tunable classifier thresholds."><a href="#comp-7"><rect x="40.0" y="436.0" width="270" height="134" rx="10" stroke="#34d399" stroke-width="2.5"/><text x="54.0" y="460.0" class="cb-node-label">avatar</text><text x="54.0" y="476.0" class="cb-node-sub">4 files · 41 symbols</text><circle cx="60.0" cy="488.0" r="4" fill="#34d399"/><text x="70.0" y="492.0" class="cb-node-layer">business logic</text><text x="54.0" y="508.0" class="cb-node-sym">AVATAR_LOGIC_H</text><text x="54.0" y="522.0" class="cb-node-sym">avatar_state_t</text><text x="54.0" y="536.0" class="cb-node-sym">avatar_cfg_t</text><text x="54.0" y="550.0" class="cb-node-sub">+30 more</text></a></g></svg></div>
+<h2>Details</h2>
+<p>Static architecture map of 69 files (c, h, py, sh) in 7 components: voicecloak/src: vc_denoise, voicecloak/src: vc_effects, legacy, voicecloak/src: vc_crypto, src, root, avatar. Structure is extracted statically without LLM calls; component prose may be enriched locally.</p>
+<h2>Relations</h2>
+<ul class="rellist">
+<li><b>voicecloak/src: vc_denoise</b> depends on <b>voicecloak/src: vc_effects</b> — 5 imports, 1 calls across the boundary
+<br><code>voicecloak/src/vc_rt_cli.c::cmd_live@365 → voicecloak/src/vc_presets.h::vc_preset_lookup</code>
+</li>
+<li><b>voicecloak/src: vc_denoise</b> calls into <b>legacy</b> — 0 imports, 3 calls across the boundary
+<br><code>voicecloak/src/vc_stream.c::vc_stream_s@20 → legacy/vsl_transport.py::buffer</code> · <code>voicecloak/tests/test_vc_denoise.c::test_profile_round_trip@231 → legacy/vsl_hid_io.py::close</code> · <code>voicecloak/tests/test_vc_denoise.c::test_profile_round_trip@259 → legacy/vsl_hid_io.py::close</code>
+</li>
+<li><b>voicecloak/src: vc_denoise</b> calls into <b>voicecloak/src: vc_crypto</b> — 1 imports, 1 calls across the boundary
+<br><code>voicecloak/src/vc_rt_cli.c::resolve_params@174 → voicecloak/src/vc_crypto.h::vc_crypto_derive_seeds</code>
+</li>
+<li><b>voicecloak/src: vc_effects</b> calls into <b>voicecloak/src: vc_denoise</b> — 2 imports, 12 calls across the boundary
+<br><code>voicecloak/tests/test_vc_presets.c::test_full_live_chain_tracks_rms_and_ceiling@164 → voicecloak/src/vc_stream.h::vc_stream_create</code> · <code>voicecloak/tests/test_vc_presets.c::test_full_live_chain_tracks_rms_and_ceiling@175 → voicecloak/src/vc_stream.h::vc_stream_process</code> · <code>voicecloak/tests/test_vc_presets.c::test_full_live_chain_tracks_rms_and_ceiling@181 → voicecloak/src/vc_stream.h::vc_stream_latency_samples</code>
+</li>
+<li><b>voicecloak/src: vc_crypto</b> calls into <b>voicecloak/src: vc_denoise</b> — 2 imports, 3 calls across the boundary
+<br><code>voicecloak/src/vc_rt_seed.c::vc_rt_derive@34 → voicecloak/src/vc_rt.h::vc_rt_semitones_to_ratio</code> · <code>voicecloak/src/vc_stft.c::vc_stft_forward@102 → voicecloak/src/vc_fft.c::vc_fft</code> · <code>voicecloak/src/vc_stft.c::vc_stft_inverse_hop@165 → voicecloak/src/vc_fft.c::vc_fft</code>
+</li>
+</ul>
+<section class="component" id="comp-1">
+<h3>voicecloak/src: vc_denoise (1)
+</h3>
+<p>voicecloak/src: vc_denoise groups 14 files (c, h) around VC_FFT_H, FFT, VC_RT_H, VC_RT_MIN_SEMITONES, VC_RT_MAX_SEMITONES. vc_alsa_cfg_t: @brief Configuration for a real-time ALSA processing session.</p>
+<h4>Related Classes/Methods:</h4>
+<ul class="references">
+<li><code>voicecloak/src/vc_fft.h::VC_FFT_H#L2-L17</code></li>
+<li><code>voicecloak/src/vc_fft.h::FFT#L18-L26</code></li>
+<li><code>voicecloak/src/vc_rt.h::VC_RT_H#L2-L6</code></li>
+<li><code>voicecloak/src/vc_rt.h::VC_RT_MIN_SEMITONES</code></li>
+<li><code>voicecloak/src/vc_rt.h::VC_RT_MAX_SEMITONES</code></li>
+<li><code>voicecloak/src/vc_rt.h::VC_RT_MIN_PITCH_RATIO</code></li>
+<li><code>voicecloak/src/vc_rt.h::VC_RT_MAX_PITCH_RATIO</code></li>
+<li><code>voicecloak/src/vc_rt.h::VC_RT_MIN_FORMANT_FACTOR</code></li>
+</ul>
+<h4>Files</h4>
+<ul class="references">
+<li><code>voicecloak/src/vc_alsa.c</code></li>
+<li><code>voicecloak/src/vc_alsa.h</code></li>
+<li><code>voicecloak/src/vc_denoise.c</code></li>
+<li><code>voicecloak/src/vc_denoise.h</code></li>
+<li><code>voicecloak/src/vc_fft.c</code></li>
+<li><code>voicecloak/src/vc_fft.h</code></li>
+<li><code>voicecloak/src/vc_rt.c</code></li>
+<li><code>voicecloak/src/vc_rt.h</code></li>
+<li><code>voicecloak/src/vc_rt_cli.c</code></li>
+<li><code>voicecloak/src/vc_stream.c</code></li>
+<li><code>voicecloak/src/vc_stream.h</code></li>
+<li><code>voicecloak/tests/test_vc_denoise.c</code></li>
+<li><code>voicecloak/tests/test_vc_fft.c</code></li>
+<li><code>voicecloak/tests/test_vc_stream.c</code></li>
+</ul>
+</section>
+<section class="component" id="comp-2">
+<h3>voicecloak/src: vc_effects (2)
+</h3>
+<p>voicecloak/src: vc_effects groups 13 files (c, h) around VC_AUDIO_CONFIG_H, VC_AUDIO_MIN_SAMPLE_RATE, VC_AUDIO_MAX_SAMPLE_RATE, VC_AUDIO_MAX_INTERNAL_SAMPLE, VC_LEVEL_MIN_TARGET_DBFS. @brief Accepted sample-rate interval for live effect engines.</p>
+<h4>Related Classes/Methods:</h4>
+<ul class="references">
+<li><code>voicecloak/src/vc_audio_config.h::VC_AUDIO_CONFIG_H#L2-L4</code></li>
+<li><code>voicecloak/src/vc_audio_config.h::VC_AUDIO_MIN_SAMPLE_RATE</code></li>
+<li><code>voicecloak/src/vc_audio_config.h::VC_AUDIO_MAX_SAMPLE_RATE#L6-L8</code></li>
+<li><code>voicecloak/src/vc_audio_config.h::VC_AUDIO_MAX_INTERNAL_SAMPLE#L9-L10</code></li>
+<li><code>voicecloak/src/vc_audio_config.h::VC_LEVEL_MIN_TARGET_DBFS</code></li>
+<li><code>voicecloak/src/vc_audio_config.h::VC_LEVEL_MAX_TARGET_DBFS</code></li>
+<li><code>voicecloak/src/vc_audio_config.h::VC_LEVEL_MIN_CEILING_DBFS</code></li>
+<li><code>voicecloak/src/vc_audio_config.h::VC_LEVEL_MAX_CEILING_DBFS</code></li>
+</ul>
+<h4>Files</h4>
+<ul class="references">
+<li><code>voicecloak/src/vc_audio_config.h</code></li>
+<li><code>voicecloak/src/vc_effects.c</code></li>
+<li><code>voicecloak/src/vc_effects.h</code></li>
+<li><code>voicecloak/src/vc_eq.c</code></li>
+<li><code>voicecloak/src/vc_eq.h</code></li>
+<li><code>voicecloak/src/vc_level.c</code></li>
+<li><code>voicecloak/src/vc_level.h</code></li>
+<li><code>voicecloak/src/vc_presets.c</code></li>
+<li><code>voicecloak/src/vc_presets.h</code></li>
+<li><code>voicecloak/tests/test_vc_effects.c</code></li>
+<li><code>voicecloak/tests/test_vc_eq.c</code></li>
+<li><code>voicecloak/tests/test_vc_level.c</code></li>
+<li><code>voicecloak/tests/test_vc_presets.c</code></li>
+</ul>
+</section>
+<section class="component" id="comp-3">
+<h3>legacy (3)
+</h3>
+<p>legacy groups 11 files (c, h, py) around VSL_CONFIG_H, VSL_VENDOR_ID, VSL_PRODUCT_ID, VSL_REPORT_ID, VSL_SCALE_FACTOR.</p>
+<h4>Related Classes/Methods:</h4>
+<ul class="references">
+<li><code>legacy/vsl_config.h::VSL_CONFIG_H#L4-L10</code></li>
+<li><code>legacy/vsl_config.h::VSL_VENDOR_ID</code></li>
+<li><code>legacy/vsl_config.h::VSL_PRODUCT_ID</code></li>
+<li><code>legacy/vsl_config.h::VSL_REPORT_ID#L13-L19</code></li>
+<li><code>legacy/vsl_config.h::VSL_SCALE_FACTOR#L20-L22</code></li>
+<li><code>legacy/vsl_config.h::VSL_MAX_ENCODED_INT#L23-L24</code></li>
+<li><code>legacy/vsl_config.h::VSL_PACKET_SIZE</code></li>
+<li><code>legacy/vsl_config.h::VSL_PAYLOAD_SIZE#L26-L28</code></li>
+</ul>
+<h4>Files</h4>
+<ul class="references">
+<li><code>legacy/main.c</code></li>
+<li><code>legacy/test_connection.c</code></li>
+<li><code>legacy/vsl_config.h</code></li>
+<li><code>legacy/vsl_core.py</code></li>
+<li><code>legacy/vsl_dsp_logic.c</code></li>
+<li><code>legacy/vsl_dsp_logic.h</code></li>
+<li><code>legacy/vsl_dsp_transport.c</code></li>
+<li><code>legacy/vsl_dsp_transport.h</code></li>
+<li><code>legacy/vsl_hid_io.py</code></li>
+<li><code>legacy/vsl_poc_main.py</code></li>
+<li><code>legacy/vsl_transport.py</code></li>
+</ul>
+</section>
+<section class="component" id="comp-4">
+<h3>voicecloak/src: vc_crypto (4)
+</h3>
+<p>voicecloak/src: vc_crypto groups 10 files (c, h) around VC_CRYPTO_H, VC_CRYPTO_SEED_BYTES, VC_CRYPTO_KEY_BYTES, VC_PITCH_SEED_BYTES, VC_FORMANT_SEED_BYTES. vc_prng_s: int i; for (i = 0; i &lt; 3; ++i) { unsigned int outlen = 32; unsigned char...</p>
+<h4>Related Classes/Methods:</h4>
+<ul class="references">
+<li><code>voicecloak/src/vc_crypto.h::VC_CRYPTO_H#L2-L10</code></li>
+<li><code>voicecloak/src/vc_crypto.h::VC_CRYPTO_SEED_BYTES</code></li>
+<li><code>voicecloak/src/vc_crypto.h::VC_CRYPTO_KEY_BYTES</code></li>
+<li><code>voicecloak/src/vc_crypto.h::VC_PITCH_SEED_BYTES</code></li>
+<li><code>voicecloak/src/vc_crypto.h::VC_FORMANT_SEED_BYTES</code></li>
+<li><code>voicecloak/src/vc_crypto.h::VC_SPECTRAL_SEED_BYTES</code></li>
+<li><code>voicecloak/src/vc_crypto.h::VC_TOTAL_SEED_BYTES#L16-L23</code></li>
+<li><code>voicecloak/src/vc_crypto.h::vc_crypto_keygen#L24-L34</code></li>
+</ul>
+<h4>Files</h4>
+<ul class="references">
+<li><code>voicecloak/src/vc_cli.c</code></li>
+<li><code>voicecloak/src/vc_crypto.c</code></li>
+<li><code>voicecloak/src/vc_crypto.h</code></li>
+<li><code>voicecloak/src/vc_dsp.c</code></li>
+<li><code>voicecloak/src/vc_dsp.h</code></li>
+<li><code>voicecloak/src/vc_rt_seed.c</code></li>
+<li><code>voicecloak/src/vc_stft.c</code></li>
+<li><code>voicecloak/src/vc_stft.h</code></li>
+<li><code>voicecloak/src/vc_wav.c</code></li>
+<li><code>voicecloak/src/vc_wav.h</code></li>
+</ul>
+</section>
+<section class="component" id="comp-5">
+<h3>src (5)
+</h3>
+<p>src groups 6 files (c, h) around VSL_DSP_LOGIC_H, VSL_INV_LN2, VSL_MAX_ENCODED_FLOAT, VSL_DB_NEG_INF, VSL_DB_FLOOR_LINEAR. pid: ifdef __cplusplus</p>
+<h4>Related Classes/Methods:</h4>
+<ul class="references">
+<li><code>src/vsl_dsp_logic.h::VSL_DSP_LOGIC_H#L2-L7</code></li>
+<li><code>src/vsl_dsp_logic.h::VSL_INV_LN2</code></li>
+<li><code>src/vsl_dsp_logic.h::VSL_MAX_ENCODED_FLOAT#L9-L18</code></li>
+<li><code>src/vsl_dsp_logic.h::VSL_DB_NEG_INF</code></li>
+<li><code>src/vsl_dsp_logic.h::VSL_DB_FLOOR_LINEAR#L20-L21</code></li>
+<li><code>src/vsl_dsp_logic.h::VSL_Parameter#L22-L43</code></li>
+<li><code>src/vsl_dsp_logic.h::VSL_Encode_Gain#L44-L52</code></li>
+<li><code>src/vsl_dsp_logic.h::VSL_Decode_Gain#L53-L61</code></li>
+</ul>
+<h4>Files</h4>
+<ul class="references">
+<li><code>src/vsl_cli.c</code></li>
+<li><code>src/vsl_config.h</code></li>
+<li><code>src/vsl_dsp_logic.c</code></li>
+<li><code>src/vsl_dsp_logic.h</code></li>
+<li><code>src/vsl_dsp_transport.c</code></li>
+<li><code>src/vsl_dsp_transport.h</code></li>
+</ul>
+</section>
+<section class="component" id="comp-6">
+<h3>root (6)
+</h3>
+<p>root groups 4 files (c, h) around AUDIOBOX_VSL_H, audiobox_model_pid_t, AUDIOBOX_VENDOR_ID, AUDIOBOX_VERSION_STRING, audiobox_model_info_t. audiobox_model_info_t: @brief Pair of product ID and canonical human readable model name.</p>
+<h4>Related Classes/Methods:</h4>
+<ul class="references">
+<li><code>audiobox_vsl.h::AUDIOBOX_VSL_H#L21-L25</code></li>
+<li><code>audiobox_vsl.h::audiobox_model_pid_t#L26-L31</code></li>
+<li><code>audiobox_vsl.h::AUDIOBOX_VENDOR_ID#L32-L54</code></li>
+<li><code>audiobox_vsl.h::AUDIOBOX_VERSION_STRING#L55-L63</code></li>
+<li><code>audiobox_vsl.h::audiobox_model_info_t#L64-L106</code></li>
+<li><code>audiobox_vsl.h::audiobox_lookup_model#L107-L130</code></li>
+<li><code>audiobox_vsl.h::audiobox_is_primary_interface#L131-L140</code></li>
+<li><code>audiobox_vsl.h::usb_mixer_interface#L141-L149</code></li>
+</ul>
+<h4>Files</h4>
+<ul class="references">
+<li><code>audiobox_vsl.c</code></li>
+<li><code>audiobox_vsl.h</code></li>
+<li><code>legacy/mixer_quirks.c</code></li>
+<li><code>tests/test_audiobox_vsl.c</code></li>
+</ul>
+</section>
+<section class="component" id="comp-7">
+<h3>avatar (7)
+</h3>
+<p>avatar groups 4 files (c, h) around AVATAR_LOGIC_H, avatar_state_t, avatar_cfg_t, avatar_smooth_t, avatar_rms_f32. avatar_cfg_t: @brief Tunable classifier thresholds.</p>
+<h4>Related Classes/Methods:</h4>
+<ul class="references">
+<li><code>avatar/avatar_logic.h::AVATAR_LOGIC_H#L2-L7</code></li>
+<li><code>avatar/avatar_logic.h::avatar_state_t#L8-L22</code></li>
+<li><code>avatar/avatar_logic.h::avatar_cfg_t#L23-L32</code></li>
+<li><code>avatar/avatar_logic.h::avatar_smooth_t#L33-L44</code></li>
+<li><code>avatar/avatar_logic.h::avatar_rms_f32#L45-L51</code></li>
+<li><code>avatar/avatar_logic.h::avatar_rms_to_dbfs#L52-L59</code></li>
+<li><code>avatar/avatar_logic.h::avatar_zcr_f32#L60-L67</code></li>
+<li><code>avatar/avatar_logic.h::avatar_hf_ratio_f32#L68-L77</code></li>
+</ul>
+<h4>Files</h4>
+<ul class="references">
+<li><code>avatar/avatar_config.h</code></li>
+<li><code>avatar/avatar_logic.c</code></li>
+<li><code>avatar/avatar_logic.h</code></li>
+<li><code>avatar/avatar_main.c</code></li>
+</ul>
+</section>
+<footer>Generated offline from static analysis &middot; 2eec0816ca31</footer>
+</main>
+<div id="cb-tip" role="tooltip"></div>
+<script>
+(function(){
+"use strict";
+try{var s=localStorage.getItem("readmenator-theme");if(s==="light"||s==="dark")document.documentElement.setAttribute("data-theme",s);}catch(e){}
+document.getElementById("cb-theme").addEventListener("click",function(){
+  var r=document.documentElement,n=r.getAttribute("data-theme")==="light"?"dark":"light";
+  r.setAttribute("data-theme",n);try{localStorage.setItem("readmenator-theme",n);}catch(e){}
+});
+var tip=document.getElementById("cb-tip");
+document.querySelectorAll(".cb-node").forEach(function(g){
+  g.addEventListener("mousemove",function(ev){
+    var d=g.getAttribute("data-desc");
+    if(!d){tip.style.display="none";return;}
+    tip.textContent=d;tip.style.display="block";
+    tip.style.left=Math.min(window.innerWidth-330,ev.clientX+12)+"px";
+    tip.style.top=(ev.clientY+14)+"px";
+  });
+  g.addEventListener("mouseleave",function(){tip.style.display="none";});
+});
+document.querySelectorAll("svg.cb-diagram").forEach(function(svg){
+  var vb=svg.viewBox.baseVal,home={x:vb.x,y:vb.y,w:vb.width,h:vb.height},drag=null;
+  function set(x,y,w,h){svg.setAttribute("viewBox",x+" "+y+" "+w+" "+h);}
+  function cur(){var v=svg.viewBox.baseVal;return {x:v.x,y:v.y,w:v.width,h:v.height};}
+  svg.addEventListener("pointerdown",function(ev){drag={x:ev.clientX,y:ev.clientY,v:cur()};svg.setPointerCapture(ev.pointerId);});
+  svg.addEventListener("pointermove",function(ev){
+    if(!drag)return;
+    var r=svg.getBoundingClientRect(),k=drag.v.w/r.width;
+    set(drag.v.x-(ev.clientX-drag.x)*k,drag.v.y-(ev.clientY-drag.y)*k,drag.v.w,drag.v.h);
+  });
+  svg.addEventListener("pointerup",function(){drag=null;});
+  svg.addEventListener("wheel",function(ev){
+    ev.preventDefault();
+    var v=cur(),r=svg.getBoundingClientRect(),f=Math.exp(ev.deltaY*0.0012);
+    var mx=v.x+(ev.clientX-r.left)/r.width*v.w,my=v.y+(ev.clientY-r.top)/r.height*v.h;
+    var w=Math.min(home.w*4,Math.max(home.w/8,v.w*f)),h=w*v.h/v.w;
+    set(mx-(mx-v.x)*w/v.w,my-(my-v.y)*h/v.h,w,h);
+  },{passive:false});
+  svg._home=home;svg._set=set;
+});
+document.getElementById("cb-reset").addEventListener("click",function(){
+  var svg=document.getElementById("cb-diagram");if(!svg)return;var h=svg._home;svg._set(h.x,h.y,h.w,h.h);
+});
+document.getElementById("cb-fit").addEventListener("click",function(){
+  var svg=document.getElementById("cb-diagram");if(!svg)return;var h=svg._home;svg._set(h.x,h.y,h.w,h.h);
+});
+document.getElementById("cb-png").addEventListener("click",function(){
+  var svg=document.getElementById("cb-diagram");if(!svg)return;
+  try{
+    var data=new XMLSerializer().serializeToString(svg);
+    var img=new Image();
+    img.onload=function(){
+      var c=document.createElement("canvas"),k=2;
+      c.width=svg.viewBox.baseVal.width*k;c.height=svg.viewBox.baseVal.height*k;
+      var x=c.getContext("2d");x.fillStyle="#020617";x.fillRect(0,0,c.width,c.height);
+      x.drawImage(img,0,0,c.width,c.height);
+      var a=document.createElement("a");a.download="component-diagram.png";a.href=c.toDataURL("image/png");a.click();
+    };
+    img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(data);
+  }catch(e){}
+});
+})();
+</script>
+
+</body>
+</html>

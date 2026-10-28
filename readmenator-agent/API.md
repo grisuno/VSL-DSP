@@ -342,8 +342,8 @@ Depends on: `audiobox_vsl.h`
 				  struct usb_mixer_elem_...`
 
 ## legacy/vsl_config.py
-- `VSLParameter.validate_configuration` (method) `legacy/vsl_config.py:92` `def validate_configuration()` -- Valida que todos los valores críticos estén configurados.
-- `VSLParameter.print_configuration_status` (method) `legacy/vsl_config.py:116` `def print_configuration_status()` -- Imprime el estado de la configuración con formato.
+- `validate_configuration` (function) `legacy/vsl_config.py:92` `def validate_configuration()` -- Valida que todos los valores críticos estén configurados.
+- `print_configuration_status` (function) `legacy/vsl_config.py:116` `def print_configuration_status()` -- Imprime el estado de la configuración con formato.
 
 ## legacy/vsl_core.py
 Depends on: `legacy/vsl_config.h`
@@ -392,7 +392,7 @@ Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.p
 - `VSLDevice.open` (method) `legacy/vsl_hid_io.py:59` `def open(self)` -- Abre la conexión con el dispositivo VSL.
 - `VSLDevice.close` (method) `legacy/vsl_hid_io.py:90` `def close(self)` -- Cierra la conexión con el dispositivo.
 - `VSLDevice.send_packet` (method) `legacy/vsl_hid_io.py:101` `def send_packet(self, packet)` -- Envía un paquete VSL al dispositivo.
-- `VSLDevice.enumerate_vsl_devices` (method) `legacy/vsl_hid_io.py:149` `def enumerate_vsl_devices()` -- Enumera todos los dispositivos HID conectados. Útil para descubrir VID/PID del hardware.
+- `enumerate_vsl_devices` (function) `legacy/vsl_hid_io.py:149` `def enumerate_vsl_devices()` -- Enumera todos los dispositivos HID conectados. Útil para descubrir VID/PID del hardware.
 
 ## legacy/vsl_poc_main.py
 Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.py`
@@ -406,11 +406,11 @@ Depends on: `legacy/vsl_config.h`, `legacy/vsl_core.py`, `legacy/vsl_transport.p
 
 ## legacy/vsl_protocol_analyzer.py
 - `VSLParameter.__init__` (method) `legacy/vsl_protocol_analyzer.py:30` `def __init__(self, dsp_id, name, type_unit, min_map, max_map, coeff_A, coeff_C1, log_factor)`
-- `VSLParameter.reverse_map_gain` (method) `legacy/vsl_protocol_analyzer.py:67` `def reverse_map_gain(encoded_value, param)` -- Simula VSL_Decode_Gain.
-- `VSLParameter.reverse_map_frequency` (method) `legacy/vsl_protocol_analyzer.py:95` `def reverse_map_frequency(encoded_value, param)` -- Simula VSL_Decode_Frequency.
-- `VSLParameter.get_decoded_value` (method) `legacy/vsl_protocol_analyzer.py:115` `def get_decoded_value(encoded_value, param_id)` -- Dirige la decodificación al motor DSP correcto.
-- `VSLParameter.decode_vsl_packet` (method) `legacy/vsl_protocol_analyzer.py:140` `def decode_vsl_packet(data)` -- Decodifica el payload de 64 bytes.
-- `VSLParameter.analyze_pcap` (method) `legacy/vsl_protocol_analyzer.py:173` `def analyze_pcap(pcap_file)` -- Carga un archivo PCAP y filtra los paquetes USB VSL.
+- `reverse_map_gain` (function) `legacy/vsl_protocol_analyzer.py:67` `def reverse_map_gain(encoded_value, param)` -- Simula VSL_Decode_Gain.
+- `reverse_map_frequency` (function) `legacy/vsl_protocol_analyzer.py:95` `def reverse_map_frequency(encoded_value, param)` -- Simula VSL_Decode_Frequency.
+- `get_decoded_value` (function) `legacy/vsl_protocol_analyzer.py:115` `def get_decoded_value(encoded_value, param_id)` -- Dirige la decodificación al motor DSP correcto.
+- `decode_vsl_packet` (function) `legacy/vsl_protocol_analyzer.py:140` `def decode_vsl_packet(data)` -- Decodifica el payload de 64 bytes.
+- `analyze_pcap` (function) `legacy/vsl_protocol_analyzer.py:173` `def analyze_pcap(pcap_file)` -- Carga un archivo PCAP y filtra los paquetes USB VSL.
 
 ## legacy/vsl_transport.py
 Depends on: `legacy/vsl_config.h`
@@ -419,7 +419,7 @@ Imported by: `legacy/vsl_hid_io.py`, `legacy/vsl_poc_main.py`
 - `VSLPacket.buffer` (method) `legacy/vsl_transport.py:89` `def buffer(self)` -- Retorna el buffer como bytes inmutables.
 - `VSLPacket.hex_dump` (method) `legacy/vsl_transport.py:93` `def hex_dump(self, num_bytes)` -- Genera un hex dump del paquete para debugging.
 - `VSLPacket.validate` (method) `legacy/vsl_transport.py:106` `def validate(self)` -- Valida la integridad del paquete.
-- `VSLPacket.build_packet_safe` (method) `legacy/vsl_transport.py:141` `def build_packet_safe(param, encoded_value)` -- Construye un paquete con manejo de errores.
+- `build_packet_safe` (function) `legacy/vsl_transport.py:141` `def build_packet_safe(param, encoded_value)` -- Construye un paquete con manejo de errores.
 
 ## src/vsl_cli.c
 Depends on: `src/vsl_config.h`, `src/vsl_dsp_logic.h`, `src/vsl_dsp_transport.h`

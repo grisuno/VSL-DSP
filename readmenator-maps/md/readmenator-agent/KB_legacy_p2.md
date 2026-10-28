@@ -60,7 +60,7 @@ Previous: [KB_legacy.md](KB_legacy.md)
 - Language: py
 - Symbols:
   - `VSLDevice` (class, line 31) `class VSLDevice`
-  - `enumerate_vsl_devices` (method, line 149) `def enumerate_vsl_devices()`
+  - `enumerate_vsl_devices` (function, line 149) `def enumerate_vsl_devices()`
   - `__new__` (method, line 39) `def __new__(cls)`
   - `__init__` (method, line 45) `def __init__(self)`
   - `open` (method, line 59) `def open(self)`
@@ -90,11 +90,11 @@ Previous: [KB_legacy.md](KB_legacy.md)
 - Language: py
 - Symbols:
   - `VSLParameter` (class, line 28) `class VSLParameter`
-  - `reverse_map_gain` (method, line 67) `def reverse_map_gain(encoded_value, param)`
-  - `reverse_map_frequency` (method, line 95) `def reverse_map_frequency(encoded_value, param)`
-  - `get_decoded_value` (method, line 115) `def get_decoded_value(encoded_value, param_id)`
-  - `decode_vsl_packet` (method, line 140) `def decode_vsl_packet(data)`
-  - `analyze_pcap` (method, line 173) `def analyze_pcap(pcap_file)`
+  - `reverse_map_gain` (function, line 67) `def reverse_map_gain(encoded_value, param)`
+  - `reverse_map_frequency` (function, line 95) `def reverse_map_frequency(encoded_value, param)`
+  - `get_decoded_value` (function, line 115) `def get_decoded_value(encoded_value, param_id)`
+  - `decode_vsl_packet` (function, line 140) `def decode_vsl_packet(data)`
+  - `analyze_pcap` (function, line 173) `def analyze_pcap(pcap_file)`
   - `__init__` (method, line 30) `def __init__(self, dsp_id, name, type_unit, min_map, max_map, coeff_A, coeff_C1, log_factor)`
 
 ## legacy/vsl_transport.py
@@ -103,7 +103,7 @@ Previous: [KB_legacy.md](KB_legacy.md)
 - Language: py
 - Symbols:
   - `VSLPacket` (class, line 15) `class VSLPacket`
-  - `build_packet_safe` (method, line 141) `def build_packet_safe(param, encoded_value)`
+  - `build_packet_safe` (function, line 141) `def build_packet_safe(param, encoded_value)`
   - `__init__` (method, line 21) `def __init__(self, param_id, encoded_value, report_id)`
   - `_build_buffer` (method, line 58) `def _build_buffer(self)`
   - `buffer` (method, line 89) `def buffer(self)`

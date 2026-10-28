@@ -397,8 +397,8 @@ Pages: [SYMBOLS.md](SYMBOLS.md), [SYMBOLS_p2.md](SYMBOLS_p2.md)
 | `VSL_SCALE_FACTOR` | macro | `legacy/vsl_config.h:20` | `#define VSL_SCALE_FACTOR` |
 | `VSL_VENDOR_ID` | macro | `legacy/vsl_config.h:11` | `#define VSL_VENDOR_ID` |
 | `VSLParameter` | class | `legacy/vsl_config.py:40` | `class VSLParameter(NamedTuple)` |
-| `print_configuration_status` | method | `legacy/vsl_config.py:116` | `def print_configuration_status()` |
-| `validate_configuration` | method | `legacy/vsl_config.py:92` | `def validate_configuration()` |
+| `print_configuration_status` | function | `legacy/vsl_config.py:116` | `def print_configuration_status()` |
+| `validate_configuration` | function | `legacy/vsl_config.py:92` | `def validate_configuration()` |
 | `validate_parameter` | function | `legacy/vsl_core.py:170` | `def validate_parameter(param)` |
 | `vsl_decode_frequency` | function | `legacy/vsl_core.py:127` | `def vsl_decode_frequency(freq_hz_value, param)` |
 | `vsl_encode_gain` | function | `legacy/vsl_core.py:16` | `def vsl_encode_gain(linear_value, param)` |
@@ -434,7 +434,7 @@ Pages: [SYMBOLS.md](SYMBOLS.md), [SYMBOLS_p2.md](SYMBOLS_p2.md)
 | `__init__` | method | `legacy/vsl_hid_io.py:45` | `def __init__(self)` |
 | `__new__` | method | `legacy/vsl_hid_io.py:39` | `def __new__(cls)` |
 | `close` | method | `legacy/vsl_hid_io.py:90` | `def close(self)` |
-| `enumerate_vsl_devices` | method | `legacy/vsl_hid_io.py:149` | `def enumerate_vsl_devices()` |
+| `enumerate_vsl_devices` | function | `legacy/vsl_hid_io.py:149` | `def enumerate_vsl_devices()` |
 | `open` | method | `legacy/vsl_hid_io.py:59` | `def open(self)` |
 | `send_packet` | method | `legacy/vsl_hid_io.py:101` | `def send_packet(self, packet)` |
 | `main` | function | `legacy/vsl_poc_main.py:266` | `def main()` |
@@ -446,17 +446,17 @@ Pages: [SYMBOLS.md](SYMBOLS.md), [SYMBOLS_p2.md](SYMBOLS_p2.md)
 | `test_packet_construction` | function | `legacy/vsl_poc_main.py:92` | `def test_packet_construction()` |
 | `VSLParameter` | class | `legacy/vsl_protocol_analyzer.py:28` | `class VSLParameter` |
 | `__init__` | method | `legacy/vsl_protocol_analyzer.py:30` | `def __init__(self, dsp_id, name, type_unit, min_map, max_map, coeff_A, coeff_C1, log_factor)` |
-| `analyze_pcap` | method | `legacy/vsl_protocol_analyzer.py:173` | `def analyze_pcap(pcap_file)` |
-| `decode_vsl_packet` | method | `legacy/vsl_protocol_analyzer.py:140` | `def decode_vsl_packet(data)` |
-| `get_decoded_value` | method | `legacy/vsl_protocol_analyzer.py:115` | `def get_decoded_value(encoded_value, param_id)` |
-| `reverse_map_frequency` | method | `legacy/vsl_protocol_analyzer.py:95` | `def reverse_map_frequency(encoded_value, param)` |
-| `reverse_map_gain` | method | `legacy/vsl_protocol_analyzer.py:67` | `def reverse_map_gain(encoded_value, param)` |
+| `analyze_pcap` | function | `legacy/vsl_protocol_analyzer.py:173` | `def analyze_pcap(pcap_file)` |
+| `decode_vsl_packet` | function | `legacy/vsl_protocol_analyzer.py:140` | `def decode_vsl_packet(data)` |
+| `get_decoded_value` | function | `legacy/vsl_protocol_analyzer.py:115` | `def get_decoded_value(encoded_value, param_id)` |
+| `reverse_map_frequency` | function | `legacy/vsl_protocol_analyzer.py:95` | `def reverse_map_frequency(encoded_value, param)` |
+| `reverse_map_gain` | function | `legacy/vsl_protocol_analyzer.py:67` | `def reverse_map_gain(encoded_value, param)` |
 | `VSLPacket` | class | `legacy/vsl_transport.py:15` | `class VSLPacket` |
 | `__init__` | method | `legacy/vsl_transport.py:21` | `def __init__(self, param_id, encoded_value, report_id)` |
 | `__repr__` | method | `legacy/vsl_transport.py:133` | `def __repr__(self)` |
 | `_build_buffer` | method | `legacy/vsl_transport.py:58` | `def _build_buffer(self)` |
 | `buffer` | method | `legacy/vsl_transport.py:89` | `def buffer(self)` |
-| `build_packet_safe` | method | `legacy/vsl_transport.py:141` | `def build_packet_safe(param, encoded_value)` |
+| `build_packet_safe` | function | `legacy/vsl_transport.py:141` | `def build_packet_safe(param, encoded_value)` |
 | `hex_dump` | method | `legacy/vsl_transport.py:93` | `def hex_dump(self, num_bytes)` |
 | `validate` | method | `legacy/vsl_transport.py:106` | `def validate(self)` |
 | `MAX_CHANNELS` | macro | `src/vsl_cli.c:49` | `#define MAX_CHANNELS` |

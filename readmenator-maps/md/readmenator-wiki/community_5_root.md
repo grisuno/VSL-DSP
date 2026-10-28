@@ -57,9 +57,10 @@ This community groups 4 file(s) rooted at `root` with dominant language c (cohes
 
 - [INFERRED] shares_context community 0 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 0 (voicecloak/src: vc_denoise) and community 5 (root).
 - [INFERRED] shares_context community 1 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 1 (voicecloak/src: vc_effects) and community 5 (root).
-- [INFERRED] shares_context community 2 <-> 5 (strength 0.5): Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 5 (root).
+- [INFERRED] shares_context community 2 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 2 (legacy) and community 5 (root).
 - [INFERRED] shares_context community 3 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 3 (voicecloak/src: vc_crypto) and community 5 (root).
-- [INFERRED] shares_context community 4 <-> 5 (strength 0.5): Inferred shared context (layer utility) with no import path between community 4 (src) and community 5 (root).
+- [INFERRED] shares_context community 4 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 4 (src) and community 5 (root).
+- [INFERRED] shares_context community 5 <-> 7 (strength 0.5): Inferred shared context (layer utility) with no import path between community 5 (root) and community 7 (orphans).
 
 ## Risks
 

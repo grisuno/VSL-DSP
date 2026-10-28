@@ -1,0 +1,685 @@
+{
+ "schema_version": 1,
+ "format": "jsonl",
+ "meta": {
+  "modules": 58,
+  "entities": 643,
+  "languages": {
+   "c": 26,
+   "h": 23,
+   "py": 7,
+   "sh": 2
+  },
+  "kinds": {
+   "attribute": 9,
+   "class": 4,
+   "constant": 15,
+   "constructor": 3,
+   "enum": 2,
+   "function": 232,
+   "macro": 252,
+   "method": 8,
+   "module": 58,
+   "property": 1,
+   "struct": 37,
+   "type_alias": 9,
+   "variable": 13
+  },
+  "truncated": false,
+  "skipped_files": 11,
+  "privacy_mode": false
+ },
+ "coverage": {
+  "overall": {
+   "documented": 242,
+   "total": 606,
+   "percent": 39.9
+  },
+  "by_kind": {
+   "class": {
+    "documented": 4,
+    "total": 4,
+    "percent": 100.0
+   },
+   "constructor": {
+    "documented": 1,
+    "total": 3,
+    "percent": 33.3
+   },
+   "enum": {
+    "documented": 0,
+    "total": 2,
+    "percent": 0.0
+   },
+   "function": {
+    "documented": 175,
+    "total": 232,
+    "percent": 75.4
+   },
+   "macro": {
+    "documented": 19,
+    "total": 252,
+    "percent": 7.5
+   },
+   "method": {
+    "documented": 7,
+    "total": 8,
+    "percent": 87.5
+   },
+   "module": {
+    "documented": 15,
+    "total": 58,
+    "percent": 25.9
+   },
+   "property": {
+    "documented": 1,
+    "total": 1,
+    "percent": 100.0
+   },
+   "struct": {
+    "documented": 15,
+    "total": 37,
+    "percent": 40.5
+   },
+   "type_alias": {
+    "documented": 5,
+    "total": 9,
+    "percent": 55.6
+   }
+  },
+  "by_module": {
+   "audiobox_vsl.c": {
+    "documented": 1,
+    "total": 4,
+    "percent": 25.0
+   },
+   "audiobox_vsl.h": {
+    "documented": 4,
+    "total": 8,
+    "percent": 50.0
+   },
+   "avatar/avatar_config.h": {
+    "documented": 0,
+    "total": 13,
+    "percent": 0.0
+   },
+   "avatar/avatar_logic.c": {
+    "documented": 8,
+    "total": 9,
+    "percent": 88.9
+   },
+   "avatar/avatar_logic.h": {
+    "documented": 10,
+    "total": 11,
+    "percent": 90.9
+   },
+   "avatar/avatar_main.c": {
+    "documented": 0,
+    "total": 2,
+    "percent": 0.0
+   },
+   "install.sh": {
+    "documented": 1,
+    "total": 1,
+    "percent": 100.0
+   },
+   "legacy/app.py": {
+    "documented": 1,
+    "total": 1,
+    "percent": 100.0
+   },
+   "legacy/build-dkms.sh": {
+    "documented": 1,
+    "total": 20,
+    "percent": 5.0
+   },
+   "legacy/main.c": {
+    "documented": 0,
+    "total": 2,
+    "percent": 0.0
+   },
+   "legacy/mixer_quirks.c": {
+    "documented": 8,
+    "total": 148,
+    "percent": 5.4
+   },
+   "legacy/vsl_config.h": {
+    "documented": 5,
+    "total": 8,
+    "percent": 62.5
+   },
+   "legacy/vsl_config.py": {
+    "documented": 4,
+    "total": 4,
+    "percent": 100.0
+   },
+   "legacy/vsl_core.py": {
+    "documented": 6,
+    "total": 6,
+    "percent": 100.0
+   },
+   "legacy/vsl_dsp_logic.c": {
+    "documented": 5,
+    "total": 6,
+    "percent": 83.3
+   },
+   "legacy/vsl_dsp_logic.h": {
+    "documented": 6,
+    "total": 7,
+    "percent": 85.7
+   },
+   "legacy/vsl_dsp_transport.c": {
+    "documented": 5,
+    "total": 6,
+    "percent": 83.3
+   },
+   "legacy/vsl_dsp_transport.h": {
+    "documented": 5,
+    "total": 7,
+    "percent": 71.4
+   },
+   "legacy/vsl_hid_io.py": {
+    "documented": 8,
+    "total": 10,
+    "percent": 80.0
+   },
+   "legacy/vsl_poc_main.py": {
+    "documented": 8,
+    "total": 8,
+    "percent": 100.0
+   },
+   "legacy/vsl_protocol_analyzer.py": {
+    "documented": 7,
+    "total": 8,
+    "percent": 87.5
+   },
+   "legacy/vsl_transport.py": {
+    "documented": 7,
+    "total": 7,
+    "percent": 100.0
+   },
+   "src/vsl_cli.c": {
+    "documented": 0,
+    "total": 6,
+    "percent": 0.0
+   },
+   "src/vsl_config.h": {
+    "documented": 2,
+    "total": 13,
+    "percent": 15.4
+   },
+   "src/vsl_dsp_logic.c": {
+    "documented": 6,
+    "total": 8,
+    "percent": 75.0
+   },
+   "src/vsl_dsp_logic.h": {
+    "documented": 8,
+    "total": 13,
+    "percent": 61.5
+   },
+   "src/vsl_dsp_transport.c": {
+    "documented": 5,
+    "total": 7,
+    "percent": 71.4
+   },
+   "src/vsl_dsp_transport.h": {
+    "documented": 5,
+    "total": 7,
+    "percent": 71.4
+   },
+   "voicecloak/src/vc_alsa.c": {
+    "documented": 2,
+    "total": 5,
+    "percent": 40.0
+   },
+   "voicecloak/src/vc_alsa.h": {
+    "documented": 3,
+    "total": 5,
+    "percent": 60.0
+   },
+   "voicecloak/src/vc_audio_config.h": {
+    "documented": 2,
+    "total": 13,
+    "percent": 15.4
+   },
+   "voicecloak/src/vc_cli.c": {
+    "documented": 0,
+    "total": 2,
+    "percent": 0.0
+   },
+   "voicecloak/src/vc_crypto.c": {
+    "documented": 9,
+    "total": 10,
+    "percent": 90.0
+   },
+   "voicecloak/src/vc_crypto.h": {
+    "documented": 9,
+    "total": 16,
+    "percent": 56.2
+   },
+   "voicecloak/src/vc_denoise.c": {
+    "documented": 7,
+    "total": 12,
+    "percent": 58.3
+   },
+   "voicecloak/src/vc_denoise.h": {
+    "documented": 8,
+    "total": 28,
+    "percent": 28.6
+   },
+   "voicecloak/src/vc_dsp.c": {
+    "documented": 0,
+    "total": 7,
+    "percent": 0.0
+   },
+   "voicecloak/src/vc_dsp.h": {
+    "documented": 0,
+    "total": 5,
+    "percent": 0.0
+   },
+   "voicecloak/src/vc_effects.c": {
+    "documented": 3,
+    "total": 15,
+    "percent": 20.0
+   },
+   "voicecloak/src/vc_effects.h": {
+    "documented": 4,
+    "total": 8,
+    "percent": 50.0
+   },
+   "voicecloak/src/vc_eq.c": {
+    "documented": 3,
+    "total": 8,
+    "percent": 37.5
+   },
+   "voicecloak/src/vc_eq.h": {
+    "documented": 4,
+    "total": 9,
+    "percent": 44.4
+   },
+   "voicecloak/src/vc_fft.c": {
+    "documented": 0,
+    "total": 3,
+    "percent": 0.0
+   },
+   "voicecloak/src/vc_fft.h": {
+    "documented": 0,
+    "total": 2,
+    "percent": 0.0
+   },
+   "voicecloak/src/vc_level.c": {
+    "documented": 5,
+    "total": 7,
+    "percent": 71.4
+   },
+   "voicecloak/src/vc_level.h": {
+    "documented": 6,
+    "total": 15,
+    "percent": 40.0
+   },
+   "voicecloak/src/vc_presets.c": {
+    "documented": 1,
+    "total": 4,
+    "percent": 25.0
+   },
+   "voicecloak/src/vc_presets.h": {
+    "documented": 2,
+    "total": 3,
+    "percent": 66.7
+   },
+   "voicecloak/src/vc_rt.c": {
+    "documented": 5,
+    "total": 9,
+    "percent": 55.6
+   },
+   "voicecloak/src/vc_rt.h": {
+    "documented": 8,
+    "total": 16,
+    "percent": 50.0
+   },
+   "voicecloak/src/vc_rt_cli.c": {
+    "documented": 0,
+    "total": 4,
+    "percent": 0.0
+   },
+   "voicecloak/src/vc_rt_seed.c": {
+    "documented": 1,
+    "total": 2,
+    "percent": 50.0
+   },
+   "voicecloak/src/vc_stft.c": {
+    "documented": 6,
+    "total": 9,
+    "percent": 66.7
+   },
+   "voicecloak/src/vc_stft.h": {
+    "documented": 7,
+    "total": 8,
+    "percent": 87.5
+   },
+   "voicecloak/src/vc_stream.c": {
+    "documented": 7,
+    "total": 10,
+    "percent": 70.0
+   },
+   "voicecloak/src/vc_stream.h": {
+    "documented": 9,
+    "total": 12,
+    "percent": 75.0
+   },
+   "voicecloak/src/vc_wav.c": {
+    "documented": 3,
+    "total": 6,
+    "percent": 50.0
+   },
+   "voicecloak/src/vc_wav.h": {
+    "documented": 2,
+    "total": 3,
+    "percent": 66.7
+   }
+  }
+ },
+ "modules": [
+  {
+   "uid": "audiobox_vsl.c",
+   "path": "modules/audiobox_vsl.c.jsonl",
+   "entities": 4
+  },
+  {
+   "uid": "audiobox_vsl.h",
+   "path": "modules/audiobox_vsl.h.jsonl",
+   "entities": 9
+  },
+  {
+   "uid": "avatar/avatar_config.h",
+   "path": "modules/avatar.avatar_config.h.jsonl",
+   "entities": 13
+  },
+  {
+   "uid": "avatar/avatar_logic.c",
+   "path": "modules/avatar.avatar_logic.c.jsonl",
+   "entities": 9
+  },
+  {
+   "uid": "avatar/avatar_logic.h",
+   "path": "modules/avatar.avatar_logic.h.jsonl",
+   "entities": 12
+  },
+  {
+   "uid": "avatar/avatar_main.c",
+   "path": "modules/avatar.avatar_main.c.jsonl",
+   "entities": 2
+  },
+  {
+   "uid": "install.sh",
+   "path": "modules/install.sh.jsonl",
+   "entities": 1
+  },
+  {
+   "uid": "legacy/app.py",
+   "path": "modules/legacy.app.py.jsonl",
+   "entities": 1
+  },
+  {
+   "uid": "legacy/build-dkms.sh",
+   "path": "modules/legacy.build-dkms.sh.jsonl",
+   "entities": 20
+  },
+  {
+   "uid": "legacy/main.c",
+   "path": "modules/legacy.main.c.jsonl",
+   "entities": 2
+  },
+  {
+   "uid": "legacy/mixer_quirks.c",
+   "path": "modules/legacy.mixer_quirks.c.jsonl",
+   "entities": 148
+  },
+  {
+   "uid": "legacy/vsl_config.h",
+   "path": "modules/legacy.vsl_config.h.jsonl",
+   "entities": 8
+  },
+  {
+   "uid": "legacy/vsl_config.py",
+   "path": "modules/legacy.vsl_config.py.jsonl",
+   "entities": 22
+  },
+  {
+   "uid": "legacy/vsl_core.py",
+   "path": "modules/legacy.vsl_core.py.jsonl",
+   "entities": 6
+  },
+  {
+   "uid": "legacy/vsl_dsp_logic.c",
+   "path": "modules/legacy.vsl_dsp_logic.c.jsonl",
+   "entities": 6
+  },
+  {
+   "uid": "legacy/vsl_dsp_logic.h",
+   "path": "modules/legacy.vsl_dsp_logic.h.jsonl",
+   "entities": 7
+  },
+  {
+   "uid": "legacy/vsl_dsp_transport.c",
+   "path": "modules/legacy.vsl_dsp_transport.c.jsonl",
+   "entities": 6
+  },
+  {
+   "uid": "legacy/vsl_dsp_transport.h",
+   "path": "modules/legacy.vsl_dsp_transport.h.jsonl",
+   "entities": 7
+  },
+  {
+   "uid": "legacy/vsl_hid_io.py",
+   "path": "modules/legacy.vsl_hid_io.py.jsonl",
+   "entities": 10
+  },
+  {
+   "uid": "legacy/vsl_poc_main.py",
+   "path": "modules/legacy.vsl_poc_main.py.jsonl",
+   "entities": 9
+  },
+  {
+   "uid": "legacy/vsl_protocol_analyzer.py",
+   "path": "modules/legacy.vsl_protocol_analyzer.py.jsonl",
+   "entities": 13
+  },
+  {
+   "uid": "legacy/vsl_transport.py",
+   "path": "modules/legacy.vsl_transport.py.jsonl",
+   "entities": 7
+  },
+  {
+   "uid": "src/vsl_cli.c",
+   "path": "modules/src.vsl_cli.c.jsonl",
+   "entities": 6
+  },
+  {
+   "uid": "src/vsl_config.h",
+   "path": "modules/src.vsl_config.h.jsonl",
+   "entities": 14
+  },
+  {
+   "uid": "src/vsl_dsp_logic.c",
+   "path": "modules/src.vsl_dsp_logic.c.jsonl",
+   "entities": 8
+  },
+  {
+   "uid": "src/vsl_dsp_logic.h",
+   "path": "modules/src.vsl_dsp_logic.h.jsonl",
+   "entities": 13
+  },
+  {
+   "uid": "src/vsl_dsp_transport.c",
+   "path": "modules/src.vsl_dsp_transport.c.jsonl",
+   "entities": 7
+  },
+  {
+   "uid": "src/vsl_dsp_transport.h",
+   "path": "modules/src.vsl_dsp_transport.h.jsonl",
+   "entities": 8
+  },
+  {
+   "uid": "voicecloak/src/vc_alsa.c",
+   "path": "modules/voicecloak.src.vc_alsa.c.jsonl",
+   "entities": 5
+  },
+  {
+   "uid": "voicecloak/src/vc_alsa.h",
+   "path": "modules/voicecloak.src.vc_alsa.h.jsonl",
+   "entities": 5
+  },
+  {
+   "uid": "voicecloak/src/vc_audio_config.h",
+   "path": "modules/voicecloak.src.vc_audio_config.h.jsonl",
+   "entities": 13
+  },
+  {
+   "uid": "voicecloak/src/vc_cli.c",
+   "path": "modules/voicecloak.src.vc_cli.c.jsonl",
+   "entities": 2
+  },
+  {
+   "uid": "voicecloak/src/vc_crypto.c",
+   "path": "modules/voicecloak.src.vc_crypto.c.jsonl",
+   "entities": 10
+  },
+  {
+   "uid": "voicecloak/src/vc_crypto.h",
+   "path": "modules/voicecloak.src.vc_crypto.h.jsonl",
+   "entities": 16
+  },
+  {
+   "uid": "voicecloak/src/vc_denoise.c",
+   "path": "modules/voicecloak.src.vc_denoise.c.jsonl",
+   "entities": 12
+  },
+  {
+   "uid": "voicecloak/src/vc_denoise.h",
+   "path": "modules/voicecloak.src.vc_denoise.h.jsonl",
+   "entities": 29
+  },
+  {
+   "uid": "voicecloak/src/vc_dsp.c",
+   "path": "modules/voicecloak.src.vc_dsp.c.jsonl",
+   "entities": 7
+  },
+  {
+   "uid": "voicecloak/src/vc_dsp.h",
+   "path": "modules/voicecloak.src.vc_dsp.h.jsonl",
+   "entities": 6
+  },
+  {
+   "uid": "voicecloak/src/vc_effects.c",
+   "path": "modules/voicecloak.src.vc_effects.c.jsonl",
+   "entities": 15
+  },
+  {
+   "uid": "voicecloak/src/vc_effects.h",
+   "path": "modules/voicecloak.src.vc_effects.h.jsonl",
+   "entities": 9
+  },
+  {
+   "uid": "voicecloak/src/vc_eq.c",
+   "path": "modules/voicecloak.src.vc_eq.c.jsonl",
+   "entities": 8
+  },
+  {
+   "uid": "voicecloak/src/vc_eq.h",
+   "path": "modules/voicecloak.src.vc_eq.h.jsonl",
+   "entities": 10
+  },
+  {
+   "uid": "voicecloak/src/vc_fft.c",
+   "path": "modules/voicecloak.src.vc_fft.c.jsonl",
+   "entities": 3
+  },
+  {
+   "uid": "voicecloak/src/vc_fft.h",
+   "path": "modules/voicecloak.src.vc_fft.h.jsonl",
+   "entities": 2
+  },
+  {
+   "uid": "voicecloak/src/vc_level.c",
+   "path": "modules/voicecloak.src.vc_level.c.jsonl",
+   "entities": 7
+  },
+  {
+   "uid": "voicecloak/src/vc_level.h",
+   "path": "modules/voicecloak.src.vc_level.h.jsonl",
+   "entities": 16
+  },
+  {
+   "uid": "voicecloak/src/vc_presets.c",
+   "path": "modules/voicecloak.src.vc_presets.c.jsonl",
+   "entities": 4
+  },
+  {
+   "uid": "voicecloak/src/vc_presets.h",
+   "path": "modules/voicecloak.src.vc_presets.h.jsonl",
+   "entities": 4
+  },
+  {
+   "uid": "voicecloak/src/vc_rt.c",
+   "path": "modules/voicecloak.src.vc_rt.c.jsonl",
+   "entities": 9
+  },
+  {
+   "uid": "voicecloak/src/vc_rt.h",
+   "path": "modules/voicecloak.src.vc_rt.h.jsonl",
+   "entities": 17
+  },
+  {
+   "uid": "voicecloak/src/vc_rt_cli.c",
+   "path": "modules/voicecloak.src.vc_rt_cli.c.jsonl",
+   "entities": 4
+  },
+  {
+   "uid": "voicecloak/src/vc_rt_seed.c",
+   "path": "modules/voicecloak.src.vc_rt_seed.c.jsonl",
+   "entities": 2
+  },
+  {
+   "uid": "voicecloak/src/vc_stft.c",
+   "path": "modules/voicecloak.src.vc_stft.c.jsonl",
+   "entities": 9
+  },
+  {
+   "uid": "voicecloak/src/vc_stft.h",
+   "path": "modules/voicecloak.src.vc_stft.h.jsonl",
+   "entities": 9
+  },
+  {
+   "uid": "voicecloak/src/vc_stream.c",
+   "path": "modules/voicecloak.src.vc_stream.c.jsonl",
+   "entities": 10
+  },
+  {
+   "uid": "voicecloak/src/vc_stream.h",
+   "path": "modules/voicecloak.src.vc_stream.h.jsonl",
+   "entities": 13
+  },
+  {
+   "uid": "voicecloak/src/vc_wav.c",
+   "path": "modules/voicecloak.src.vc_wav.c.jsonl",
+   "entities": 6
+  },
+  {
+   "uid": "voicecloak/src/vc_wav.h",
+   "path": "modules/voicecloak.src.vc_wav.h.jsonl",
+   "entities": 3
+  }
+ ],
+ "warnings": {
+  "path": "warnings.jsonl",
+  "total": 393
+ },
+ "usage": [
+  "grep -h '\"name\":\"<Name>\"' readmenator-apidocs/api/modules/*.jsonl",
+  "grep -h '\"qualname\":\"<Owner.method>\"' readmenator-apidocs/api/modules/*.jsonl",
+  "cat readmenator-apidocs/api/modules/<module-slug>.jsonl",
+  "grep -h '\"code\":\"DOC001\"' readmenator-apidocs/api/warnings.jsonl"
+ ]
+}

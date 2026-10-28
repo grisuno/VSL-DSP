@@ -65,6 +65,7 @@ ASAN_TEST_BINS := $(ASAN_TEST_DIR)/test_vc_fft $(ASAN_TEST_DIR)/test_vc_stream \
 #   make alsa VSL_CAPTURE=hw:CARD=VSL ALOOP_PB=hw:Loopback,0,0
 VSL_CAPTURE  ?= plughw:CARD=VSL
 PULSE_SINK   ?= vc_out
+PULSE_SOURCE ?= vc_mic
 PULSE_PCM    ?= pulse
 ALOOP_PB     ?= hw:Loopback,0,0
 ALOOP_CAP    ?= hw:Loopback,1,0
@@ -205,7 +206,11 @@ setup-pulse:
 	@pactl list sinks short | grep -q "$(PULSE_SINK)" || \
 		pactl load-module module-null-sink sink_name=$(PULSE_SINK) \
 			sink_properties=device.description=VoiceCloak >/dev/null
-	@echo "sink ready: $(PULSE_SINK) (in OBS: Monitor of $(PULSE_SINK))"
+	@pactl list sources short | grep -q "$(PULSE_SOURCE)" || \
+		pactl load-module module-virtual-source source_name=$(PULSE_SOURCE) \
+			master=$(PULSE_SINK).monitor \
+			source_properties=device.description=VoiceCloak-Mic >/dev/null
+	@echo "sink ready: $(PULSE_SINK); microphone ready: $(PULSE_SOURCE) (select 'VoiceCloak-Mic' in any app)"
 
 setup-monitor: setup-pulse
 	@if [ -z "$(PULSE_MONITOR_SINK)" ]; then \
@@ -224,7 +229,7 @@ stop-monitor:
 	@echo "monitor: stopped"
 
 pulse: $(RT_BIN) setup-pulse $(if $(filter 1,$(VC_MONITOR)),setup-monitor,)
-	@echo "OBS: do NOT open the AudioBox; use 'Monitor of $(PULSE_SINK)' as microphone."
+	@echo "Apps: do NOT open the AudioBox; use 'VoiceCloak-Mic' ($(PULSE_SOURCE)) as microphone."
 	PULSE_SINK=$(PULSE_SINK) $(RT_BIN) live -D $(VSL_CAPTURE) -P $(PULSE_PCM) \
 		$(VC_PRESET_ARGS) --rate $(VC_RATE) --channels $(VC_CHANNELS) \
 		--period $(VC_PERIOD) --fft $(VC_FFT) --hop $(VC_HOP) \

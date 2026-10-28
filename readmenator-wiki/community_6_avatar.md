@@ -55,7 +55,7 @@ This community groups 4 file(s) rooted at `avatar` with dominant language h (coh
 
 ## Connections
 
-- [INFERRED] shares_context community 4 <-> 6 (strength 0.5): Inferred shared context (language h) with no import path between community 4 (src) and community 6 (avatar).
+- No cross-community bridges recorded. This community is self-contained.
 
 ## Risks
 

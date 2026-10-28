@@ -62,8 +62,8 @@ This community groups 10 file(s) rooted at `voicecloak/src` with dominant langua
 ## Connections
 
 - [EXTRACTED] depends_on community 0 <-> 3 (strength 0.9): Extracted import edge crosses communities: voicecloak/src/vc_rt_cli.c imports voicecloak/src/vc_crypto.h.
-- [INFERRED] shares_context community 2 <-> 3 (strength 0.5): Inferred shared context (layer utility) with no import path between community 2 (legacy) and community 3 (voicecloak/src: vc_crypto).
-- [INFERRED] shares_context community 3 <-> 4 (strength 0.5): Inferred shared context (layer utility) with no import path between community 3 (voicecloak/src: vc_crypto) and community 4 (src).
+- [INFERRED] shares_context community 2 <-> 3 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 2 (legacy) and community 3 (voicecloak/src: vc_crypto).
+- [INFERRED] shares_context community 3 <-> 4 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 3 (voicecloak/src: vc_crypto) and community 4 (src).
 - [INFERRED] shares_context community 3 <-> 5 (strength 0.5): Inferred shared context (language c and layer utility) with no import path between community 3 (voicecloak/src: vc_crypto) and community 5 (root).
 - [INFERRED] shares_context community 3 <-> 7 (strength 0.5): Inferred shared context (layer utility) with no import path between community 3 (voicecloak/src: vc_crypto) and community 7 (orphans).
 

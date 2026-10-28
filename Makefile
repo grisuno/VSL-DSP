@@ -73,7 +73,7 @@ CFLAGS_AV ?= $(CSTD) -O2 -g -Wall -Wextra -Werror -Wshadow -Wpedantic \
             -Iavatar $(shell pkg-config --cflags alsa sdl2 SDL2_image)
 LDLIBS_AV ?= $(shell pkg-config --libs alsa sdl2 SDL2_image) -lm
 
-.PHONY: all test asan clean install uninstall modprobe rmmod info help deb \
+.PHONY: all test asan clean install uninstall modprobe rmmod info help deb audio-check \
         vsl-cli test-dsp test-transport avatar avatar-build avatar-list avatar-test avatar-asan \
         bdd-driver
 
@@ -197,6 +197,24 @@ deb: modules
 	@fakeroot dpkg-deb --build debian $(DEB_NAME)_$(DEB_VERSION)_$(DEB_ARCH).deb
 	@rm -rf debian
 
+# Audio path check: the AudioBox must be a shared PipeWire source (no app
+# holding the PCM exclusively) and deliver signal when captured directly.
+VSL_CARD          ?= VSL
+VSL_CHECK_SECONDS ?= 3
+VSL_CHECK_RATE    ?= 48000
+
+audio-check:
+	@grep -q "\[$(VSL_CARD) *\]" /proc/asound/cards || { echo "FAIL: ALSA card $(VSL_CARD) absent (replug the AudioBox)"; exit 1; }
+	@echo "ALSA card: present"
+	@echo "PCM holders (must be empty or pipewire only):"; fuser -v /dev/snd/pcm* 2>&1 | grep -v -E '^ *$$|USUARIO|USER' || echo "  none"
+	@SRC=$$(pactl list short sources | awk '/AudioBox/ && !/monitor/{print $$2; exit}'); \
+	[ -n "$$SRC" ] || { echo "FAIL: no AudioBox source in PipeWire/Pulse (OBS cannot list it)"; exit 1; }; \
+	echo "PipeWire source: $$SRC"; \
+	F=$$(mktemp --suffix=.wav); \
+	timeout $$(($(VSL_CHECK_SECONDS)+3)) parecord --device=$$SRC --rate=$(VSL_CHECK_RATE) --channels=2 --format=s16le --file-format=wav $$F & P=$$!; \
+	sleep $(VSL_CHECK_SECONDS); kill -INT $$P 2>/dev/null; wait $$P 2>/dev/null; \
+	python3 -I -c "import sys,wave,array,math; w=wave.open(sys.argv[1]); a=array.array('h'); a.frombytes(w.readframes(w.getnframes())); pk=max(map(abs,a)) if a else 0; db=20*math.log10(max(pk,1)/32768); print('capture peak: %.1f dBFS' % db); print('OK: signal present' if db > -60 else 'WARN: silence (speak into the mic / raise GAIN knob)')" $$F; rm -f $$F
+
 help:
 	@echo "Targets:"
 	@echo "  all         build kernel module, run tests, build vsl-cli (default)"
@@ -215,6 +233,7 @@ help:
 	@echo "  uninstall   remove the kernel module from $(INSTALL)"
 	@echo "  modprobe    load the kernel module"
 	@echo "  rmmod       unload the kernel module"
+	@echo "  audio-check verify the AudioBox is a shared PipeWire source with signal (OBS/Audacity/REAPER)"
 	@echo "  info        print resolved build variables"
 	@echo "  deb         build Debian package (.deb) for the kernel module"
 	@echo "  help        list every available target"

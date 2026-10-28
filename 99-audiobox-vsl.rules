@@ -1,5 +1,5 @@
 # 99-audiobox-vsl.rules - udev rule for PreSonus AudioBox VSL family
-# Grants users in the 'audio' group access to the HID control interface.
+# Grants users in the 'audio' group access to the USB device (control path is the MIDI bulk interface; the device has no HID interface).
 #
 # Install:
 #   sudo cp 99-audiobox-vsl.rules /etc/udev/rules.d/
